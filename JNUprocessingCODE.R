@@ -5,7 +5,7 @@
 
 rm(list = ls())# clear workspace from previous area 
 #####Load Packages ---------------------------------
-library(tidyverse)
+#library(tidyverse)
 library(plyr)
 library(dplyr)
 library(stringr)
@@ -14,7 +14,6 @@ library(ggplot2)
 library(reshape2)
 library(extrafont)
 library(ggthemes)
-#library(tidyr)
 library(plotrix)
 library(SDMTools)
 library(weights)

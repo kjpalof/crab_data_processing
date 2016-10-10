@@ -12,16 +12,16 @@ library(tidyr)
 library(reshape2)
 library(extrafont)
 library(ggthemes)
-library(tidyr)
+#library(tidyr)
 library(plotrix)
 library(SDMTools)
 library(weights)
 
 #####Load Data --------------------------------------
-dat <- read.csv("./data/JNU_15_16_oceanAK_out_RAW.csv")
-area <- read.csv("./data/Juneau_Barlow_strata_area.csv")
-histdat <- read.csv("./data/2Juneau Stratified CPUE 2016_area formula.csv")
-females <- read.csv("./data/RKC_11_16_large females_by_pot.csv")
+dat <- read.csv("./data/Juneau/JNU_15_16_oceanAK_out_RAW.csv")
+area <- read.csv("./data/Juneau/Juneau_Barlow_strata_area.csv")
+histdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
+females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
 
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
@@ -43,12 +43,12 @@ dat1 %>%
 #Now summarize by pot - remember to keep areas seperate.
 dat1 %>%
   group_by(Year, Location, Pot.No, Density.Strata.Code) %>%
-  summarize (total_crab = sum(Number.Of.Specimens)) #gets you total crab per pot.
+  summarise (total_crab = sum(Number.Of.Specimens)) #gets you total crab per pot.
 
 # need Number of Specimens by recruit class
 dat1 %>%
   group_by(Year, Location, Pot.No, Density.Strata.Code, Recruit.Status) %>%
-  summarize(crab = sum(Number.Of.Specimens)) -> dat2
+  summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
 dat3 <- dcast(dat2, Year + Location + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
 
@@ -61,7 +61,7 @@ dat3 %>%
 #Calculates the number of pots per strata.  
 tab %>%
   group_by(Year, Location, Density.Strata.Code) %>%
-  summarize(npots  = length(Pot.No)) -> pots_per_strata
+  summarise(npots  = length(Pot.No)) -> pots_per_strata
 
 #####Weighted CPUE current year -----------------------------------
 #the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
@@ -79,22 +79,22 @@ dat5 %>%
 #Calculates a weighted mean CPUE and SE for each recruit class
 dat5 %>%
   group_by(Year) %>%
-  summarize(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
+  summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
             Recruit_wt = wt.mean(Recruit, weighting), Rec_SE = (wt.sd(Recruit, weighting)/(sqrt(sum(!is.na(Recruit))))), 
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
-            MatF_wt = wt.mean(`Large Females`, weighting), MatF_SE = (wt.sd(`Large Females`, weighting)/(sqrt(sum(!is.na(`Large Females`))))),
-            SmallF_wt = wt.mean(`Small Females`, weighting), SmallF_SE = (wt.sd(`Small Females`, weighting)/(sqrt(sum(!is.na(`Small Females`)))))) -> CPUE_wt_JNU_16
+            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_16
 
-write.csv(CPUE_wt_JNU_16, '/Users/kjpalof/Documents/R projects/data processing/results/JNU_CPUE_16.csv')
+write.csv(CPUE_wt_JNU_16, './results/JNU_CPUE_16.csv')
 
 ##### Historic file ---------------------------------------
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
 
-hisdat <- read.csv("C:/Users/kjpalof/Documents/R projects/data processing/data/2Juneau Stratified CPUE 2016_area formula.csv")
-hisdat_15 <- read.csv("C:/Users/kjpalof/Documents/R projects/data processing/data/2Juneau Stratified CPUE 2015_area formula.csv")
+hisdat <- read.csv("./data/2Juneau Stratified CPUE 2016_area formula.csv")
+hisdat_15 <- read.csv("./data/2Juneau Stratified CPUE 2015_area formula.csv")
 hisdat_15 <- hisdat_15[,1:15]
 historicdata <- hisdat[,1:15] # has all data from 2001 to 2016
 
@@ -105,7 +105,7 @@ dat5 %>%
   filter(Year == 2016) -> dat5_2016
 JNU_CPUE_ALL <- rbind(hisdat_15, dat5_2016)
 
-write.csv(JNU_CPUE_ALL, '/Users/kjpalof/Documents/R projects/data processing/results/JNU_perpot_all_16.csv')
+write.csv(JNU_CPUE_ALL, './results/JNU_perpot_all_16.csv')
 
 ##### Short term trends -------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -176,7 +176,7 @@ dat1 %>%
   summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens))
 #Pre-Recruit
 dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status== Pre_Recruit)%>%
+  filter(Sex.Code ==1, Recruit.Status == "Pre_Recruit")%>%
   group_by(Year) %>%
   summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens))
 
@@ -216,7 +216,7 @@ glimpse(poorclutch1)
 poorclutch1 %>%
   filter(Year == 2016) ->poorclutch1_2016
 #make sure you have a file with only 2016 data
-#Uses a weighted mean to help calculate the t.test - part of package weights
+#calculate the t.test - part of package weights
 t.test(poorclutch1_2016$var1, mu = 0.10)
 
 ##### Short term females ------------------------
