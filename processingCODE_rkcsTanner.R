@@ -55,7 +55,11 @@ levels(dat1$Location)
 rkc_usable_areas <- c("Deadman Reach", "Excursion Inlet", "Gambier Bay", "Lynn Sisters", "Pybus Bay", 
                       "Seymour Canal", "St. James Bay")
 dat1 %>%
-  filter(Location %in% rkc_usable_areas) -> dat1a
+  filter(Location %in% rkc_usable_areas) %>%
+  mutate(experimental = ifelse(Location == 'Seymour Canal' & Pot.No > 54 & Year == 2015, 1, 0)) %>%
+  filter(experimental == 0) -> dat1a
+  # remove seymour canal swan cove pots, these are only pot #'s greater than 54 in 2015.
+
 ##### add columns used later ----------------------------
 dat1a %>%
   mutate(AREA = ifelse(Location.Code == 26 | Location.Code == 42, 'LS',
@@ -137,12 +141,18 @@ write.csv(dat3, './results/RKCS_perpot_allyears.csv')
 ##################################################################
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
 dat3 %>%
-  filter(Year >=2013) -> BYPOT_ST_16 # short term file has last 4 years in it
+  filter(Year >=2013) -> BYPOT_ST_16_all # short term file has last 4 years in it
 
-plot(BYPOT_ST_16$Year, BYPOT_ST_16$Juvenile)
-Juv_fit <-lm(Juvenile ~ Year, data = BYPOT_ST_16)
-abline(Juv_fit, col= 'red')
-summary(Juv_fit)
+BYPOT_ST_16_all %>%
+  filter(AREA == "PB") -> BYPOT_ST_16
+BYPOT_ST_16_all %>%
+  filter(AREA == "GB") -> BYPOT_ST_16
+#need this by area also
+
+#plot(BYPOT_ST_16$Year, BYPOT_ST_16$Juvenile)
+#Juv_fit <-lm(Juvenile ~ Year, data = BYPOT_ST_16)
+#abline(Juv_fit, col= 'red')
+#summary(Juv_fit)
 
 plot(BYPOT_ST_16$Year, BYPOT_ST_16$Large.Females)
 Lfem_fit <-lm(Large.Females ~ Year, data = BYPOT_ST_16)
@@ -164,10 +174,10 @@ R_fit <-lm(Recruit ~ Year, data = BYPOT_ST_16)
 abline(R_fit, col= 'red')
 summary(R_fit)
 
-plot(BYPOT_ST_16$Year, BYPOT_ST_16$Small.Females)
-smF_fit <-lm(Small.Females ~ Year, data = BYPOT_ST_16, weights = weighting)
-abline(smF_fit, col= 'red')
-summary(smF_fit)
+#plot(BYPOT_ST_16$Year, BYPOT_ST_16$Small.Females)
+#smF_fit <-lm(Small.Females ~ Year, data = BYPOT_ST_16, weights = weighting)
+#abline(smF_fit, col= 'red')
+#summary(smF_fit)
 
 ##################################################################
 ##### Long term trends ---------------------
