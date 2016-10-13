@@ -186,65 +186,24 @@ write.csv(short_term_results, './results/RKCS_shortterm.csv')
 ggplot(dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~AREA)
 ########################
 ####################
-dat3 %>%
-  filter(Year >=2013) -> BYPOT_ST_16_all # short term file has last 4 years in it
-
-BYPOT_ST_16_all %>%
-  filter(AREA == "PB") -> BYPOT_ST_16
-BYPOT_ST_16_all %>%
-  filter(AREA == "GB") -> BYPOT_ST_16
-BYPOT_ST_16_all %>%
-  filter(AREA == "EI") -> BYPOT_ST_16
-#need this by area also
-
-#plot(BYPOT_ST_16$Year, BYPOT_ST_16$Juvenile)
-#Juv_fit <-lm(Juvenile ~ Year, data = BYPOT_ST_16)
-#abline(Juv_fit, col= 'red')
-#summary(Juv_fit)
-
-plot(BYPOT_ST_16$Year, BYPOT_ST_16$Large.Females)
-Lfem_fit <-lm(Large.Females ~ Year, data = BYPOT_ST_16)
-abline(Lfem_fit, col= 'red')
-summary(Lfem_fit)
-
-plot(BYPOT_ST_16$Year, BYPOT_ST_16$Post_Recruit)
-PR_fit <-lm(Post_Recruit ~ Year, data = BYPOT_ST_16)
-abline(PR_fit, col= 'red')
-summary(PR_fit)
-
-plot(BYPOT_ST_16$Year, BYPOT_ST_16$Pre_Recruit)
-PreR_fit <-lm(Pre_Recruit ~ Year, data = BYPOT_ST_16)
-abline(PreR_fit, col= 'red')
-summary(PreR_fit)
-
-plot(BYPOT_ST_16$Year, BYPOT_ST_16$Recruit)
-R_fit <-lm(Recruit ~ Year, data = BYPOT_ST_16)
-abline(R_fit, col= 'red')
-summary(R_fit)
-
-#plot(BYPOT_ST_16$Year, BYPOT_ST_16$Small.Females)
-#smF_fit <-lm(Small.Females ~ Year, data = BYPOT_ST_16, weights = weighting)
-#abline(smF_fit, col= 'red')
-#summary(smF_fit)
-
-
 
 ##################################################################
 ##### Long term trends ---------------------
 ##################################################################
 #compare 2016 CPUE distribution to the long term mean
-dat5 %>%
-  filter(Year == 2016) ->dat5_2016
+dat3 %>%
+  filter(Year == 2016) ->dat3_2016
 #make sure you have a file with only 2016 data
-
-#Uses a weighted mean to help calculate the t.test - part of package weights
+# long term baseline values are different for each area, I guess make a file for each area?
+#
 # the y = has to be changed for each area but once they are set they are the same from year to year
-wtd.t.test(dat5_2016$Juvenile, y = 5.51, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Large.Females, y = 8.07, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Post_Recruit, y = 2.19, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Pre_Recruit, y = 3.07, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Recruit, y = 1.98, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Small.Females, y = 6.35, weight = dat5_2016$weighting, samedata=FALSE)
+dat3_2016 %>%
+  filter(AREA == "PB") ->long_term_16
+t.test(long_term_16$Large.Females, y = 2.18)
+t.test(long_term_16$Pre_Recruit, y = 1.61)
+t.test(long_term_16$Recruit, y = 1.20)
+t.test(long_term_16$Post_Recruit, y = 0.96, weight = dat5_2016$weighting, samedata=FALSE)
+
 
 ##################################################################
 ##### Weights from length - weight relatinship.
