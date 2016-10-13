@@ -16,6 +16,7 @@ library(ggthemes)
 library(plotrix)
 library(SDMTools)
 library(weights)
+library(broom)
 
 ##################################################################
 #####Load Data ---------------------------------------------------
@@ -68,13 +69,19 @@ dat1a %>%
                                 'PB', ifelse(Location.Code==39, 'SC', 0))))))) ->dat1ab
 
 dat1ab %>%
-  mutate(mod_recruit = ifelse(Number.Of.Specimens ==0, 'No_crab', ifelse(Sex.Code ==1 & Width.Millimeters <110, 'Juvenile', 
-                              ifelse(Sex.Code ==1 & Width.Millimeters>109 & Width.Millimeters < 138,'Pre_Recruit', 
-                               ifelse(Sex.Code ==1 & Width.Millimeters > 137 & Width.Millimeters <170 & Shell.Condition.Code <4, 'Recruit',
-                                ifelse(Sex.Code ==1 & Width.Millimeters >169|(Shell.Condition.Code >3 & Width.Millimeters >137), 'Post_Recruit', 
-                                  ifelse(Sex.Code ==2 & Egg.Development.Code==4, 'Small.Females', 
-                                         ifelse(Sex.Code ==2 & Width.Millimeters>0, 'Large.Females', 'Missing')))))))) -> Tdat1
-#write.csv(Tdat1, './results/problemstanner2.csv')
+  #filter(!is.na(Width.Millimeters)) %>%  # lots of hoops to jump through so that NA come out as missing and not NA
+  mutate(mod_recruit = ifelse(Number.Of.Specimens ==0, 'No_crab', ifelse(Sex.Code ==1 & Width.Millimeters <110 & 
+                                                                           !is.na(Width.Millimeters), 'Juvenile', 
+                              ifelse(Sex.Code ==1 & Width.Millimeters>109 & Width.Millimeters < 138 &
+                                       !is.na(Width.Millimeters),'Pre_Recruit', 
+                               ifelse(Sex.Code ==1 & Width.Millimeters > 137 & Width.Millimeters <170 &
+                                        !is.na(Width.Millimeters)& Shell.Condition.Code <4, 'Recruit',
+                                ifelse((Sex.Code ==1 & !is.na(Width.Millimeters)) &
+                                         Width.Millimeters >169|(Shell.Condition.Code >3 & Width.Millimeters >137 & !is.na(Width.Millimeters)), 'Post_Recruit', 
+                                  ifelse(Sex.Code ==2 & Egg.Development.Code==4 & !is.na(Egg.Development.Code), 'Small.Females', 
+                                         ifelse(Sex.Code ==2 & Width.Millimeters>0 & !is.na(Width.Millimeters), 'Large.Females', 
+                                                ifelse(is.na(Width.Millimeters), 'Missing', 'Missing'))))))))) -> Tdat1
+#write.csv(Tdat1, './results/problemstanner3.csv')
 # need to STOP here and fix problems with data.  Not sure why some females are showing up as NA....also need to fill in missing 
 #  widths and density strata (although this applies to red crab NOT tanner)
 ##################################################################
@@ -139,7 +146,46 @@ write.csv(dat3, './results/RKCS_perpot_allyears.csv')
 ##################################################################
 ##### Short term trends -------------------------------------
 ##################################################################
-#look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
+#look at trend for the last 4 years.  Need a file with last four years
+# attempt to use broom for short term trends 
+#tidy(Lfem_fit) # want to save $estimate here
+#glance(Lfem_fit) # want to save r.squared and p.value
+
+head(dat3)
+library(tidyr)
+dat3 %>%
+  filter(Year >=2013) -> dat3 # confirm that is only contains the last 4 years.  This year needs to be changed every year
+
+dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
+
+dat3_long %>% # doesn't work with dat2 data because there are no 0's for missing data
+  group_by(AREA, mod_recruit) %>%
+  do(fit = lm(crab ~ Year, data =.)) -> short_term
+
+short_term %>%
+  tidy(fit) -> short_term_slope
+
+short_term %>%
+  glance(fit) ->short_term_out
+
+recruit_used <- c("Large.Females",  "Pre_Recruit", "Recruit","Post_Recruit")
+short_term_out %>%
+  filter(mod_recruit %in% recruit_used) %>%
+  select(AREA, mod_recruit, r.squared, p.value)->short_term_out2
+short_term_slope %>%
+  filter(mod_recruit %in% recruit_used, term == 'Year') %>%
+  select(AREA, mod_recruit, estimate) %>%
+  right_join(short_term_out2)->short_term_results # estimate here is slope from regression
+#Now need to add column for significance and score
+short_term_results %>%
+  mutate(significant = ifelse(p.value < 0.05 & estimate > 0, 1,
+                              ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
+  mutate(score = 0.25*significant) -> short_term_results
+# final results with score - save here
+write.csv(short_term_results, './results/RKCS_shortterm.csv')
+ggplot(dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~AREA)
+########################
+####################
 dat3 %>%
   filter(Year >=2013) -> BYPOT_ST_16_all # short term file has last 4 years in it
 
@@ -147,6 +193,8 @@ BYPOT_ST_16_all %>%
   filter(AREA == "PB") -> BYPOT_ST_16
 BYPOT_ST_16_all %>%
   filter(AREA == "GB") -> BYPOT_ST_16
+BYPOT_ST_16_all %>%
+  filter(AREA == "EI") -> BYPOT_ST_16
 #need this by area also
 
 #plot(BYPOT_ST_16$Year, BYPOT_ST_16$Juvenile)
@@ -178,6 +226,8 @@ summary(R_fit)
 #smF_fit <-lm(Small.Females ~ Year, data = BYPOT_ST_16, weights = weighting)
 #abline(smF_fit, col= 'red')
 #summary(smF_fit)
+
+
 
 ##################################################################
 ##### Long term trends ---------------------
