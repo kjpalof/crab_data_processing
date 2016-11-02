@@ -22,7 +22,7 @@ library(broom)
 #####Load Data ---------------------------------------------------
 ##################################################################
 # change input file and input folder for each
-dat <- read.csv("./data/rkc_tanner/RKCS_forTanner.csv")
+dat <- read.csv("./data/rkc_tanner/RKCS_forTanner16.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
 #area <- read.csv("./data/Juneau/Juneau_Barlow_strata_area.csv") 
                 #NO area for this data since these are stratified by RKCS area.  
@@ -41,7 +41,7 @@ dat %>%
   filter(Pot.Condition == "Normal") -> dat1
 
 dat1 %>%
-  filter(Recruit.Status == "", Width.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
+  filter(Recruit.Status == "", Width.Millimeters >= 1) -> test1 # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
@@ -100,17 +100,15 @@ dat3 <- dcast(dat2, Year + AREA + Pot.No ~ mod_recruit, sum, drop=TRUE)
 # No weighting by strata here for RKCS data due to it being designed for RKC.
 
 ##################################################################
-##### Weighted CPUE current year -----------------------------------
+##### CPUE last four year -----------------------------------
 ##################################################################
-#the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
-# need to combine data sets to accomplish this.
 
 #dat3 %>%
  # rename(Missing = Var.5, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
 # this is neccessary so that current years file (dat5) matches the historic file names
 
 #This version is ready to calculate CPUE for each recruit class
-#Calculates a weighted mean CPUE and SE for each recruit class
+#Calculates a  mean CPUE and SE for each recruit class # not weighted due to lack of tanner specific strata on red crab survey
 dat3 %>%
   group_by(AREA, Year) %>%
   summarise(Pre_Recruit_u = mean(Pre_Recruit), PreR_SE = (sd(Pre_Recruit)/(sqrt(sum(!is.na(Pre_Recruit))))), 
@@ -121,7 +119,7 @@ dat3 %>%
             SmallF_u = mean(Small.Females), SmallF_SE = (sd(Small.Females)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_13_16
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_13_16, './results/RKCS_CPUE_13_16.csv')
+write.csv(CPUE_13_16, './results/RKCS_CPUE_13_16_2.csv')
 
 ##################################################################
 ##### Historic file ---------------------------------------
@@ -144,6 +142,7 @@ write.csv(CPUE_13_16, './results/RKCS_CPUE_13_16.csv')
 write.csv(dat3, './results/RKCS_perpot_allyears.csv')
 
 ##################################################################
+###############################
 ##### Short term trends -------------------------------------
 ##################################################################
 #look at trend for the last 4 years.  Need a file with last four years
@@ -180,7 +179,7 @@ short_term_slope %>%
 short_term_results %>%
   mutate(significant = ifelse(p.value < 0.05 & estimate > 0, 1,
                               ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
-  mutate(score = 0.25*significant) -> short_term_results
+  mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
 # final results with score - save here
 write.csv(short_term_results, './results/RKCS_shortterm.csv')
 ggplot(dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~AREA)
@@ -199,20 +198,65 @@ dat3 %>%
 # the y = has to be changed for each area but once they are set they are the same from year to year
 dat3_2016 %>%
   filter(AREA == "PB") ->long_term_16
-t.test(long_term_16$Large.Females, y = 2.18)
-t.test(long_term_16$Pre_Recruit, y = 1.61)
-t.test(long_term_16$Recruit, y = 1.20)
-t.test(long_term_16$Post_Recruit, y = 0.96, weight = dat5_2016$weighting, samedata=FALSE)
+t.test(long_term_16$Large.Females, mu = 2.18)
+t.test(long_term_16$Pre_Recruit, mu = 1.61)
+t.test(long_term_16$Recruit, mu = 1.20)
+t.test(long_term_16$Post_Recruit, mu = 0.96)
+#
+dat3_2016 %>%
+  filter(AREA == "GB") ->long_term_16
+t.test(long_term_16$Large.Females, mu = 5.77)
+t.test(long_term_16$Pre_Recruit, mu = 4.91)
+t.test(long_term_16$Recruit, mu = 3.39)
+t.test(long_term_16$Post_Recruit, mu = 1.72)
+#
+dat3_2016 %>%
+  filter(AREA == "SC") ->long_term_16
+t.test(long_term_16$Large.Females, mu = 4.19)
+t.test(long_term_16$Pre_Recruit, mu = 2.96)
+t.test(long_term_16$Recruit, mu = 2.83)
+t.test(long_term_16$Post_Recruit, mu = 1.19)
+#
+dat3_2016 %>%
+  filter(AREA == "LS") ->long_term_16
+t.test(long_term_16$Large.Females, mu = 3.33)
+t.test(long_term_16$Pre_Recruit, mu = 3.47)
+t.test(long_term_16$Recruit, mu = 3.61)
+t.test(long_term_16$Post_Recruit, mu = 2.73)
+#
+dat3_2016 %>%
+  filter(AREA == "EI") ->long_term_16
+t.test(long_term_16$Large.Females, mu = 9.15)
+t.test(long_term_16$Pre_Recruit, mu = 6.91)
+t.test(long_term_16$Recruit, mu = 3.78)
+t.test(long_term_16$Post_Recruit, mu = 2.36)
+#
+dat3_2016 %>%
+  filter(AREA == "PS") ->long_term_16
+t.test(long_term_16$Large.Females, mu = 2.55)
+t.test(long_term_16$Pre_Recruit, mu = 4.19)
+t.test(long_term_16$Recruit, mu = 0.94)
+t.test(long_term_16$Post_Recruit, mu = 1.27)
 
 
 ##################################################################
-##### Weights from length - weight relatinship.
+##### Weights from length - weight relatinship--------------------
 ##################################################################
 # Linear model is changed for each area
-# Juneau linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
-glimpse(dat1) # raw data for both 2015 and 2016 
-dat1 %>%
-  mutate(weight_lb = (exp((3.03*log(Length.Millimeters))-7.23))*(2.2/1000)) -> dat1
+weight_length <- data.frame(AREA =character(),  slope =numeric(), coeff = numeric())
+
+#AREA = unique(Tdat1$AREA) #"LS" "PS" "EI" "GB" "PB" "SC"
+#slope = c(2.86,3.13, 3.30, 3.26, 3.05, 3.10)
+#coeff = c(7.33, 8.69, 9.48, 9.39, 8.34, 8.55)
+
+weight_length <- data.frame(AREA = unique(Tdat1$AREA), slope = c(2.86,3.13, 3.30, 3.26, 3.05, 3.10),
+                            coeff = c(7.33, 8.69, 9.48, 9.39, 8.34, 8.55))
+
+# Pybus Bay linear model: exp(3.05*log(length in mm)-8.34)*2.2/1000
+glimpse(Tdat1) # raw data for both 2015 and 2016 
+Tdat1 %>%
+  filter(AREA == "PB") %>%
+  mutate(weight_lb = (exp((3.05*log(Length.Millimeters))-8.34))*(2.2/1000)) -> dat1
 
 Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
 Legal =c("Recruit", "Post_Recruit")
