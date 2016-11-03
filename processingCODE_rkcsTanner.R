@@ -18,9 +18,9 @@ library(SDMTools)
 library(weights)
 library(broom)
 
-##################################################################
+###
 #####Load Data ---------------------------------------------------
-##################################################################
+###
 # change input file and input folder for each
 dat <- read.csv("./data/rkc_tanner/RKCS_forTanner16.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
@@ -32,9 +32,9 @@ dat <- read.csv("./data/rkc_tanner/RKCS_forTanner16.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
-##################################################################
+###
 ##### Initial review of new data ---------------------------------
-##################################################################
+###
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
@@ -47,9 +47,9 @@ dat1 %>%
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
 
-####################################################################
+####
 ##### Tanner specific manipulations -----------------------------
-##### Survey areas ONLY -----------------------
+####Survey areas ONLY 
 # remove Juneau and Barlow - do these seperately due to needing GIS to seperate the areas.
 # also need to remove other "experimental" areas - simplify to areas used in the assessment
 levels(dat1$Location)
@@ -84,9 +84,9 @@ dat1ab %>%
 #write.csv(Tdat1, './results/problemstanner3.csv')
 # need to STOP here and fix problems with data.  Not sure why some females are showing up as NA....also need to fill in missing 
 #  widths and density strata (although this applies to red crab NOT tanner)
-##################################################################
+###
 ##### By Pot ----------------------------------------------------
-##################################################################
+####
 #Now summarize by pot - remember to keep areas seperate.
 #Need Number of Specimens by recruit class
 Tdat1 %>%
@@ -99,9 +99,9 @@ dat3 <- dcast(dat2, Year + AREA + Pot.No ~ mod_recruit, sum, drop=TRUE)
 
 # No weighting by strata here for RKCS data due to it being designed for RKC.
 
-##################################################################
+####
 ##### CPUE last four year -----------------------------------
-##################################################################
+####
 
 #dat3 %>%
  # rename(Missing = Var.5, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
@@ -121,9 +121,9 @@ dat3 %>%
 # change name and folder for each area
 write.csv(CPUE_13_16, './results/RKCS_CPUE_13_16_2.csv')
 
-##################################################################
+###
 ##### Historic file ---------------------------------------
-##################################################################
+###
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
@@ -141,10 +141,10 @@ write.csv(CPUE_13_16, './results/RKCS_CPUE_13_16_2.csv')
 # change same of folder and file.
 write.csv(dat3, './results/RKCS_perpot_allyears.csv')
 
-##################################################################
-###############################
+
+###
 ##### Short term trends -------------------------------------
-##################################################################
+###
 #look at trend for the last 4 years.  Need a file with last four years
 # attempt to use broom for short term trends 
 #tidy(Lfem_fit) # want to save $estimate here
@@ -183,12 +183,11 @@ short_term_results %>%
 # final results with score - save here
 write.csv(short_term_results, './results/RKCS_shortterm.csv')
 ggplot(dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~AREA)
-########################
-####################
+###
 
-##################################################################
+###
 ##### Long term trends ---------------------
-##################################################################
+###
 #compare 2016 CPUE distribution to the long term mean
 dat3 %>%
   filter(Year == 2016) ->dat3_2016
@@ -239,9 +238,9 @@ t.test(long_term_16$Recruit, mu = 0.94)
 t.test(long_term_16$Post_Recruit, mu = 1.27)
 
 
-##################################################################
+#
 ##### Weights from length - weight relatinship--------------------
-##################################################################
+#
 # Linear model is changed for each area
 weight_length <- data.frame(AREA =character(),  slope =numeric(), coeff = numeric())
 
@@ -255,34 +254,52 @@ weight_length <- data.frame(AREA = unique(Tdat1$AREA), slope = c(2.86,3.13, 3.30
 # Pybus Bay linear model: exp(3.05*log(length in mm)-8.34)*2.2/1000
 glimpse(Tdat1) # raw data for both 2015 and 2016 
 Tdat1 %>%
-  filter(AREA == "PB") %>%
-  mutate(weight_lb = (exp((3.05*log(Length.Millimeters))-8.34))*(2.2/1000)) -> dat1
+  right_join(weight_length) %>%
+  mutate(weight_lb = (exp((slope*log(Width.Millimeters)) - coeff ))*(2.2/1000))-> datWL
 
 Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
 Legal =c("Recruit", "Post_Recruit")
-#Mature
-dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Mature)%>%
-  group_by(Year) %>%
-  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens))
-#legal
-dat1 %>%
+
+datWL %>%
+  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
+  group_by (AREA, Year, mod_recruit) %>%
+  summarise(mean_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_all
+weight_all %>%
+  filter(mod_recruit == "Pre_Recruit") %>%
+  group_by(AREA, Year) -> weight_pre
+datWL %>%
+  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
+  group_by (AREA, Year) %>%
+  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_mature
+
+datWL %>%
   filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
-  group_by(Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens))
-#Pre-Recruit
-dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status == "Pre_Recruit")%>%
-  group_by(Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens))
+  group_by(AREA, Year) %>%
+  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_legal
+  #summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens), legal_lb)
 
-##################################################################
+weight_mature %>%
+  right_join(weight_legal) %>%
+  right_join(weight_pre)  %>%
+  select( -mod_recruit) %>%
+  rename(pre_recruit_lb = mean_lbs) -> weights_summary
+write.csv(weights_summary, './results/RKCS_weights.csv')
+
+##### mid-date survey-------------
+glimpse(Tdat1)
+# need just the date of Time.Set and then to get the mid-date
+#Tdat1 %>%
+# mutate(time.set = as.POSIXlt(Time.Set)) -> Tdat1
+
+####
 ##### Females - large or mature females --------------------------
-##################################################################
+####
 # large or mature females
-dat1 %>%
-  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
+#dat1 %>%
+  #filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
 
+
+###############PICK up here----------------------------------
 ##### % poor (<10 %) clutch -----------------------------------
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
