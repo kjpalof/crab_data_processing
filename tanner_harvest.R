@@ -36,15 +36,20 @@ dat %>%
                                               ifelse(Stat.Area == 10940|Stat.Area == 10941|Stat.Area == 10942|Stat.Area == 10943|Stat.Area ==10532,
                                                            'Camden', 'Other'))))))))))))))) -> dat
 # by stat area, not needed for this analysis
+dat %>%
+ group_by(Season, Stat.Area, survey.area) %>%
+ summarise(numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> dat2
+
 #dat %>%
- # group_by(Season, Stat.Area, survey.area) %>%
-#  summarise(numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> dat2
+#  filter(Stat.Area == 11510, Season == 'Sep2015 - Aug16') %>%
+#  select(Season, CFEC, Stat.Area, )
 
 ### by survey area --------------------------
 dat %>%
   group_by(survey.area, Season)%>%
   summarise(numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> comm.catch.sum
 
+# lynn sister and north juneau need to be manually split up in area 115-10
 write.csv(comm.catch.sum, './results/tanner/tanner_comm_catch.csv')
 ### mid-catch date ------------------
 dat %>%
