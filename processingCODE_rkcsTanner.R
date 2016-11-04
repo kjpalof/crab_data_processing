@@ -82,8 +82,7 @@ dat1ab %>%
                                          ifelse(Sex.Code ==2 & Width.Millimeters>0 & !is.na(Width.Millimeters), 'Large.Females', 
                                                 ifelse(is.na(Width.Millimeters), 'Missing', 'Missing'))))))))) -> Tdat1
 #write.csv(Tdat1, './results/problemstanner3.csv')
-# need to STOP here and fix problems with data.  Not sure why some females are showing up as NA....also need to fill in missing 
-#  widths and density strata (although this applies to red crab NOT tanner)
+
 ###
 ##### By Pot ----------------------------------------------------
 ####
