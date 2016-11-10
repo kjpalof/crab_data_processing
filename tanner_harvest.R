@@ -32,21 +32,23 @@ dat %>%
                                                     Stat.Area == 11113|Stat.Area == 11114|Stat.Area == 11115|Stat.Area == 11116|
                                                     Stat.Area == 11117|Stat.Area == 11118, 'Seymour', 
                                           ifelse(Stat.Area == 11431|Stat.Area == 11432|Stat.Area == 11433|Stat.Area == 11434, 'PFred', 
-                                                  ifelse(Stat.Area == 11510|Stat.Area==11511|Stat.Area == 11215, 'Lynn', 
+                                                  ifelse(Stat.Area == 11510|Stat.Area == 11215, 'Lynn', 
                                               ifelse(Stat.Area == 10940|Stat.Area == 10941|Stat.Area == 10942|Stat.Area == 10943|Stat.Area ==10532,
                                                            'Camden', 'Other'))))))))))))))) -> dat
+# remove 11511 from Lynn Canal - make it part of 'other'
 # by stat area, not needed for this analysis
 dat %>%
  group_by(Season, Stat.Area, survey.area) %>%
  summarise(numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> dat2
 
+write.csv(dat2, './results/tanner/comm_catch_by_statarea.csv')
 #dat %>%
 #  filter(Stat.Area == 11510, Season == 'Sep2015 - Aug16') %>%
 #  select(Season, CFEC, Stat.Area, )
 
 ### by survey area --------------------------
 dat %>%
-  group_by(survey.area, Season)%>%
+  group_by(Season, survey.area)%>%
   summarise(numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> comm.catch.sum
 
 # lynn sister and north juneau need to be manually split up in area 115-10
@@ -56,3 +58,10 @@ dat %>%
   group_by(survey.area, Date.of.Landing) %>%
   summarise(numbers = sum(Number.Of.Fish..sum.)) ->mid.catch
 write.csv(mid.catch, './results/tanner/tanner_mid_catch_date.csv')
+
+### total annual harvest  ---------------------
+comm.catch.sum %>%
+  group_by(Season)%>%
+  summarise(numbers = sum(numbers), pounds = sum(pounds)) -> annual_catch
+
+write.csv(annual_catch, './results/tanner/tanner_annual_catch_16.csv')
