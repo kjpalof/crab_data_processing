@@ -324,9 +324,9 @@ poorclutch1 %>%
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1))))
 # check to see if these match JMP file
 
-##################################################################
+####
 ##### Long term females -------------------------
-##################################################################
+####
 glimpse(poorclutch1)
 #compare 2016 CPUE distribution to the long term mean
 poorclutch1 %>%
@@ -335,9 +335,9 @@ poorclutch1 %>%
 #calculate the t.test
 t.test(poorclutch1_2016$var1, mu = 0.10)
 
-##################################################################
+####
 ##### Short term females ------------------------
-##################################################################
+####
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 #After that this should create a file to use in the future
@@ -356,9 +356,9 @@ LgF_fit <-lm(var1 ~ Year, data = LgF_short)
 abline(LgF_fit, col= 'red')
 summary(LgF_fit)
 
-##################################################################
+###
 ##### egg percentage overall -----------------------------------
-##################################################################
+###
 LgF_dat1 %>%
   group_by(Year, Location, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
@@ -368,9 +368,9 @@ clutch_by_pot %>%
   summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
 
 
-#############################################################
+####
 ##### input for CSA in R ---------------------------
-############################################################
+####
 
 
 
