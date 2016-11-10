@@ -168,51 +168,42 @@ ggplot(graph1, aes(Year, crab, color = mod_recruit)) + geom_point()
 ##### Long term trends ---------------------
 ###
 #compare 2016 CPUE distribution to the long term mean, keep Location seperate
-dat3 %>%
-  filter(Year == 2016) ->dat3_2016
+# need to use dat5 because the weighting column is needed.
+dat5 %>%
+  filter(Year == 2016) ->dat5_2016
 #make sure you have a file with only 2016 data
 # long term baseline values are different for each area, I guess make a file for each area?
 #
 # the y = has to be changed for each area but once they are set they are the same from year to year
 # THIS NEEDS TO BE A WEIGHTED MEAN - see processingCODE.R
-dat3_2016 %>%
+dat5_2016 %>%
   filter(Location == "Glacier Bay") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 5.77)
-t.test(long_term_16$Pre_Recruit, mu = 5.62)
-t.test(long_term_16$Recruit, mu = 1.37)
-t.test(long_term_16$Post_Recruit, mu = 1.13)
+wtd.t.test(long_term_16$Large.Females, y = 5.77, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Pre_Recruit, y = 5.62, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Recruit, y = 1.37, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Post_Recruit, y = 1.13, weight = long_term_16$weighting, samedata=FALSE)
 #
-dat3_2016 %>%
-  filter(AREA == "GB") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 5.77)
-t.test(long_term_16$Pre_Recruit, mu = 4.91)
-t.test(long_term_16$Recruit, mu = 3.39)
-t.test(long_term_16$Post_Recruit, mu = 1.72)
+dat5_2016 %>%
+  filter(Location == "Icy Strait") ->long_term_16
+wtd.t.test(long_term_16$Large.Females, y = 12.21, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Pre_Recruit, y = 13.67, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Recruit, y = 16.08, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Post_Recruit, y = 3.27, weight = long_term_16$weighting, samedata=FALSE)
+
 #
-dat3_2016 %>%
-  filter(AREA == "SC") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 4.19)
-t.test(long_term_16$Pre_Recruit, mu = 2.96)
-t.test(long_term_16$Recruit, mu = 2.83)
-t.test(long_term_16$Post_Recruit, mu = 1.19)
+dat5_2016 %>%
+  filter(Location == "Thomas Bay") ->long_term_16
+wtd.t.test(long_term_16$Large.Females, y = 29.10, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Pre_Recruit, y = 10.85, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Recruit, y = 6.37, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Post_Recruit, y = 3.33, weight = long_term_16$weighting, samedata=FALSE)
 #
-dat3_2016 %>%
-  filter(AREA == "LS") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 3.33)
-t.test(long_term_16$Pre_Recruit, mu = 3.47)
-t.test(long_term_16$Recruit, mu = 3.61)
-t.test(long_term_16$Post_Recruit, mu = 2.73)
-#
-dat3_2016 %>%
-  filter(AREA == "EI") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 9.15)
-t.test(long_term_16$Pre_Recruit, mu = 6.91)
-t.test(long_term_16$Recruit, mu = 3.78)
-t.test(long_term_16$Post_Recruit, mu = 2.36)
-#
-dat3_2016 %>%
-  filter(AREA == "PS") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 2.55)
-t.test(long_term_16$Pre_Recruit, mu = 4.19)
-t.test(long_term_16$Recruit, mu = 0.94)
-t.test(long_term_16$Post_Recruit, mu = 1.27)
+dat5_2016 %>%
+  filter(Location == "Holkham Bay") ->long_term_16
+wtd.t.test(long_term_16$Large.Females, y = 3.86, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Pre_Recruit, y = 3.29, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Recruit, y = 2.08, weight = long_term_16$weighting, samedata=FALSE)
+wtd.t.test(long_term_16$Post_Recruit, y = 1.24, weight = long_term_16$weighting, samedata=FALSE)
+
+
+
