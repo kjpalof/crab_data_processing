@@ -16,9 +16,9 @@ library(plotrix)
 library(SDMTools)
 library(weights)
 
-##################################################################
+####
 #####Load Data ---------------------------------------------------
-##################################################################
+####
 # change input file and input folder for each
 dat <- read.csv("./data/Juneau/JNU_15_16_oceanAK_out_RAW.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
@@ -30,9 +30,9 @@ females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
-##################################################################
+####
 ##### Initial review of new data ---------------------------------
-##################################################################
+###
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
@@ -45,9 +45,9 @@ dat1 %>%
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
 
-##################################################################
+####
 ##### By Pot ----------------------------------------------------
-##################################################################
+####
 #Now summarize by pot - remember to keep areas seperate.
 #Need Number of Specimens by recruit class
 dat1 %>%
@@ -96,9 +96,9 @@ dat5 %>%
 # change name and folder for each area
 write.csv(CPUE_wt_16, './results/Juneau/JNU_CPUE_16.csv')
 
-##################################################################
+###
 ##### Historic file ---------------------------------------
-##################################################################
+####
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
@@ -116,9 +116,9 @@ CPUE_ALL_YEARS <- rbind(historicdata, dat5_2016)
 # change same of folder and file.
 write.csv(CPUE_ALL_YEARS, './results/Juneau/JNU_perpot_all_16.csv')
 
-##################################################################
+###
 ##### Short term trends -------------------------------------
-##################################################################
+###
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
 CPUE_ALL_YEARS %>%
   filter(Year >=2013) -> BYPOT_ST_16 # short term file has last 4 years in it
@@ -153,9 +153,9 @@ smF_fit <-lm(Small.Females ~ Year, data = BYPOT_ST_16, weights = weighting)
 abline(smF_fit, col= 'red')
 summary(smF_fit)
 
-##################################################################
+####
 ##### Long term trends ---------------------
-##################################################################
+####
 #compare 2016 CPUE distribution to the long term mean
 dat5 %>%
   filter(Year == 2016) ->dat5_2016
@@ -170,9 +170,9 @@ wtd.t.test(dat5_2016$Pre_Recruit, y = 3.07, weight = dat5_2016$weighting, sameda
 wtd.t.test(dat5_2016$Recruit, y = 1.98, weight = dat5_2016$weighting, samedata=FALSE)
 wtd.t.test(dat5_2016$Small.Females, y = 6.35, weight = dat5_2016$weighting, samedata=FALSE)
 
-##################################################################
+###
 ##### Weights from length - weight relatinship.
-##################################################################
+###
 # Linear model is changed for each area
 # Juneau linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
 glimpse(dat1) # raw data for both 2015 and 2016 
@@ -197,9 +197,9 @@ dat1 %>%
   group_by(Year) %>%
   summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens))
 
-##################################################################
+####
 ##### Females - large or mature females --------------------------
-##################################################################
+####
 # large or mature females
 dat1 %>%
   filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
@@ -229,9 +229,9 @@ poorclutch1 %>%
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1))))
 # check to see if these match JMP file
 
-##################################################################
+####
 ##### Long term females -------------------------
-##################################################################
+####
 glimpse(poorclutch1)
 #compare 2016 CPUE distribution to the long term mean
 poorclutch1 %>%
@@ -240,9 +240,9 @@ poorclutch1 %>%
 #calculate the t.test
 t.test(poorclutch1_2016$var1, mu = 0.10)
 
-##################################################################
+####
 ##### Short term females ------------------------
-##################################################################
+####
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 #After that this should create a file to use in the future
@@ -261,9 +261,9 @@ LgF_fit <-lm(var1 ~ Year, data = LgF_short)
 abline(LgF_fit, col= 'red')
 summary(LgF_fit)
 
-##################################################################
+####
 ##### egg percentage overall -----------------------------------
-##################################################################
+####
 LgF_dat1 %>%
   group_by(Year, Location, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
@@ -273,9 +273,9 @@ clutch_by_pot %>%
   summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
 
 
-#############################################################
+###
 ##### input for CSA in R ---------------------------
-############################################################
+###
 
 
 
