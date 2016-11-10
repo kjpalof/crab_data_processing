@@ -67,9 +67,9 @@ tab %>%
   group_by(Year, Location, Density.Strata.Code) %>%
   summarise(npots  = length(Pot.No)) -> pots_per_strata
 
-##################################################################
+##
 ##### Weighted CPUE current year -----------------------------------
-##################################################################
+##
 #the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
 # need to combine data sets to accomplish this.
 
