@@ -205,5 +205,51 @@ wtd.t.test(long_term_16$Pre_Recruit, y = 3.29, weight = long_term_16$weighting, 
 wtd.t.test(long_term_16$Recruit, y = 2.08, weight = long_term_16$weighting, samedata=FALSE)
 wtd.t.test(long_term_16$Post_Recruit, y = 1.24, weight = long_term_16$weighting, samedata=FALSE)
 
+#
+##### Weights from length - weight relatinship--------------------
+#
+# Linear model is changed for each area
+weight_length <- data.frame(AREA =character(),  slope =numeric(), coeff = numeric())
+
+#Location = unique(dat5$Location) #"Glacier Bay" "Holkham Bay" "Icy Strait"  "Thomas Bay" 
+#slope = c(3.30, 3.34, 3.29, 3.32) # these are from W-L relationships established for each area
+#coeff = c(9.48, 9.73, 9.48, 9.67)
+
+weight_length <- data.frame(Location = unique(dat5$Location), slope = c(3.30, 3.34, 3.29, 3.32),
+                            coeff = c(9.48, 9.73, 9.48, 9.67))
+
+# Pybus Bay linear model: exp(3.05*log(length in mm)-8.34)*2.2/1000
+glimpse(Tdat1) # raw data for both 2015 and 2016 
+Tdat1 %>%
+  right_join(weight_length) %>%
+  mutate(weight_lb = (exp((slope*log(Width.Millimeters)) - coeff ))*(2.2/1000))-> datWL
+
+Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
+Legal =c("Recruit", "Post_Recruit")
+
+datWL %>%
+  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
+  group_by (Location, mod_recruit, Year) %>%
+  summarise(mean_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_all
+weight_all %>%
+  filter(mod_recruit == "Pre_Recruit") %>%
+  group_by(Location, Year) -> weight_pre
+datWL %>%
+  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
+  group_by (Location, Year) %>%
+  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_mature
+
+datWL %>%
+  filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
+  group_by(Location, Year) %>%
+  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_legal
+#summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens), legal_lb)
+
+weight_mature %>%
+  right_join(weight_legal) %>%
+  right_join(weight_pre)  %>%
+  select( -mod_recruit) %>%
+  rename(pre_recruit_lb = mean_lbs) -> weights_summary
+write.csv(weights_summary, './results/TCS/TCS_weights.csv')
 
 
