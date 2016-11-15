@@ -252,4 +252,128 @@ weight_mature %>%
   rename(pre_recruit_lb = mean_lbs) -> weights_summary
 write.csv(weights_summary, './results/TCS/TCS_weights.csv')
 
+####
+##### Females - large or mature females --------------------------
+####
+# large or mature females
+Tdat1 %>%
+  filter(Sex.Code == 2, mod_recruit == 'Large.Females') -> LgF_Tdat1
+
+##### % poor (<10 %) clutch -----------------------------------
+# This selects those rows that do not have an egg percentage.
+# if these rows have a egg. development code and egg condition code then the egg percentage should be there
+# if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
+LgF_Tdat1[is.na(LgF_Tdat1$Egg.Percent),]
+# need to change these to 0. 
+LgF_Tdat1 %>%
+  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_Tdat1
+
+LgF_Tdat1 %>%
+  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_Tdat1 # where 1 is yes and 2 is no
+
+LgF_Tdat1 %>%
+  group_by(Year, Location, Pot.No, Less25) %>%
+  summarise(no_sum = sum(Number.Of.Specimens)) -> poorclutch
+
+poorclutch1 <- dcast(poorclutch, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
+
+poorclutch1 %>%
+  mutate(var1 = y / (y+n)) -> poorclutch1
+poorclutch1 %>%
+  group_by(Location, Year)%>%
+  summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
+write.csv(percent_low_clutch, './results/TCS/TCS_precent_low_clutch.csv')
+# check to see if these match JMP file
+
+####
+##### Long term females -------------------------
+####
+glimpse(poorclutch1)
+#compare 2016 CPUE distribution to the long term mean
+poorclutch1 %>%
+  filter(Year == 2016) ->poorclutch1_2016
+#make sure you have a file with only 2016 data
+#calculate the t.test
+poorclutch1_2016 %>%
+  filter(Location == "Glacier Bay") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+poorclutch1_2016 %>%
+  filter(Location == "Thomas Bay") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+poorclutch1_2016 %>%
+  filter(Location == "Icy Strait") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+poorclutch1_2016 %>%
+  filter(Location == "Holkham Bay") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+
+# attemps to do this all at once
+poorclutch1_2016 %>%
+  summarise_each(funs(t.test(.[Location == 'Glacier Bay'], .[Location == "Thomas Bay"], 
+                             .[Location == "Icy Strait"], .[Location == "Holkham Bay"])$p.value), 
+                             vars = var1, mu = 0.10)
+                             
+                        #  (test = t.test(var1, mu = 0.10)) -> clutch_LT
+poorclutch1_2016 %>%
+  group_by(Location) %>%
+  do(tidy(t.test(var1, mu=0.10, data=.))) ->lt_clutch
+  
+  #filter(Location == 'Glacier Bay')%>%
+  #do(t.test(vars1, mu = 0.10))
+
+####
+##### Short term females ------------------------
+####
+#look at trend for the last 4 years.  Need a file with last four years in it - females from above
+# input data the first time (2016) and then add to it.
+#After that this should create a file to use in the future
+head(poorclutch1) # should have the last 4 years from OceanAK
+
+poorclutch1 %>%
+  filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
+#output this file as .csv to add to next year
+write.csv(LgF_short, './results/TCS/poorclutchfemales_16.csv')
+
+# need to run the regression for each area.
+LgF_short %>% # doesn't work with dat2 data because there are no 0's for missing data
+  group_by(Location) %>%
+  do(fit = lm(var1 ~ Year, data =.)) -> LgF_short_term
+
+LgF_short_term %>%
+  tidy(fit) -> LgF_short_term_slope
+
+LgF_short_term %>%
+  glance(fit) -> LgF_short_term_out
+
+LgF_short_term_out %>%
+  select(Location, r.squared, p.value) -> F_short_term_out2
+LgF_short_term_slope %>%
+  select(Location, estimate) %>%
+  right_join(F_short_term_out2)->F_short_term_results # estimate here is slope from regression
+#Now need to add column for significance and score
+short_term_results %>%
+  mutate(significant = ifelse(p.value < 0.05 & estimate > 0, 1,
+                              ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
+  mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
+# final results with score - save here
+write.csv(short_term_results, './results/RKCS_shortterm.csv')
+ggplot(dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~AREA)
+###
+
+plot(LgF_short$Year, LgF_short$var1)
+LgF_fit <-lm(var1 ~ Year, data = LgF_short)
+abline(LgF_fit, col= 'red')
+summary(LgF_fit)
+
+####
+##### egg percentage overall -----------------------------------
+####
+LgF_dat1 %>%
+  group_by(Year, Location, Pot.No) %>%
+  summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
+
+clutch_by_pot %>%
+  group_by(Year)%>%
+  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
+
 
