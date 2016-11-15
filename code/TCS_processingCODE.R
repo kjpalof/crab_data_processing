@@ -335,45 +335,35 @@ poorclutch1 %>%
 write.csv(LgF_short, './results/TCS/poorclutchfemales_16.csv')
 
 # need to run the regression for each area.
-LgF_short %>% # doesn't work with dat2 data because there are no 0's for missing data
+LgF_short %>% 
   group_by(Location) %>%
-  do(fit = lm(var1 ~ Year, data =.)) -> LgF_short_term
+  do(fit = lm(var1 ~ Year, data =.)) %>%
+  tidy(fit) %>% select(Location, estimate) -> one
+LgF_short %>% 
+  group_by(Location) %>%
+  do(fit = lm(var1 ~ Year, data =.)) %>%
+  glance(fit) %>% select(Location, r.squared, p.value) ->two
+one %>%
+  right_join(two) -> F_short_term_results # estimate here is slope from regression
 
-LgF_short_term %>%
-  tidy(fit) -> LgF_short_term_slope
-
-LgF_short_term %>%
-  glance(fit) -> LgF_short_term_out
-
-LgF_short_term_out %>%
-  select(Location, r.squared, p.value) -> F_short_term_out2
-LgF_short_term_slope %>%
-  select(Location, estimate) %>%
-  right_join(F_short_term_out2)->F_short_term_results # estimate here is slope from regression
 #Now need to add column for significance and score
-short_term_results %>%
+F_short_term_results %>%
   mutate(significant = ifelse(p.value < 0.05 & estimate > 0, 1,
                               ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
-  mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
+  mutate(score = 0.25*significant) -> F_short_term_results #estimate is slope from regression
 # final results with score - save here
-write.csv(short_term_results, './results/RKCS_shortterm.csv')
-ggplot(dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~AREA)
+write.csv(F_short_term_results, './results/TCS/TCS_Fem_shortterm.csv')
+ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~Location)
 ###
 
-plot(LgF_short$Year, LgF_short$var1)
-LgF_fit <-lm(var1 ~ Year, data = LgF_short)
-abline(LgF_fit, col= 'red')
-summary(LgF_fit)
-
-####
 ##### egg percentage overall -----------------------------------
 ####
-LgF_dat1 %>%
+LgF_Tdat1 %>%
   group_by(Year, Location, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
 
 clutch_by_pot %>%
-  group_by(Year)%>%
+  group_by(Location, Year)%>%
   summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
 
 
