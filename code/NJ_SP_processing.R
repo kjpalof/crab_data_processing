@@ -241,17 +241,17 @@ LgF_Tdat1 %>%
   mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_Tdat1 # where 1 is yes and 2 is no
 
 LgF_Tdat1 %>%
-  group_by(Year, area, Pot.No, Less25) %>%
+  group_by(Year, sub_area, Pot.No, Less25) %>%
   summarise(no_sum = sum(Number.Of.Specimens)) -> poorclutch
 
-poorclutch1 <- dcast(poorclutch, Year + area + Pot.No ~ Less25, sum, drop=TRUE)
+poorclutch1 <- dcast(poorclutch, Year + sub_area + Pot.No ~ Less25, sum, drop=TRUE)
 
 poorclutch1 %>%
   mutate(var1 = y / (y+n)) -> poorclutch1
 poorclutch1 %>%
-  group_by(area, Year)%>%
+  group_by(Year)%>%
   summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
-write.csv(percent_low_clutch, './results/nj_stp/SP_precent_low_clutch.csv')
+write.csv(percent_low_clutch, './results/nj_stp/NJ_precent_low_clutch.csv')
 
 ##### Long term females -------------------------
 ####
@@ -270,17 +270,19 @@ head(poorclutch1) # should have the last 4 years from OceanAK
 poorclutch1 %>%
   filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
 #output this file as .csv to add to next year
-write.csv(LgF_short, './results/nj_stp/SP_poorclutchfemales_16.csv')
+write.csv(LgF_short, './results/nj_stp/NJ_poorclutchfemales_16.csv')
 
 # need to run the regression for each area.
 LgF_short %>% 
-  group_by(area) %>%
+  mutate(Location = 'North Juneau')%>%
+  group_by(Location) %>%
   do(fit = lm(var1 ~ Year, data =.)) %>%
-  tidy(fit) %>% select(area, estimate) -> one
+  tidy(fit) %>% select(Location, estimate) -> one
 LgF_short %>% 
-  group_by(area) %>%
+  mutate(Location = 'North Juneau')%>%
+  group_by(Location) %>%
   do(fit = lm(var1 ~ Year, data =.)) %>%
-  glance(fit) %>% select(area, r.squared, p.value) ->two
+  glance(fit) %>% select(Location, r.squared, p.value) ->two
 one %>%
   right_join(two) -> F_short_term_results # estimate here is slope from regression
 
@@ -290,10 +292,19 @@ F_short_term_results %>%
                               ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
   mutate(score = 0.25*significant) -> F_short_term_results #estimate is slope from regression
 # final results with score - save here
-write.csv(F_short_term_results, './results/nj_stp/SP_Fem_shortterm.csv')
+write.csv(F_short_term_results, './results/nj_stp/NJ_Fem_shortterm.csv')
 ggplot(poorclutch1, aes(Year, var1))+geom_point() 
 ###
+##### egg percentage overall -----------------------------------
+####
+LgF_Tdat1 %>%
+  group_by(Year, sub_area, Pot.No) %>%
+  summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
 
+clutch_by_pot %>%
+  group_by(Year)%>%
+  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
+write.csv(percent_clutch, './results/nj_stp/NJ_percent_clutch.csv')
 #### Stephens Passage  ----------------------
 ###  All these are Juneau so no sub_area (location code 13, 23) 
 ## add tanner density strata to dat.SP from seperate file
@@ -571,3 +582,13 @@ F_short_term_results %>%
 write.csv(F_short_term_results, './results/nj_stp/SP_Fem_shortterm.csv')
 ggplot(poorclutch1, aes(Year, var1))+geom_point() 
 ###
+##### egg percentage overall -----------------------------------
+####
+LgF_Tdat1 %>%
+  group_by(Year, Location, Pot.No) %>%
+  summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
+
+clutch_by_pot %>%
+  group_by(Location, Year)%>%
+  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
+write.csv(percent_clutch, './results/nj_stp/SP_percent_clutch.csv')
