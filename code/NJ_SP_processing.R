@@ -161,4 +161,55 @@ dat3_long %>%
   filter(mod_recruit %in% recruit_used) ->st_dat3_long
 ggplot(st_dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() 
 ###
+##### Long term trends ---------------------
+###
+#compare 2016 CPUE distribution to the long term mean
+dat3 %>%
+  filter(Year == 2016) ->dat3_2016
+#make sure you have a file with only 2016 data
+# long term baseline values are different for each area, I guess make a file for each area?
+#
+# the y = has to be changed for each area but once they are set they are the same from year to year
+dat3_2016  ->long_term_16
+t.test(long_term_16$Large.Females, mu = 4.14)
+t.test(long_term_16$Pre_Recruit, mu = 3.87)
+t.test(long_term_16$Recruit, mu = 4.56)
+t.test(long_term_16$Post_Recruit, mu = 2.93)
 
+#
+##### Weights from length - weight relatinship--------------------
+#
+# Linear model is changed for each area
+# North Juneau linear model: exp(3.16*log(length in mm)-8.84)*2.2/1000
+glimpse(Tdat1) # raw data for all years
+Tdat1 %>%
+  filter(Year > 2012)%>%
+  mutate(weight_lb = (exp((3.16*log(Width.Millimeters)) - 8.84 ))*(2.2/1000))-> datWL
+
+Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
+Legal =c("Recruit", "Post_Recruit")
+
+datWL %>%
+  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
+  group_by (Year, mod_recruit) %>%
+  summarise(mean_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_all
+weight_all %>%
+  filter(mod_recruit == "Pre_Recruit") %>%
+  group_by(Year) -> weight_pre
+datWL %>%
+  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
+  group_by (Year) %>%
+  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_mature
+
+datWL %>%
+  filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
+  group_by( Year) %>%
+  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_legal
+#summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens), legal_lb)
+
+weight_mature %>%
+  right_join(weight_legal) %>%
+  right_join(weight_pre)  %>%
+  select( -mod_recruit) %>%
+  rename(pre_recruit_lb = mean_lbs) -> weights_summary
+write.csv(weights_summary, './results/nj_stp/NJ_weights.csv')
