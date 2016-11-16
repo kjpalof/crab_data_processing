@@ -118,27 +118,16 @@ dat3 %>%
             SmallF_u = mean(Small.Females), SmallF_SE = (sd(Small.Females)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_13_16
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_13_16, './results/RKCS_CPUE_13_16_2.csv')
+write.csv(CPUE_13_16, './results/RKCS_tanner/RKCS_CPUE_13_16_2.csv')
 
 ###
 ##### Historic file ---------------------------------------
 ###
-#need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
-# any issues with recalculating the crab per pot due to edits in data.
-# read in historic by pot file and make sure variable names match
-
-#historicdata <- histdat[,1:15] # remove last two column of total crab and 
- # has all data from 2001 to 2015
-
-# need to add 2016 to historicdata file
-# Locations in historic file are numbers.  Here I have names, should I change this?
-# only 2016 data 
-#dat5 %>%
-#  filter(Year == 2016) -> dat5_2016 
-#CPUE_ALL_YEARS <- rbind(historicdata, dat5_2016)
+#brought in all the years - 2013 to 2016 - needed at once from OceanAK in the future can do this or add current
+#   year to this file.
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(dat3, './results/RKCS_perpot_allyears.csv')
+write.csv(dat3, './results/RKCS_tanner/RKCS_perpot_allyears.csv')
 
 
 ###
@@ -150,7 +139,6 @@ write.csv(dat3, './results/RKCS_perpot_allyears.csv')
 #glance(Lfem_fit) # want to save r.squared and p.value
 
 head(dat3)
-library(tidyr)
 dat3 %>%
   filter(Year >=2013) -> dat3 # confirm that is only contains the last 4 years.  This year needs to be changed every year
 
@@ -294,37 +282,33 @@ glimpse(Tdat1)
 ##### Females - large or mature females --------------------------
 ####
 # large or mature females
-#dat1 %>%
-  #filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
-
-
-###############PICK up here----------------------------------
+Tdat1 %>%
+  filter(Sex.Code == 2, mod_recruit == 'Large.Females') -> LgF_Tdat1
 ##### % poor (<10 %) clutch -----------------------------------
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
-LgF_dat1[is.na(LgF_dat1$Egg.Percent),]
+LgF_Tdat1[is.na(LgF_Tdat1$Egg.Percent),]
 # need to change these to 0. 
-LgF_dat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
+LgF_Tdat1 %>%
+  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_Tdat1
 
-LgF_dat1 %>%
-  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_dat1 # where 1 is yes and 2 is no
+LgF_Tdat1 %>%
+  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_Tdat1 # where 1 is yes and 2 is no
 
-LgF_dat1 %>%
-  group_by(Year, Location, Pot.No, Less25) %>%
+LgF_Tdat1 %>%
+  group_by(Year, AREA, Pot.No, Less25) %>%
   summarise(hat = sum(Number.Of.Specimens)) -> poorclutch
 
-poorclutch1 <- dcast(poorclutch, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
+poorclutch1 <- dcast(poorclutch, Year + AREA + Pot.No ~ Less25, sum, drop=TRUE)
 
 poorclutch1 %>%
   mutate(var1 = y / (y+n)) -> poorclutch1
 poorclutch1 %>%
-  group_by(Year)%>%
-  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1))))
-# check to see if these match JMP file
+  group_by(AREA, Year)%>%
+  summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
+write.csv(percent_low_clutch, './results/RKCS_tanner/RKCS_percent_low_clutch.csv')
 
-####
 ##### Long term females -------------------------
 ####
 glimpse(poorclutch1)
@@ -333,7 +317,26 @@ poorclutch1 %>%
   filter(Year == 2016) ->poorclutch1_2016
 #make sure you have a file with only 2016 data
 #calculate the t.test
-t.test(poorclutch1_2016$var1, mu = 0.10)
+#make sure you have a file with only 2016 data
+#calculate the t.test
+poorclutch1_2016 %>%
+  filter(AREA == "EI") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+poorclutch1_2016 %>%
+  filter(AREA == "GB") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+poorclutch1_2016 %>%
+  filter(AREA == "LS") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+poorclutch1_2016 %>%
+  filter(AREA == "PB") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+poorclutch1_2016 %>%
+  filter(AREA == "PS") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
+poorclutch1_2016 %>%
+  filter(AREA == "SC") -> LT_poor
+t.test(LT_poor$var1, mu = 0.10)
 
 ####
 ##### Short term females ------------------------
@@ -341,33 +344,49 @@ t.test(poorclutch1_2016$var1, mu = 0.10)
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 #After that this should create a file to use in the future
-# open female input file (.csv) and delete N.rows and Missing columns also change variables names to n, y, var1
-females_all <- rbind(females, poorclutch1_2016)
-# here use females because it already has 2016
-females_16 <- females
+head(poorclutch1) # should have the last 4 years from OceanAK
 
-females_16 %>%
+poorclutch1 %>%
   filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
 #output this file as .csv to add to next year
-write.csv(LgF_short, './results/Juneau/poorclutchfemales_16.csv')
+write.csv(LgF_short, './results/RKCS_tanner/poorclutchfemales_16.csv')
+# need to run the regression for each area.
+LgF_short %>% 
+  group_by(AREA) %>%
+  do(fit = lm(var1 ~ Year, data =.)) %>%
+  tidy(fit) %>% select(AREA, estimate) -> one
+LgF_short %>% 
+  group_by(AREA) %>%
+  do(fit = lm(var1 ~ Year, data =.)) %>%
+  glance(fit) %>% select(AREA, r.squared, p.value) ->two
+one %>%
+  right_join(two) -> F_short_term_results # estimate here is slope from regression
 
-plot(LgF_short$Year, LgF_short$var1)
-LgF_fit <-lm(var1 ~ Year, data = LgF_short)
-abline(LgF_fit, col= 'red')
-summary(LgF_fit)
-
+#Now need to add column for significance and score
+F_short_term_results %>%
+  mutate(significant = ifelse(p.value < 0.05 & estimate > 0, -1,
+                              ifelse(p.value <0.05 & estimate <0, 1, 0))) %>%
+  mutate(score = 0.25*significant) -> F_short_term_results #estimate is slope from regression
+# this is opposite for percent clutch short term trend since decreasing is good.
+# final results with score - save here
+write.csv(F_short_term_results, './results/RKCS_tanner/RKCS_Fem_shortterm.csv')
+ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~AREA)
 ###
+
 ##### egg percentage overall -----------------------------------
-###
-LgF_dat1 %>%
-  group_by(Year, Location, Pot.No) %>%
+####
+LgF_Tdat1 %>%
+  group_by(Year, AREA, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
 
 clutch_by_pot %>%
-  group_by(Year)%>%
-  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
+  group_by(AREA, Year)%>%
+  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
 
-
+# add this to the table with percent_low_clutch?
+percent_low_clutch %>%
+  right_join(percent_clutch) -> female_clutch_info
+write.csv(female_clutch_info, './results/RKCS_tanner/RKCS_percent_clutch.csv')
 ####
 ##### input for CSA in R ---------------------------
 ####
