@@ -39,7 +39,8 @@ dat %>%
 # by stat area, not needed for this analysis
 dat %>%
  group_by(Season, Stat.Area, survey.area) %>%
- summarise(numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> dat2
+  summarise(permits = length(unique(CFEC)), 
+                             numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> dat2
 
 write.csv(dat2, './results/tanner/comm_catch_by_statarea.csv')
 #dat %>%
@@ -49,7 +50,7 @@ write.csv(dat2, './results/tanner/comm_catch_by_statarea.csv')
 ### by survey area --------------------------
 dat %>%
   group_by(Season, survey.area)%>%
-  summarise(numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> comm.catch.sum
+  summarise(permits = length(unique(CFEC)), numbers = sum(Number.Of.Fish..sum.), pounds = sum(Whole.Pounds..sum.)) -> comm.catch.sum
 
 # lynn sister and north juneau need to be manually split up in area 115-10
 write.csv(comm.catch.sum, './results/tanner/tanner_comm_catch.csv')
