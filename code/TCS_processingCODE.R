@@ -49,7 +49,6 @@ levels(dat1$Location) # 2015 presence of one port camden pot.  remove this.
 
 dat1 %>%
   filter(Location != "Port Camden") -> dat1
-
 ### add columns used later 
 dat1 %>%
   #filter(!is.na(Width.Millimeters)) %>%  # lots of hoops to jump through so that NA come out as missing and not NA
@@ -162,7 +161,11 @@ ggplot(st_dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_w
 ### just thomas bay Large.Females
 dat3_long %>%
   filter(Location == 'Thomas Bay', mod_recruit == 'Large.Females') -> graph1
-ggplot(graph1, aes(Year, crab, color = mod_recruit)) + geom_point()
+ggplot(graph1, aes(Year, crab, color = mod_recruit)) + geom_point() +geom_smooth(method = 'lm')
+### just holkham bay for recruits
+dat3_long %>%
+  filter(Location == 'Holkham Bay', mod_recruit == 'Recruit') -> graph1
+ggplot(graph1, aes(Year, crab, color = mod_recruit)) + geom_point() +geom_smooth(method ='lm')
 
 ###
 ##### Long term trends ---------------------
@@ -259,6 +262,10 @@ write.csv(weights_summary, './results/TCS/TCS_weights.csv')
 Tdat1 %>%
   filter(Sex.Code == 2, mod_recruit == 'Large.Females') -> LgF_Tdat1
 
+#make sure this does NOT include immature females
+# this is egg_condition_code == 4
+LgF_Tdat1 %>%
+  filter(Egg.Condition.Code == 4)
 ##### % poor (<10 %) clutch -----------------------------------
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
@@ -364,6 +371,8 @@ LgF_Tdat1 %>%
 
 clutch_by_pot %>%
   group_by(Location, Year)%>%
-  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
+  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
+write.csv(percent_clutch, './results/TCS/TCS_percent_clutch.csv')
+# these don't match previous calculations in JMP- why ??
 
 
