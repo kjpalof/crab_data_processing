@@ -126,6 +126,8 @@ dat3 %>%
 
 dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
+
+#### Need to include weightings here !!!!!!!!!!!!!!!!!!!!!!!!!!!
 dat3_long %>% # doesn't work with dat2 data because there are no 0's for missing data
   group_by(Location, mod_recruit) %>%
   do(fit = lm(crab ~ Year, data =.)) -> short_term
