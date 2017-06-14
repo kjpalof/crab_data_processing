@@ -1,16 +1,13 @@
 #K.Palof 
-# ADF&G 7-11-16/ updated 8-18-16 for Juneau area
+# ADF&G 7-11-16/ updated 8-18-16 for Juneau area / 6-13-17
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP.  
 # This code is for the initial year - 2016, refer to code for processing after this year.
 
 rm(list = ls())# clear workspace from previous area 
 #####Load Packages ---------------------------------
-#library(tidyverse)
-library(plyr)
-library(dplyr)
+library(tidyverse)
+#library(plyr)
 library(stringr)
-library(ggplot2)
-#library(tidyr)
 library(reshape2)
 library(extrafont)
 library(ggthemes)
@@ -19,10 +16,10 @@ library(SDMTools)
 library(weights)
 
 #####Load Data --------------------------------------
-dat <- read.csv("./data/Juneau/JNU_15_16_oceanAK_out_RAW.csv")
-area <- read.csv("./data/Juneau/Juneau_Barlow_strata_area.csv")
-histdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
-females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
+dat <- read.csv("./data/redcrab/Juneau/JNU_15_16_oceanAK_out_RAW.csv")
+area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv")
+histdat <- read.csv("./data/redcrab/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
+females <- read.csv("./data/redcrab/Juneau/RKC_11_16_large females_by_pot.csv")
 
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
