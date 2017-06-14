@@ -14,6 +14,7 @@ library(ggthemes)
 library(plotrix)
 library(SDMTools)
 library(weights)
+library(broom)
 
 #####Load Data --------------------------------------
 dat <- read.csv("./data/redcrab/Juneau/JNU_15_16_oceanAK_out_RAW.csv")
@@ -107,10 +108,34 @@ write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_16.csv')
 
 ##### Short term trends -------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
-# How to take weights into account here?
+# How to take weights into account here?###
+# tidy( ### fit) # want to save $estimate here
+# glance (## fit) # want to save r.squared and p.value
 JNU_CPUE_ALL %>%
   filter(Year >=2013) -> JNU_ST_16 # short term file has last 4 years in it
+# short term all ----
+# long version for this 
+JNU_ST_16_long <- gather(JNU_ST_16, recruit.status, crab, Juvenile:Small.Females, factor_key = TRUE) 
 
+JNU_ST_16_long %>% 
+  group_by(recruit.status) %>% 
+  do(fit = lm(crab ~ Year, data = ., weights = weighting)) ->short_term
+
+short_term %>%
+  tidy(fit) -> short_term_slope
+
+short_term %>%
+  glance(fit) ->short_term_out
+
+short_term_out %>%
+  select(recruit.status, r.squared, p.value)->short_term_out2
+
+short_term_slope %>%
+  select(recruit.status, term,  estimate) %>%
+  right_join(short_term_out2)->short_term_results # estimate here is slope from regression
+
+
+# short term plots ----
 plot(JNU_ST_16$Year, JNU_ST_16$Juvenile)
 Juv_fit <-lm(Juvenile ~ Year, data = JNU_ST_16, weights = weighting)
 abline(Juv_fit, col= 'red')
