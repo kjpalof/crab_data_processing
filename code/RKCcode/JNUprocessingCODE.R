@@ -132,8 +132,18 @@ short_term_out %>%
 
 short_term_slope %>%
   select(recruit.status, term,  estimate) %>%
+  spread(term, estimate) %>% 
   right_join(short_term_out2)->short_term_results # estimate here is slope from regression
 
+#Now need to add column for significance and score
+short_term_results %>%
+  mutate(significant = ifelse(p.value < 0.05 & Year > 0, 1,
+                              ifelse(p.value <0.05 & Year <0, -1, 0))) %>%
+  mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
+# final results with score - save here
+write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv')
+
+ggplot(JNU_ST_16_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
 # short term plots ----
 plot(JNU_ST_16$Year, JNU_ST_16$Juvenile)
@@ -166,8 +176,9 @@ smF_fit <-lm(Small.Females ~ Year, data = JNU_ST_16, weights = weighting)
 abline(smF_fit, col= 'red')
 summary(smF_fit)
 
-##### Long term trends ---------------------
-#compare 2016 CPUE distribution to the long term mean
+##### Long term trends ------
+#compare current years CPUE distribution to the long term mean
+
 dat5 %>%
   filter(Year == 2016) ->dat5_2016
 #make sure you have a file with only 2016 data
