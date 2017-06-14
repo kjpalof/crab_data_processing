@@ -84,26 +84,26 @@ dat5 %>%
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_16
 
-write.csv(CPUE_wt_JNU_16, './results/JNU_CPUE_16.csv')
+write.csv(CPUE_wt_JNU_16, './results/redcrab/Juneau/JNU_CPUE_16.csv')
 
 ##### Historic file ---------------------------------------
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
 
-hisdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
-hisdat_15 <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2015_area formula.csv")
-hisdat_15 <- hisdat_15[,1:15]
-historicdata <- hisdat[,1:15] # has all data from 2001 to 2016
+histdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
+#hisdat_15 <- read.csv("./data/redcrab/Juneau/2Juneau Stratified CPUE 2015_area formula.csv")
+#hisdat_15 <- hisdat_15[,1:15]
+historicdata <- histdat[,1:15] # has all data from 2001 to 2016
 
-# need to add 2016 to hisdat_15 file
-# Locations in historic file are nubmers.  Here I have names, should I change this?
-# only 2016 data 
+# need to add 2017 to historicdata file
+# Locations in historic file are numbers.  Here I have names, should I change this?
+# only 2017 data 
 dat5 %>%
-  filter(Year == 2016) -> dat5_2016
-JNU_CPUE_ALL <- rbind(hisdat_15, dat5_2016)
+  filter(Year == 2017) -> dat5_2017
+JNU_CPUE_ALL <- rbind(historicdata, dat5_2017)
 
-write.csv(JNU_CPUE_ALL, './results/Juneau/JNU_perpot_all_16.csv')
+write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_16.csv')
 
 ##### Short term trends -------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
