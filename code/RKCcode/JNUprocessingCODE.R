@@ -178,17 +178,25 @@ summary(smF_fit)
 
 ##### Long term trends ------
 #compare current years CPUE distribution to the long term mean
-
-dat5 %>%
-  filter(Year == 2016) ->dat5_2016
+# use dat5_current year
+head(dat5_2016)
 #make sure you have a file with only 2016 data
 #Uses a weighted mean to help calculate the t.test - part of package weights
-wtd.t.test(dat5_2016$Juvenile, y = 5.51, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Large.Females, y = 8.07, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Post_Recruit, y = 2.19, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Pre_Recruit, y = 3.07, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Recruit, y = 1.98, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Small.Females, y = 6.35, weight = dat5_2016$weighting, samedata=FALSE)
+juv <- wtd.t.test(dat5_2016$Juvenile, y = 5.51, weight = dat5_2016$weighting, samedata=FALSE)
+lfem <- wtd.t.test(dat5_2016$Large.Females, y = 8.07, weight = dat5_2016$weighting, samedata=FALSE)
+postr <- wtd.t.test(dat5_2016$Post_Recruit, y = 2.19, weight = dat5_2016$weighting, samedata=FALSE)
+prer <- wtd.t.test(dat5_2016$Pre_Recruit, y = 3.07, weight = dat5_2016$weighting, samedata=FALSE)
+rec <- wtd.t.test(dat5_2016$Recruit, y = 1.98, weight = dat5_2016$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_2016$Small.Females, y = 6.35, weight = dat5_2016$weighting, samedata=FALSE)
+
+long_term <- matrix(nrow = 6, ncol = 2)
+rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
+colnames(long_term) <- c("mean", "p.value")
+long_term[1,1] <-juv$additional["Mean"]
+long_term[1,2] <- juv$coefficients["p.value"]
+long_term[2,1] <-lfem$additional["Mean"]
+long_term[2,2] <- lfem$coefficients["p.value"]
+
 
 ##### Weights from length - weight relatinship.---------------------
 # Juneau linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
