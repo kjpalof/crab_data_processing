@@ -1,0 +1,35 @@
+---
+title: "juneau area 2017 survey results"
+author: "Katie Palof"
+date: "June 14, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## CPUE from survey 
+
+
+
+## Short term trends in CPUE
+```{r short term, include = FALSE}
+short_term_results
+```
+## Long term trends in CPUE
+
+## Stock health
+
+
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
