@@ -196,7 +196,26 @@ long_term[1,1] <-juv$additional["Mean"]
 long_term[1,2] <- juv$coefficients["p.value"]
 long_term[2,1] <-lfem$additional["Mean"]
 long_term[2,2] <- lfem$coefficients["p.value"]
+long_term[3,1] <-postr$additional["Mean"]
+long_term[3,2] <- postr$coefficients["p.value"]
+long_term[4,1] <-prer$additional["Mean"]
+long_term[4,2] <- prer$coefficients["p.value"]
+long_term[5,1] <-rec$additional["Mean"]
+long_term[5,2] <- rec$coefficients["p.value"]
+long_term[6,1] <-sfem$additional["Mean"]
+long_term[6,2] <- sfem$coefficients["p.value"]
 
+
+baseline <- c(5.51,8.07,2.19,3.07,1.98,6.35)
+long_term_results <- cbind(long_term, baseline)
+
+
+long_term %>%
+   mutate(significant = ifelse(p.value < 0.05 & mean > 0, 1,
+                              ifelse(p.value <0.05 & mean < 0, -1, 0)))-> long_term_results #estimate is slope from regression
+
+# final results with score - save here
+write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv')
 
 ##### Weights from length - weight relatinship.---------------------
 # Juneau linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
