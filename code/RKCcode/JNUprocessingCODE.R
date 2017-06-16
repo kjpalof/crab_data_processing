@@ -192,6 +192,7 @@ sfem <- wtd.t.test(dat5_2016$Small.Females, y = 6.35, weight = dat5_2016$weighti
 long_term <- matrix(nrow = 6, ncol = 2)
 rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
 colnames(long_term) <- c("mean", "p.value")
+#long_term[ , 1] <- c('juv', 'large.female', 'post.recruit', 'pre.recruit', 'recruit', 'small.female')
 long_term[1,1] <-juv$additional["Mean"]
 long_term[1,2] <- juv$coefficients["p.value"]
 long_term[2,1] <-lfem$additional["Mean"]
@@ -208,11 +209,13 @@ long_term[6,2] <- sfem$coefficients["p.value"]
 
 baseline <- c(5.51,8.07,2.19,3.07,1.98,6.35)
 long_term_results <- cbind(long_term, baseline)
+long_term_results <- as.data.frame(long_term_results)
 
-
-long_term %>%
-   mutate(significant = ifelse(p.value < 0.05 & mean > 0, 1,
-                              ifelse(p.value <0.05 & mean < 0, -1, 0)))-> long_term_results #estimate is slope from regression
+long_term_results %>%
+   mutate(significant = ifelse(p.value < 0.05 & mean > baseline, 1,
+                              ifelse(p.value <0.05 & mean < baseline, -1, 0))) %>% 
+  mutate(recruit.status = c("juv", "large.female", "post.recruit", 
+                            "pre.recruit", "recruit", "small.female")) -> long_term_results #estimate is slope from regression
 
 # final results with score - save here
 write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv')
