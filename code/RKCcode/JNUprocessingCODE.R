@@ -218,7 +218,7 @@ long_term_results %>%
                             "pre.recruit", "recruit", "small.female")) -> long_term_results #estimate is slope from regression
 
 # final results with score - save here
-write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv')
+write.csv(long_term_results, './results/redcrab/Juneau/jnu_longterm.csv')
 
 ##### Weights from length - weight relatinship.---------------------
 # Juneau linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
