@@ -228,6 +228,18 @@ dat1 %>%
 
 Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
 Legal =c("Recruit", "Post_Recruit")
+# summary of weights all together - would like these in one calc and one summary table
+dat1 %>% 
+  group_by(Year) %>% 
+  filter(Sex.Code == 1) %>% 
+  summarise(mature_lbs = wt.mean(weight_lb[Recruit.Status %in% Mature], 
+                                 Number.Of.Specimens[Recruit.Status %in% Mature]), 
+            legal_lbs = wt.mean(weight_lb[Recruit.Status %in% Legal], 
+                                Number.Of.Specimens[Recruit.Status %in% Legal]), 
+            prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
+                               Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
+
+
 #Mature
 dat1 %>%
   filter(Sex.Code ==1, Recruit.Status %in% Mature)%>%
@@ -242,7 +254,7 @@ dat1 %>%
 dat1 %>%
   filter(Sex.Code ==1, Recruit.Status == "Pre_Recruit")%>%
   group_by(Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens))
+  summarise(prer_lbs = wt.mean(weight_lb, Number.Of.Specimens))
 
 ###### Females ----------------------------------------------------------
 # large or mature females
