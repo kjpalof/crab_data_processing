@@ -6,18 +6,30 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(tidyverse)
 ```
 
-## CPUE from survey 
+## CPUE from survey / data for CSA
+```{r CPUE, include = FALSE}
+cpue_2016 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_16.csv")
+kable(cpue_2016, digits = 3)
 
-
+```
+```{r weights, include = FALSE}
+male_weights
+```
 
 ## Short term trends in CPUE
 ```{r short term, include = FALSE}
 short_term_results
 ```
 ## Long term trends in CPUE
+```{r long term, include = FALSE}
+long_term_results
+```
+
+
 
 ## Stock health
 
