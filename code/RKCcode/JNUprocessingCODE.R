@@ -239,23 +239,6 @@ dat1 %>%
             prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
                                Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
 
-
-#Mature
-dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Mature)%>%
-  group_by(Year) %>%
-  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens))
-#legal
-dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
-  group_by(Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens))
-#Pre-Recruit
-dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status == "Pre_Recruit")%>%
-  group_by(Year) %>%
-  summarise(prer_lbs = wt.mean(weight_lb, Number.Of.Specimens))
-
 ###### Females ----------------------------------------------------------
 # large or mature females
 dat1 %>%
