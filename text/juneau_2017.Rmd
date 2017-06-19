@@ -11,22 +11,29 @@ library(tidyverse)
 ```
 
 ## CPUE from survey / data for CSA
-```{r CPUE, include = FALSE}
+```{r CPUE, echo = FALSE }
 cpue_2016 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_16.csv")
 kable(cpue_2016, digits = 3)
 
 ```
-```{r weights, include = FALSE}
-male_weights
+
+### Male weights from survey 
+```{r weights, echo = FALSE }
+male_weights <- read.csv("../results/redcrab/Juneau/jnu_maleweights.csv")
+kable(male_weights, digits = 3)
 ```
 
 ## Short term trends in CPUE
-```{r short term, include = FALSE}
-short_term_results
+```{r short term, echo = FALSE }
+short_term_results <- read.csv("../results/redcrab/Juneau/jnu_shortterm.csv")
+kable(short_term_results, digits = 3)
 ```
+
+
 ## Long term trends in CPUE
-```{r long term, include = FALSE}
-long_term_results
+```{r long term,echo = FALSE  }
+long_term_results <- read.csv("../results/redcrab/Juneau/jnu_longterm.csv")
+kable(long_term_results, digits = 3)
 ```
 
 
@@ -36,12 +43,4 @@ long_term_results
 
 
 
-## Including Plots
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
