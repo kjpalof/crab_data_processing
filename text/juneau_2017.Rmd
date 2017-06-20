@@ -5,9 +5,11 @@ date: "June 14, 2017"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include = FALSE}
 library(knitr)
 library(tidyverse)
+dat <- read.csv("../data/redcrab/Juneau/JNU_15_16_oceanAK_out_RAW.csv")
+
 ```
 
 ## CPUE from survey / data for CSA
@@ -15,6 +17,11 @@ library(tidyverse)
 cpue_2016 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_16.csv")
 kable(cpue_2016, digits = 3)
 
+
+# need to seperate time hauled to just have data hauled look for mid-date 
+dat[1,7] # 6-22
+dat[5097,7] # 6-29
+# so mid-date would be 26th.
 ```
 
 ### Male weights from survey 
