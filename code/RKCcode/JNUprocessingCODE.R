@@ -85,7 +85,7 @@ dat5 %>%
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_16
 
-write.csv(CPUE_wt_JNU_16, './results/redcrab/Juneau/JNU_CPUE_16.csv')
+write.csv(CPUE_wt_JNU_16, './results/redcrab/Juneau/JNU_CPUE_16.csv', row.names = FALSE)
 
 ##### Historic file ---------------------------------------
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
@@ -104,7 +104,7 @@ dat5 %>%
   filter(Year == 2017) -> dat5_2017
 JNU_CPUE_ALL <- rbind(historicdata, dat5_2017)
 
-write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_16.csv')
+write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_16.csv', row.names = FALSE)
 
 ##### Short term trends -------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -141,7 +141,7 @@ short_term_results %>%
                               ifelse(p.value <0.05 & Year <0, -1, 0))) %>%
   mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
 # final results with score - save here
-write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv')
+write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv', row.names = FALSE)
 
 ggplot(JNU_ST_16_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
@@ -218,7 +218,7 @@ long_term_results %>%
                             "pre.recruit", "recruit", "small.female")) -> long_term_results #estimate is slope from regression
 
 # final results with score - save here
-write.csv(long_term_results, './results/redcrab/Juneau/jnu_longterm.csv')
+write.csv(long_term_results, './results/redcrab/Juneau/jnu_longterm.csv', row.names = FALSE)
 
 ##### Weights from length - weight relatinship.---------------------
 # Juneau linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
@@ -238,7 +238,8 @@ dat1 %>%
                                 Number.Of.Specimens[Recruit.Status %in% Legal]), 
             prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
                                Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
-
+# final results with score - save here
+write.csv(male_weights, './results/redcrab/Juneau/jnu_maleweights.csv', row.names = FALSE)
 ###### Females ----------------------------------------------------------
 # large or mature females
 dat1 %>%
