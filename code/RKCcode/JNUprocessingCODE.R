@@ -87,6 +87,14 @@ dat5 %>%
 
 write.csv(CPUE_wt_JNU_16, './results/redcrab/Juneau/JNU_CPUE_16.csv', row.names = FALSE)
 
+#### survey mid date -----
+head(dat)
+unique(dat$Time.Hauled)
+# need to seperate time hauled to just have data hauled look for mid-date 
+dat[1,] # 6-22
+tail(dat) # 6-29
+# so mid-date would be 26th.
+
 ##### Historic file ---------------------------------------
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
