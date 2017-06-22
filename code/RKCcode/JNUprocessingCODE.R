@@ -275,7 +275,8 @@ poorclutch1 %>%
   mutate(var1 = y / (y+n)) -> poorclutch1
 poorclutch1 %>%
   group_by(Year)%>%
-  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1))))
+  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_16
+write.csv(poorclutch_16, './results/redcrab/Juneau/poorclutch_16.csv', row.names = FALSE)
 # check to see if these match JMP file
 
 ##### Long term females -------------------------
