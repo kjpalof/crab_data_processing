@@ -43,7 +43,11 @@ long_term_results <- read.csv("../results/redcrab/Juneau/jnu_longterm.csv")
 kable(long_term_results, digits = 3)
 ```
 
-
+## Female health
+```{r female health,echo = FALSE  }
+poorclutch_16 <- read.csv("../results/redcrab/Juneau/poorclutch_16.csv")
+kable(poorclutch_16, digits = 3)
+```
 
 ## Stock health
 
