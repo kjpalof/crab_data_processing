@@ -50,10 +50,16 @@ kable(poorclutch_16, digits = 3)
 ```
 
 
-long term mean comparison
+####long term mean comparison
 ```{r long term female, echo = FALSE}
 lt_female <- read.csv("../results/redcrab/Juneau/lt_female.csv")
 kable(lt_female, digits = 3)
+```
+
+####short term females
+```{r short term female, echo = FALSE}
+short_female <- read.csv("../results/redcrab/Juneau/short_female.csv")
+kable(short_female, digits = 3)
 ```
 
 ## Stock health
