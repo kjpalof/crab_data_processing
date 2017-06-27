@@ -296,7 +296,13 @@ colnames(longt_female) <- c("mean", "p.value")
 longt_female[1,1] <-mean(poorclutch1_current$var1)
 longt_female[1,2] <- lt_female$p.value
 
-write.csv(longt_female, './results/redcrab/Juneau/lt_female.csv')
+longt_female <- as.data.frame(longt_female)
+longt_female %>%
+  mutate(significant = ifelse(p.value < 0.05 & mean > 0.10, -1,
+                              ifelse(p.value <0.05 & mean < 0.10, 1, 0))) %>% 
+  mutate(recruit.status = c("large.female")) -> longt_female #estimate is slope from regression
+
+write.csv(longt_female, './results/redcrab/Juneau/lt_female.csv', row.names = FALSE)
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
@@ -321,9 +327,22 @@ LgF_fit <-lm(per_poorclt ~ Year, data = LgF_short)
 abline(LgF_fit, col= 'red')
 summary(LgF_fit)
 
-tidy(LgF_fit) # extract estimate column which is intercept and slope
-glance(LgF_fit) # extract r.squared, and p.value
+shortt_female <- matrix(nrow = 1, ncol = 4)
+rownames(shortt_female) <- c("large.female")
+colnames(shortt_female) <- c("intercept", "slope", "p.value", "r_squared")
 
+shortt_female[1,1:2] <- tidy(LgF_fit)$estimate # extract estimate column which is intercept and slope
+shortt_female[1,3] <- glance(LgF_fit)$p.value # extract r.squared, and p.value
+shortt_female[1,4] <- glance(LgF_fit)$r.squared # extract r.squared, and p.value
+shortt_female <- as.data.frame(shortt_female)
+#Now need to add column for significance and score
+shortt_female %>%
+  mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
+                              ifelse(p.value <0.05 & slope <0, -1, 0))) %>%
+  mutate(score = 0.25*significant) -> shortt_female #estimate is slope from regression
+# final results with score - save here
+
+write.csv(shortt_female, './results/redcrab/Juneau/short_female.csv', row.names = FALSE)
 
 ##### egg percentage overall -----------------------------------
 LgF_dat1 %>%
