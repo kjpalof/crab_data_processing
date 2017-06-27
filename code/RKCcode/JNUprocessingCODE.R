@@ -373,7 +373,8 @@ stock_health %>%
   mutate(health_status = ifelse(score < 1.75, "poor", ifelse(score > -1.75 & score< -0.75, "below average", 
                                                              ifelse(score > -0.05 & score < 0.05, "moderate", 
                                                                     ifelse(score > 0.75 & score < 1.75, "above average", 
-                                                                           ifelse(score > 1.75, "healthy", "unknown")))))) -> stock_health
+                                                                           ifelse(score > 1.75, "healthy", "unknown")))))) %>% 
+  select ( - score_f) -> stock_health
 write.csv(stock_health, './results/redcrab/Juneau/stock_health.csv', row.names = FALSE)
 
 ##### Restrospective Analysis -----------------------------------
