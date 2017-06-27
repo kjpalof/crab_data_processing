@@ -87,6 +87,7 @@ dat5 %>%
 
 write.csv(CPUE_wt_JNU_16, './results/redcrab/Juneau/JNU_CPUE_16.csv', row.names = FALSE)
 
+# raw CPUE legals 2016 3.66
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
@@ -286,7 +287,7 @@ poorclutch1 %>%
   filter(Year == 2016) ->poorclutch1_2016
 #make sure you have a file with only 2016 data
 #calculate the t.test - part of package weights
-t.test(poorclutch1_2016$var1, mu = 0.10)
+lt_female <- t.test(poorclutch1_2016$var1, mu = 0.10)
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
