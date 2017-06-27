@@ -284,10 +284,19 @@ write.csv(poorclutch_16, './results/redcrab/Juneau/poorclutch_16.csv', row.names
 glimpse(poorclutch1)
 #compare 2016 CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2016) ->poorclutch1_2016
+  filter(Year == 2016) ->poorclutch1_current
 #make sure you have a file with only 2016 data
 #calculate the t.test - part of package weights
-lt_female <- t.test(poorclutch1_2016$var1, mu = 0.10)
+lt_female <- t.test(poorclutch1_current$var1, mu = 0.10)
+
+longt_female <- matrix(nrow = 1, ncol = 2)
+rownames(longt_female) <- c("large.female")
+colnames(longt_female) <- c("mean", "p.value")
+
+longt_female[1,1] <-mean(poorclutch1_current$var1)
+longt_female[1,2] <- lt_female$p.value
+
+write.csv(longt_female, './results/redcrab/Juneau/lt_female.csv')
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
@@ -295,19 +304,26 @@ lt_female <- t.test(poorclutch1_2016$var1, mu = 0.10)
 # this should only have to be done the first time.  
 #After that this should create a file to use in the future
 # open female input file (.csv) and delete N.rows and Missing columns also change variables names to n, y, var1
-females_all <- rbind(females, poorclutch1_2016)
+females_all <- rbind(females, poorclutch1_current)
 # here use females because it already has 2016
-females_16 <- females
+females_all <- females
 
-females_16 %>%
+females_all %>%
   filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
 #output this file as .csv to add to next year
-write.csv(LgF_short, '/Users/kjpalof/Documents/R projects/data processing/results/poorclutchfemales_16.csv')
+write.csv(females_all, './results/redcrab/Juneau/females_all.csv', row.names = FALSE)
 
-plot(LgF_short$Year, LgF_short$var1)
-LgF_fit <-lm(var1 ~ Year, data = LgF_short)
+LgF_short %>% 
+  mutate(per_poorclt = var1)  -> LgF_short
+
+plot(LgF_short$Year, LgF_short$per_poorclt)
+LgF_fit <-lm(per_poorclt ~ Year, data = LgF_short)
 abline(LgF_fit, col= 'red')
 summary(LgF_fit)
+
+tidy(LgF_fit) # extract estimate column which is intercept and slope
+glance(LgF_fit) # extract r.squared, and p.value
+
 
 ##### egg percentage overall -----------------------------------
 LgF_dat1 %>%
