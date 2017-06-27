@@ -351,9 +351,9 @@ LgF_dat1 %>%
 
 clutch_by_pot %>%
   group_by(Year)%>%
-  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
+  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->egg_per_mean
   
-
+write.csv(egg_per_mean, './results/redcrab/Juneau/egg_percent_mean.csv', row.names = FALSE)
 ###################################################################
 ##### Restrospective Analysis -----------------------------------
 ###################################################################
