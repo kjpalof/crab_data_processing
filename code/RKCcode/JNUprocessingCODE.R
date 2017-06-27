@@ -354,9 +354,33 @@ clutch_by_pot %>%
   summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->egg_per_mean
   
 write.csv(egg_per_mean, './results/redcrab/Juneau/egg_percent_mean.csv', row.names = FALSE)
-###################################################################
+
+#### stock health table -----
+total_health <- sum(long_term_results$significant, short_term_results$score, 
+                    longt_female$significant, shortt_female$score) # long term scores CPUE
+# short term scores CPUE
+# need females poorclutch short and long term
+stock_health <- matrix(nrow = 1, ncol = 2)
+rownames(stock_health) <- c("Juneau")
+colnames(stock_health) <- c("location","score")
+
+stock_health[1,1] <- "juneau"
+stock_health[1,2] <- total_health
+stock_health <- as.data.frame(stock_health)
+stock_health %>% 
+  mutate(score = as.numeric(score)) -> stock_health
+stock_health %>% 
+  mutate(health_status = ifelse(score < 1.75, "poor", ifelse(score > -1.75 & < -0.75, "below average", 
+                                                             ifelse(score > -0.05 & < 0.05, "moderate", 
+                                                                    ifelse(score > 0.75 & < 1.75, "above average", 
+                                                                           ifelse(score > 1.75, "healthy", "unknown"))))))
+
+stock_health %>% 
+  mutate(health_status = ifelse(score < 1.75, "poor","unknown"))
+
+
 ##### Restrospective Analysis -----------------------------------
-###################################################################
+
 CPUE_ALL_YEARS <- read.csv("./results/Juneau/JNU_perpot_all_16.csv")
 head(CPUE_ALL_YEARS)
 
