@@ -72,7 +72,10 @@ kable(egg_per_mean, digits = 3)
 
 
 ## Stock health
-
+```{r stock health, echo = FALSE}
+stock_health <- read.csv("../results/redcrab/Juneau/stock_health.csv")
+kable(stock_health, digits = 3)
+```
 
 
 
