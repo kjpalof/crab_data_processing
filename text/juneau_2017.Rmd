@@ -62,6 +62,15 @@ short_female <- read.csv("../results/redcrab/Juneau/short_female.csv")
 kable(short_female, digits = 3)
 ```
 
+
+####Mean egg percentage for mature females
+```{r egg per female, echo = FALSE}
+egg_per_mean <- read.csv("../results/redcrab/Juneau/egg_percent_mean.csv")
+kable(egg_per_mean, digits = 3)
+```
+
+
+
 ## Stock health
 
 
