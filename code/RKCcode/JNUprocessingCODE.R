@@ -383,9 +383,14 @@ write.csv(stock_health, './results/redcrab/Juneau/stock_health.csv', row.names =
 
 ##### Restrospective Analysis -----------------------------------
 
-CPUE_ALL_YEARS <- read.csv("./results/Juneau/JNU_perpot_all_16.csv")
+CPUE_ALL_YEARS <- read.csv("./results/redcrab/Juneau/JNU_perpot_all_16.csv")
 head(CPUE_ALL_YEARS)
 
+CPUE_ALL_YEARS %>% 
+  group_by(Year) %>% 
+  summarise ( PreR = sum(Pre_Recruit), R = sum(Recruit), PR = sum(Post_Recruit), 
+              meanPreR = mean(Pre_Recruit), meanR = mean(Recruit), meanPR = mean(Post_Recruit)) %>% 
+  mutate(legal = R + PR) -> raw_counts
 
 CPUE_ALL_YEARS %>%
   group_by(Year) %>%
