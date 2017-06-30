@@ -1,7 +1,7 @@
 #K.Palof 
-# ADF&G 7-11-16/ updated 8-18-16 for Juneau area / 6-13-17
+# ADF&G 7-11-16/ updated 8-18-16 for Juneau area / 6-30-17
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP.  
-# This code is for the initial year - 2016, refer to code for processing after this year.
+# This code is for -2017, refer to code for processing after this year.
 
 rm(list = ls())# clear workspace from previous area 
 #####Load Packages ---------------------------------
