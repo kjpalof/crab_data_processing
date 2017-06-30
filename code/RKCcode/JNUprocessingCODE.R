@@ -92,16 +92,16 @@ write.csv(CPUE_wt_JNU_17, './results/redcrab/Juneau/JNU_CPUE_17.csv', row.names 
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat[1,7] # 6-22
-dat[5097,7] # 6-29
-# so mid-date would be 26th.
+dat[1,7] # 6-20
+dat[5843,7] # 6-27
+# so mid-date would be 24th.
 
 ##### Historic file ---------------------------------------
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
 
-histdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
+#histdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
 #hisdat_15 <- read.csv("./data/redcrab/Juneau/2Juneau Stratified CPUE 2015_area formula.csv")
 #hisdat_15 <- hisdat_15[,1:15]
 historicdata <- histdat[,1:15] # has all data from 2001 to 2016
@@ -113,7 +113,7 @@ dat5 %>%
   filter(Year == 2017) -> dat5_2017
 JNU_CPUE_ALL <- rbind(historicdata, dat5_2017)
 
-write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_16.csv', row.names = FALSE)
+write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_17.csv', row.names = FALSE)
 
 ##### Short term trends -------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -121,12 +121,12 @@ write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_16.csv', row.na
 # tidy( ### fit) # want to save $estimate here
 # glance (## fit) # want to save r.squared and p.value
 JNU_CPUE_ALL %>%
-  filter(Year >=2013) -> JNU_ST_16 # short term file has last 4 years in it
+  filter(Year >=2014) -> JNU_ST_17 # short term file has last 4 years in it
 # short term all ----
 # long version for this 
-JNU_ST_16_long <- gather(JNU_ST_16, recruit.status, crab, Juvenile:Small.Females, factor_key = TRUE) 
+JNU_ST_17_long <- gather(JNU_ST_17, recruit.status, crab, Juvenile:Small.Females, factor_key = TRUE) 
 
-JNU_ST_16_long %>% 
+JNU_ST_17_long %>% 
   group_by(recruit.status) %>% 
   do(fit = lm(crab ~ Year, data = ., weights = weighting)) ->short_term
 
@@ -152,7 +152,7 @@ short_term_results %>%
 # final results with score - save here
 write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv', row.names = FALSE)
 
-ggplot(JNU_ST_16_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
+ggplot(JNU_ST_17_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
 # short term plots ----
 plot(JNU_ST_16$Year, JNU_ST_16$Juvenile)
@@ -188,15 +188,15 @@ summary(smF_fit)
 ##### Long term trends ------
 #compare current years CPUE distribution to the long term mean
 # use dat5_current year
-head(dat5_2016)
+head(dat5_2017)
 #make sure you have a file with only 2016 data
 #Uses a weighted mean to help calculate the t.test - part of package weights
-juv <- wtd.t.test(dat5_2016$Juvenile, y = 5.51, weight = dat5_2016$weighting, samedata=FALSE)
-lfem <- wtd.t.test(dat5_2016$Large.Females, y = 8.07, weight = dat5_2016$weighting, samedata=FALSE)
-postr <- wtd.t.test(dat5_2016$Post_Recruit, y = 2.19, weight = dat5_2016$weighting, samedata=FALSE)
-prer <- wtd.t.test(dat5_2016$Pre_Recruit, y = 3.07, weight = dat5_2016$weighting, samedata=FALSE)
-rec <- wtd.t.test(dat5_2016$Recruit, y = 1.98, weight = dat5_2016$weighting, samedata=FALSE)
-sfem <- wtd.t.test(dat5_2016$Small.Females, y = 6.35, weight = dat5_2016$weighting, samedata=FALSE)
+juv <- wtd.t.test(dat5_2017$Juvenile, y = 5.51, weight = dat5_2017$weighting, samedata=FALSE)
+lfem <- wtd.t.test(dat5_2017$Large.Females, y = 8.07, weight = dat5_2017$weighting, samedata=FALSE)
+postr <- wtd.t.test(dat5_2017$Post_Recruit, y = 2.19, weight = dat5_2017$weighting, samedata=FALSE)
+prer <- wtd.t.test(dat5_2017$Pre_Recruit, y = 3.07, weight = dat5_2017$weighting, samedata=FALSE)
+rec <- wtd.t.test(dat5_2017$Recruit, y = 1.98, weight = dat5_2017$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_2017$Small.Females, y = 6.35, weight = dat5_2017$weighting, samedata=FALSE)
 
 long_term <- matrix(nrow = 6, ncol = 2)
 rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
