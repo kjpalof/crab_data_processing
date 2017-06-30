@@ -17,7 +17,7 @@ library(weights)
 library(broom)
 
 #####Load Data --------------------------------------
-dat <- read.csv("./data/redcrab/Juneau/JNU_15_16_oceanAK_out_RAW.csv")
+dat <- read.csv("./data/redcrab/Juneau/jnu_16_17_oceanAK_out_RAW.csv")
 area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv")
 histdat <- read.csv("./data/redcrab/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
 females <- read.csv("./data/redcrab/Juneau/RKC_11_16_large females_by_pot.csv")
