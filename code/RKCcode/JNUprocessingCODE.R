@@ -383,7 +383,7 @@ write.csv(stock_health, './results/redcrab/Juneau/stock_health.csv', row.names =
 
 ##### Restrospective Analysis -----------------------------------
 
-CPUE_ALL_YEARS <- read.csv("./results/redcrab/Juneau/JNU_perpot_all_16.csv")
+CPUE_ALL_YEARS <- read.csv("./results/redcrab/Juneau/JNU_perpot_all_17.csv")
 head(CPUE_ALL_YEARS)
 
 CPUE_ALL_YEARS %>% 
@@ -401,7 +401,7 @@ CPUE_ALL_YEARS %>%
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_all
 CPUE_wt_all
-write.csv(CPUE_wt_all, './results/Juneau/JNU_CPUE_historical.csv')
+write.csv(CPUE_wt_all, './results/redcrab/Juneau/JNU_CPUE_historical.csv')
 
 
 
