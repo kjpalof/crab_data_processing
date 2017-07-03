@@ -276,15 +276,15 @@ poorclutch1 %>%
   mutate(var1 = y / (y+n)) -> poorclutch1
 poorclutch1 %>%
   group_by(Year)%>%
-  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_16
-write.csv(poorclutch_16, './results/redcrab/Juneau/poorclutch_16.csv', row.names = FALSE)
+  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_17
+write.csv(poorclutch_17, './results/redcrab/Juneau/poorclutch_17.csv', row.names = FALSE)
 # check to see if these match JMP file
 
 ##### Long term females -------------------------
 glimpse(poorclutch1)
 #compare 2016 CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2016) ->poorclutch1_current
+  filter(Year == 2017) ->poorclutch1_current
 #make sure you have a file with only 2016 data
 #calculate the t.test - part of package weights
 lt_female <- t.test(poorclutch1_current$var1, mu = 0.10)
@@ -312,10 +312,10 @@ write.csv(longt_female, './results/redcrab/Juneau/lt_female.csv', row.names = FA
 # open female input file (.csv) and delete N.rows and Missing columns also change variables names to n, y, var1
 females_all <- rbind(females, poorclutch1_current)
 # here use females because it already has 2016
-females_all <- females
+#females_all <- females
 
 females_all %>%
-  filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
+  filter(Year >=2014) -> LgF_short # short term file has last 4 years in it
 #output this file as .csv to add to next year
 write.csv(females_all, './results/redcrab/Juneau/females_all.csv', row.names = FALSE)
 
