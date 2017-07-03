@@ -15,7 +15,7 @@ dat <- read.csv("../data/redcrab/Juneau/jnu_16_17_oceanAK_out_RAW.csv")
 ## CPUE from survey / data for CSA
 ```{r CPUE, echo = FALSE }
 cpue_2017 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_17.csv")
-kable(cpue_2017, digits = 3)
+kable(cpue_2017, digits = 6)
 
 
 # need to seperate time hauled to just have data hauled look for mid-date 
