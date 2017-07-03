@@ -8,14 +8,14 @@ output: html_document
 ```{r setup, include = FALSE}
 library(knitr)
 library(tidyverse)
-dat <- read.csv("../data/redcrab/Juneau/JNU_15_16_oceanAK_out_RAW.csv")
+dat <- read.csv("../data/redcrab/Juneau/jnu_16_17_oceanAK_out_RAW.csv")
 
 ```
 
 ## CPUE from survey / data for CSA
 ```{r CPUE, echo = FALSE }
-cpue_2016 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_16.csv")
-kable(cpue_2016, digits = 3)
+cpue_2017 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_17.csv")
+kable(cpue_2017, digits = 3)
 
 
 # need to seperate time hauled to just have data hauled look for mid-date 
@@ -45,8 +45,8 @@ kable(long_term_results, digits = 3)
 
 ## Female health
 ```{r female health,echo = FALSE  }
-poorclutch_16 <- read.csv("../results/redcrab/Juneau/poorclutch_16.csv")
-kable(poorclutch_16, digits = 3)
+poorclutch_17 <- read.csv("../results/redcrab/Juneau/poorclutch_17.csv")
+kable(poorclutch_17, digits = 3)
 ```
 
 
