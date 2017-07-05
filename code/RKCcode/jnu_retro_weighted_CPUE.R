@@ -29,10 +29,17 @@ jnu_lat_long %>%
   summarise(n = n()) -> jnu_lat_long_bypot
 write.csv(jnu_lat_long_bypot, './results/redcrab/Juneau/jnu_lat_long_bypot.csv', row.names = FALSE)
 
+# file from kellii
+strata_jnu_hist <- read.csv("./data/redcrab/Juneau/Strata_RKC_BarlowJuneau_USE.csv")
+### merge data with strata codes ---------
+strata_jnu_hist %>% 
+  select(Strata, Year = Year, Trip.No = Trip_No, Location, Pot.No = Pot_No) -> strata_jnu
+dat %>% left_join(strata_jnu) -> dat_a
+
 ##### Initial review of new data -------------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
-levels(dat$Pot.Condition)
-dat %>% 
+levels(dat_a$Pot.Condition)
+dat_a %>% 
   filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> dat1
 
 dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)# this SHOULD produce NO rows. 
@@ -47,18 +54,23 @@ dat1 %>% filter(!(Recruit.Status == "" & Number.Of.Specimens >= 1))->dat1 # remo
 ##### By Pot -------------------------------
 #Now summarize by pot - remember to keep areas seperate.
 dat1 %>%
-  group_by(Year, Location, Pot.No, Density.Strata.Code) %>%
+  group_by(Year, Location, Trip.No, Pot.No, Density.Strata.Code, Strata) %>%
   summarise (total_crab = sum(Number.Of.Specimens)) #gets you total crab per pot.
 
 # need Number of Specimens by recruit class
 dat1 %>%
-  group_by(Year, Location, Pot.No, Density.Strata.Code, Recruit.Status) %>%
+  group_by(Year, Location, Trip.No, Pot.No, Density.Strata.Code, Strata, Recruit.Status) %>%
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
-dat3 <- dcast(dat2, Year + Location + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
+dat3 <- dcast(dat2, Year + Location + Trip.No + Pot.No +Density.Strata.Code +Strata ~ Recruit.Status, sum, drop=TRUE)
 
 head(dat3)
 
+# prior to 2005 want strata, after 2005 want Density.Strata.Code
+dat3 %>% 
+  mutate(Strata.Code = ifelse(Year <=2004, Strata, Density.Strata.Code)) -> dat3a
+# how many do not have strata code due to wrong lat long ???
+dat3a %>% filter(Strata.Code == "")
 # Join area input file with dat3 - which is the data summarized by pot.  Each sampling area has it's own area file or area per
 #     strata.  This is used to calculating the weighting for weighted CPUE.
 dat3 %>%
