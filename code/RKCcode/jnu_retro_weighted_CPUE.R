@@ -108,19 +108,31 @@ dat5 %>%
 
 write.csv(CPUE_wt_JNU, './results/redcrab/Juneau/JNU_CPUE_allyears_wtd.csv', row.names = FALSE)
 
+CPUE_wt_JNU %>% 
+  select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, Juvenile_wt, SmallF_wt, MatF_wt) ->CPUE_graph
+CPUE_graph %>% gather(recruit.class, value, -Year) ->CPUE_graph_long
 
-# unweighted CPUE for all years 
+ggplot(CPUE_graph_long, aes(Year,value)) +geom_point() +facet_wrap(~recruit.class, scales = "free_y")
+
+
+#### unweighted CPUE for all years ----
 
 dat5 %>% 
   group_by(Year) %>% 
-  summarise (Pre_R = mean(Pre_Recruit), PreR_SE = sd(Pre_Recruit), 
-             Rec = mean(Recruit), Rec_SE = sd(Recruit), 
-             Post_Rec= mean(Post_Recruit), PR_SE = sd(Post_Recruit), 
-             Juv = mean(Juvenile), juv_SE = sd(Juvenile), 
-             SmallF = mean(Small.Females), SmallF_SE = sd(Small.Females), 
-             MatF = mean(Large.Females), MatF_SE = sd(Large.Females)) %>% 
-  mutate(legal = Rec + Post_Rec) -> raw_counts
+  summarise (Pre_R = mean(Pre_Recruit), Rec = mean(Recruit), 
+             Post_Rec= mean(Post_Recruit),  
+             Juv = mean(Juvenile),  
+             SmallF = mean(Small.Females),  
+             MatF = mean(Large.Females)) -> raw_cpue
+dat5 %>% 
+  group_by(Year) %>% 
+  summarise (PreR_SE = sd(Pre_Recruit), 
+             Rec_SE = sd(Recruit), 
+             PR_SE = sd(Post_Recruit), 
+             juv_SE = sd(Juvenile), 
+             SmallF_SE = sd(Small.Females), 
+             MatF_SE = sd(Large.Females))  -> raw_se
 
-raw_counts %>% gather(recruit.class, value, -Year) ->raw_counts_long
+raw_cpue %>% gather(recruit.class, value, -Year) ->raw_cpue_long
 
-ggplot(raw_counts, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
+ggplot(raw_cpue_long, aes(Year,value)) +geom_point() +facet_wrap(~recruit.class, scales = "free_y")
