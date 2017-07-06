@@ -216,7 +216,7 @@ long_term[6,1] <-sfem$additional["Mean"]
 long_term[6,2] <- sfem$coefficients["p.value"]
 
 
-baseline <- c(5.51,8.07,2.19,3.07,1.98,6.35)
+baseline <- c(2.53,4.48,2.32,2.45,1.85,1.65)
 long_term_results <- cbind(long_term, baseline)
 long_term_results <- as.data.frame(long_term_results)
 
