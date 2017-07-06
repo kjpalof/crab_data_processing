@@ -136,3 +136,14 @@ dat5 %>%
 raw_cpue %>% gather(recruit.class, value, -Year) ->raw_cpue_long
 
 ggplot(raw_cpue_long, aes(Year,value)) +geom_point() +facet_wrap(~recruit.class, scales = "free_y")
+
+dat5 %>% 
+  group_by(Year) %>% 
+  summarise (Pre_R = mean(Pre_Recruit), PreR_SE = sd(Pre_Recruit), Rec = mean(Recruit), 
+             Rec_SE = sd(Recruit),Post_Rec= mean(Post_Recruit),PR_SE = sd(Post_Recruit),  
+             Juv = mean(Juvenile),  juv_SE = sd(Juvenile),SmallF = mean(Small.Females),  
+             SmallF_SE = sd(Small.Females),MatF = mean(Large.Females), 
+             MatF_SE = sd(Large.Females)) -> jnu_raw_cpue
+
+
+write.csv(jnu_raw_cpue, './results/redcrab/Juneau/JNU_CPUE_allyears_raw.csv', row.names = FALSE)
