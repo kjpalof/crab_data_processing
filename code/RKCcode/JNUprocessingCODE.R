@@ -370,10 +370,10 @@ stock_health <- as.data.frame(stock_health)
 stock_health %>% 
   mutate(score = as.numeric(levels(score_f))) -> stock_health
 stock_health %>% 
-  mutate(health_status = ifelse(score < 1.75, "poor", ifelse(score > -1.75 & score< -0.75, "below average", 
-                                                             ifelse(score > -0.05 & score < 0.05, "moderate", 
-                                                                    ifelse(score > 0.75 & score < 1.75, "above average", 
-                                                                           ifelse(score > 1.75, "healthy", "unknown")))))) %>% 
+  mutate(health_status = ifelse(score < -4.25, "poor", ifelse(score > -4.25 & score<= -1.75, "below average", 
+                                                             ifelse(score > -1.75 & score <= 1.5, "moderate", 
+                                                                    ifelse(score > 1.75 & score <= 4.25, "above average", 
+                                                                           ifelse(score > 4.25, "healthy", "unknown")))))) %>% 
   mutate (harvest_per = ifelse(health_status == "poor", 0, ifelse(health_status == "below average", 0.05, 
                                                                   ifelse(health_status == "moderate", 0.10, 
                                                                          ifelse(health_status == "above average", 0.15,
