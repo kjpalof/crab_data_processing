@@ -70,27 +70,30 @@ head(dat3)
 dat3 %>% 
   mutate(Strata.Code = ifelse(Year <=2004, Strata, Density.Strata.Code)) -> dat3a
 # how many do not have strata code due to wrong lat long ???
-dat3a %>% filter(Strata.Code == "")
+dat3a %>% filter(is.na(Strata.Code)) # pots removed due to lack of strata - check lat / long on these later
+dat3a %>% filter(!is.na(Strata.Code)) -> dat3b
 # Join area input file with dat3 - which is the data summarized by pot.  Each sampling area has it's own area file or area per
 #     strata.  This is used to calculating the weighting for weighted CPUE.
-dat3 %>%
-  right_join(area) -> tab
+area %>% 
+  rename(Strata.Code = Density.Strata.Code)-> area
+dat3b %>%
+  left_join(area) -> tab
 #Calculates the number of pots per strata.  
 tab %>%
-  group_by(Year, Location, Density.Strata.Code) %>%
-  summarise(npots  = length(Pot.No)) -> pots_per_strata
+  group_by(Year, Location, Strata.Code) %>%
+  summarise(npots  = n()) -> pots_per_strata
 
-#####Weighted CPUE current year -----------------------------------
+#####Weighted CPUE all years -----------------------------------
 #the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
 # need to combine data sets to accomplish this.
 
 tab %>%
-  right_join(pots_per_strata) -> dat4
+  left_join(pots_per_strata) -> dat4
 
 dat4 %>%
   mutate(inverse_n = 1 / npots, weighting = inverse_n * Area) ->dat5
 dat5 %>%
-  rename(Missing = Var.5, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
+  rename(Missing = Var.7, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
 
 #This version is ready to calculate CPUE for each recruit class
 #Calculates a weighted mean CPUE and SE for each recruit class
@@ -101,6 +104,23 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_17
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU
 
-write.csv(CPUE_wt_JNU_17, './results/redcrab/Juneau/JNU_CPUE_17.csv', row.names = FALSE)
+write.csv(CPUE_wt_JNU, './results/redcrab/Juneau/JNU_CPUE_allyears_wtd.csv', row.names = FALSE)
+
+
+# unweighted CPUE for all years 
+
+dat5 %>% 
+  group_by(Year) %>% 
+  summarise (Pre_R = mean(Pre_Recruit), PreR_SE = sd(Pre_Recruit), 
+             Rec = mean(Recruit), Rec_SE = sd(Recruit), 
+             Post_Rec= mean(Post_Recruit), PR_SE = sd(Post_Recruit), 
+             Juv = mean(Juvenile), juv_SE = sd(Juvenile), 
+             SmallF = mean(Small.Females), SmallF_SE = sd(Small.Females), 
+             MatF = mean(Large.Females), MatF_SE = sd(Large.Females)) %>% 
+  mutate(legal = Rec + Post_Rec) -> raw_counts
+
+raw_counts %>% gather(recruit.class, value, -Year) ->raw_counts_long
+
+ggplot(raw_counts, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
