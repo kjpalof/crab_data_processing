@@ -147,3 +147,6 @@ dat5 %>%
 
 
 write.csv(jnu_raw_cpue, './results/redcrab/Juneau/JNU_CPUE_allyears_raw.csv', row.names = FALSE)
+
+
+### recalculation of stock health score 12-15 -----
