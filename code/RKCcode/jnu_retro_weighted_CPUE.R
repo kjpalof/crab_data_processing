@@ -22,6 +22,7 @@ area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv")
 dat <- read.csv("./data/redcrab/Juneau/RKC_survey_CSA_jnu.csv")
 
 ### create lat long file for Kellii -----
+# this only had to be done once, does not need to be executed again.
 head(jnu_lat_long)
 
 jnu_lat_long %>% 
@@ -29,9 +30,10 @@ jnu_lat_long %>%
   summarise(n = n()) -> jnu_lat_long_bypot
 write.csv(jnu_lat_long_bypot, './results/redcrab/Juneau/jnu_lat_long_bypot.csv', row.names = FALSE)
 
+
+### merge data with strata codes ---------
 # file from kellii
 strata_jnu_hist <- read.csv("./data/redcrab/Juneau/Strata_RKC_BarlowJuneau_USE.csv")
-### merge data with strata codes ---------
 strata_jnu_hist %>% 
   select(Strata, Year = Year, Trip.No = Trip_No, Location, Pot.No = Pot_No) -> strata_jnu
 dat %>% left_join(strata_jnu) -> dat_a
@@ -43,8 +45,8 @@ dat_a %>%
   filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> dat1
 
 dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)# this SHOULD produce NO rows. 
-dat1 %>%
-  filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
+#dat1 %>%
+#  filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
 dat1 %>% filter(!(Recruit.Status == "" & Number.Of.Specimens >= 1))->dat1 # removed rows without lengths to determine recruit class
 # also need to check soak time and to make sure all crab that were measured have a recruit status
@@ -95,6 +97,8 @@ dat4 %>%
 dat5 %>%
   rename(Missing = Var.7, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
 
+# save dat5 file for long term file. 
+write.csv(dat5, './results/redcrab/Juneau/JNU_79_17_bypot.csv', row.names = FALSE)
 #This version is ready to calculate CPUE for each recruit class
 #Calculates a weighted mean CPUE and SE for each recruit class
 dat5 %>%
@@ -150,3 +154,52 @@ write.csv(jnu_raw_cpue, './results/redcrab/Juneau/JNU_CPUE_allyears_raw.csv', ro
 
 
 ### recalculation of stock health score 12-15 -----
+head(dat5)
+
+##### Long term trends ------
+#compare current years CPUE distribution to the long term mean
+# use dat5_current year
+#### 2013 - 2016 long term --------------
+dat5 %>% filter(Year == 2016) -> dat5_current
+
+#make sure you have a file with only 2016 data
+#Uses a weighted mean to help calculate the t.test - part of package weights
+juv <- wtd.t.test(dat5_current$Juvenile, y = 2.53, weight = dat5_current$weighting, samedata=FALSE)
+lfem <- wtd.t.test(dat5_current$Large.Females, y = 4.48, weight = dat5_current$weighting, samedata=FALSE)
+postr <- wtd.t.test(dat5_current$Post_Recruit, y = 2.32, weight = dat5_current$weighting, samedata=FALSE)
+prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 2.45, weight = dat5_current$weighting, samedata=FALSE)
+rec <- wtd.t.test(dat5_current$Recruit, y = 1.85, weight = dat5_current$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_current$Small.Females, y = 1.65, weight = dat5_current$weighting, samedata=FALSE)
+
+long_term <- matrix(nrow = 6, ncol = 2)
+rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
+colnames(long_term) <- c("mean", "p.value")
+#long_term[ , 1] <- c('juv', 'large.female', 'post.recruit', 'pre.recruit', 'recruit', 'small.female')
+long_term[1,1] <-juv$additional["Mean"]
+long_term[1,2] <- juv$coefficients["p.value"]
+long_term[2,1] <-lfem$additional["Mean"]
+long_term[2,2] <- lfem$coefficients["p.value"]
+long_term[3,1] <-postr$additional["Mean"]
+long_term[3,2] <- postr$coefficients["p.value"]
+long_term[4,1] <-prer$additional["Mean"]
+long_term[4,2] <- prer$coefficients["p.value"]
+long_term[5,1] <-rec$additional["Mean"]
+long_term[5,2] <- rec$coefficients["p.value"]
+long_term[6,1] <-sfem$additional["Mean"]
+long_term[6,2] <- sfem$coefficients["p.value"]
+
+
+baseline <- c(2.53,4.48,2.32,2.45,1.85,1.65)
+long_term_results <- cbind(long_term, baseline)
+long_term_results <- as.data.frame(long_term_results)
+
+long_term_results %>%
+  mutate(significant = ifelse(p.value < 0.05 & mean > baseline, 1,
+                              ifelse(p.value <0.05 & mean < baseline, -1, 0))) %>% 
+  mutate(recruit.status = c("juv", "large.female", "post.recruit", 
+                            "pre.recruit", "recruit", "small.female")) -> long_term_results #estimate is slope from regression
+
+# final results with score - save here
+write.csv(long_term_results, './results/redcrab/Juneau/matrix_baseline_redo/jnu_longterm_16.csv', row.names = FALSE)
+
+
