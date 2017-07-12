@@ -1,6 +1,8 @@
 #K.Palof 
-# ADF&G 8-1-16 updated for Excursion Inlet
-# code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP, prior to 2016  
+# ADF&G 8-1-16 updated for Excursion Inlet  / updated 7-11-17
+# code to process data from Ocean AK to use in crab CSA models.  
+#  Currently this is done in excel then JMP, prior to 2016
+# Current year: 2017
 rm(list = ls())# clear workspace from previous area 
 #####Load Packages ---------------------------------
 library(plyr)
@@ -20,13 +22,13 @@ library(weights)
 #####Load Data ---------------------------------------------------
 ##################################################################
 # change input file and input folder for each
-dat <- read.csv("./data/Excursion/RKC survey CSA_EI_15_16.csv")
+dat <- read.csv("./data/redcrab/Excursion/RKC survey CSA_EI_15_16.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
-area <- read.csv("./data/Excursion/Excursion_strata_area.csv") 
+area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/Excursion/Excursion_CPUE_2015.csv")
-                  ## !!!!  In future years this file will be 'JNU_CPUE_ALL' and just get updated with current years data.
-females <- read.csv("./data/Excursion/EI_11_15_rawLargeFemalesBypot.csv")
+histdat <- read.csv("./data/redcrab/Excursion/EI_perpot_all_16.csv")
+                  ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
+females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
 
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
@@ -57,7 +59,7 @@ dat1 %>%
 
 dat3 <- dcast(dat2, Year + Location + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
 
-#head(dat3)# check to make sure things worked.
+head(dat3)# check to make sure things worked.
 
 # Join area input file with dat3 - which is the data summarized by pot.  Each sampling area has it's own area file or area per
 #     strata.  This is used to calculating the weighting for weighted CPUE.
@@ -68,9 +70,8 @@ tab %>%
   group_by(Year, Location, Density.Strata.Code) %>%
   summarise(npots  = length(Pot.No)) -> pots_per_strata
 
-##################################################################
+
 ##### Weighted CPUE current year -----------------------------------
-##################################################################
 #the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
 # need to combine data sets to accomplish this.
 
@@ -92,26 +93,32 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_16
-CPUE_wt_16
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_17
+CPUE_wt_17
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_16, './results/Excursion/EI_CPUE_16.csv')
+write.csv(CPUE_wt_17, './results/redcrab/Excursion/EI_CPUE_17.csv')
 
-##################################################################
+#### survey mid date -----
+head(dat)
+unique(dat$Time.Hauled)
+# need to seperate time hauled to just have data hauled look for mid-date 
+dat[1,7] # 6-20
+dat[5843,7] # 6-27
+# so mid-date would be 24th.
+
+
 ##### Historic file ---------------------------------------
-##################################################################
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
 
-head(histdat) # see if any columns don't match those in dat5
+head(histdat) # see if any columns don't match those in dat5 - why doesn't historic have npots?
 head(dat5)
 
-historicdata <- histdat# nothing needs to be removed here 
- # has all data from 2001 to 2015
-dat5 %>%
-  select(-npots) -> dat5
+historicdata <- histdat [ ,2:15]# nothing needs to be removed here 
+historicdata %>% mutate(npots = 1/inverse_n)->historicdata
+historicdata %>% select(Year:Area, npots, inverse_n, weighting) ->historicdata
 
 # need to add 2016 to historicdata file
 # Locations in historic file are numbers.  Here I have names, should I change this?
