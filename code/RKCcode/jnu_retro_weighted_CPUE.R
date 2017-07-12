@@ -116,6 +116,8 @@ CPUE_wt_JNU %>%
   select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, Juvenile_wt, SmallF_wt, MatF_wt) ->CPUE_graph
 CPUE_graph %>% gather(recruit.class, value, -Year) ->CPUE_graph_long
 
+# calculate baseline values here???  1993 to 2007.
+
 ggplot(CPUE_graph_long, aes(Year,value)) +geom_point() +facet_wrap(~recruit.class, scales = "free_y")
 
 
