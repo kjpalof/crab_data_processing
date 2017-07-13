@@ -26,10 +26,13 @@ head(lat_long) # confirm correct area
 # need a lat and long for each pot from start to 2004, exclude 2005 on since they already have them.
 
 lat_long %>% 
-  filter(Year <= 2004) %>% 
   group_by(Year, Project.Code, Trip.No, Location.Code, Location, Pot.No, Latitude.Decimal.Degrees, Longitude.Decimal.Degrees) %>% 
   summarise(n = n()) -> lat_long_bypot
+tail(lat_long_bypot)
 
-
+write.csv(lat_long_bypot, './data/redcrab/Excursion/EI_lat_long_bypot.csv', row.names = FALSE)
+write.csv(lat_long_bypot, './data/redcrab/LynnSisters/LS_lat_long_bypot.csv', row.names = FALSE)
+write.csv(lat_long_bypot, './data/redcrab/Peril/PS_lat_long_bypot.csv', row.names = FALSE)
+write.csv(lat_long_bypot, './data/redcrab/Gambier/GB_lat_long_bypot.csv', row.names = FALSE)
+write.csv(lat_long_bypot, './data/redcrab/Seymour/SC_lat_long_bypot.csv', row.names = FALSE)
 write.csv(lat_long_bypot, './data/redcrab/Pybus/PB_lat_long_bypot.csv', row.names = FALSE)
-
