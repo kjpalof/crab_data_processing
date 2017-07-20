@@ -22,10 +22,10 @@ dat <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")# data
 
 ### merge data with strata codes ---------
 # file from kellii
-strata_EI_hist <- read.csv("./data/redcrab/Excursion/___.csv")
+strata_EI_hist <- read.csv("./data/redcrab/Excursion/ExcursionStrataRKC.csv")
 strata_EI_hist %>% 
-  select(Strata, Year = Year, Trip.No = Trip_No, Location, Pot.No = Pot_No) -> strata_ei
-dat %>% left_join(strata_jnu) -> dat_a
+  select(Strata = GRIDCODE, Year = Year, Trip.No = TripNo, Location, Pot.No = PotNo) -> strata_ei
+dat %>% left_join(strata_ei) -> dat_a
 
 ##### Initial review of new data -------------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
