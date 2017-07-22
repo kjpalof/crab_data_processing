@@ -101,7 +101,7 @@ dat5 %>%
 
 write.csv(CPUE_wt_EI, './results/redcrab/Excursion/EI_CPUE_allyears_wtd.csv', row.names = FALSE)
 
-CPUE_wt_JNU %>% 
+CPUE_wt_EI %>% 
   select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, Juvenile_wt, SmallF_wt, MatF_wt) ->CPUE_graph
 CPUE_graph %>% gather(recruit.class, value, -Year) ->CPUE_graph_long
 
@@ -153,6 +153,8 @@ head(dat5)
 #### 2013 - 2016 long term --------------
 dat5 %>% filter(Year == 2016) -> dat5_current
 
+# calculate long term means - use years 1993 to 2007
+dat5 %>% filter(Year)
 #make sure you have a file with only 2016 data
 #Uses a weighted mean to help calculate the t.test - part of package weights
 juv <- wtd.t.test(dat5_current$Juvenile, y = 2.53, weight = dat5_current$weighting, samedata=FALSE)
