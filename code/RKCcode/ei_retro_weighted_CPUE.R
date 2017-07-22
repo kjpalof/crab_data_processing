@@ -99,7 +99,7 @@ dat5 %>%
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_EI
 
-write.csv(CPUE_wt_EI, './results/redcrab/Juneau/JNU_CPUE_allyears_wtd.csv', row.names = FALSE)
+write.csv(CPUE_wt_EI, './results/redcrab/Excursion/EI_CPUE_allyears_wtd.csv', row.names = FALSE)
 
 CPUE_wt_JNU %>% 
   select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, Juvenile_wt, SmallF_wt, MatF_wt) ->CPUE_graph
