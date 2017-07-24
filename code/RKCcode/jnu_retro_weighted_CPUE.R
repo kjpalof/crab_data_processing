@@ -162,6 +162,7 @@ head(dat5)
 #compare current years CPUE distribution to the long term mean
 # use dat5_current year
 #### 2013 - 2016 long term --------------
+# just change year here and run code.
 dat5 %>% filter(Year == 2016) -> dat5_current
 
 #make sure you have a file with only 2016 data
