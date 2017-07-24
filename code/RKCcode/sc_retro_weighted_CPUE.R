@@ -70,7 +70,7 @@ area %>%
   rename(Strata.Code = Density.Strata.Code)-> area
 dat3b %>%
   left_join(area) -> tab
-# added due to a 0 in the density strata code - raw data needs to be fixed
+# added due to a 0 in the density strata code - need to keep here to not include experimental pots in 2015
 tab %>% filter(Strata.Code != 0) -> tab
 #Calculates the number of pots per strata.  
 tab %>%
@@ -90,7 +90,7 @@ dat5 %>%
   rename(Missing = Var.7, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
 
 # save dat5 file for long term file. 
-write.csv(dat5, './results/redcrab/Peril/matrix_baseline_redo/PS_79_16_bypot.csv', row.names = FALSE)
+write.csv(dat5, './results/redcrab/Seymour/matrix_baseline_redo/SC_79_16_bypot.csv', row.names = FALSE)
 #This version is ready to calculate CPUE for each recruit class
 #Calculates a weighted mean CPUE and SE for each recruit class
 dat5 %>%
@@ -100,9 +100,9 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_PS
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_SC
 
-write.csv(CPUE_wt_PS, './results/redcrab/Peril/matrix_baseline_redo/PS_CPUE_allyears_wtd.csv', row.names = FALSE)
+write.csv(CPUE_wt_SC, './results/redcrab/Seymour/matrix_baseline_redo/SC_CPUE_allyears_wtd.csv', row.names = FALSE)
 
 CPUE_wt_PS %>% 
   select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, Juvenile_wt, SmallF_wt, MatF_wt) ->CPUE_graph
