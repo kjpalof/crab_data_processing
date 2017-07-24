@@ -18,12 +18,12 @@ library(SDMTools)
 library(weights)
 library(broom)
 #### load data ------------
-area <- read.csv("./data/redcrab/Seymour/Seymour_strata_area.csv")
-dat <- read.csv("./data/redcrab/Seymour/RKC survey_historicpots_SC.csv")# data up to 2016
+area <- read.csv("./data/redcrab/Pybus/Pybus_strata_area.csv")
+dat <- read.csv("./data/redcrab/Pybus/RKC survey_historicpots_PB.csv")# data up to 2016
 
 ### merge data with strata codes ---------
 # file from kellii  - change all area intials and references
-strata_SC_hist <- read.csv("./data/redcrab/Seymour/SeymourStrataRKC.csv")
+strata_PB_hist <- read.csv("./data/redcrab/Pybus/PybusStrataRKC.csv")
 strata_SC_hist %>% 
   select(Strata = GRIDCODE, Year = Year, Trip.No = TripNo, Location, Pot.No = PotNo) -> strata_sc
 dat %>% left_join(strata_sc) -> dat_a
