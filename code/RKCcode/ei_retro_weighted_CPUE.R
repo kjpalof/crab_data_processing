@@ -154,6 +154,7 @@ CPUE_wt_EI %>% filter(Year >= 1993, Year < 2008) %>%
   summarise_all(mean) %>% select(Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
                                  Juvenile_wt, MatF_wt, SmallF_wt) -> base_EI
 
+# change year here and run for other years if needed. 
 # use dat5_current year
 dat5 %>% filter(Year == 2016) -> dat5_current
 
