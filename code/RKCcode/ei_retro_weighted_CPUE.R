@@ -148,14 +148,16 @@ write.csv(jnu_raw_cpue, './results/redcrab/Juneau/JNU_CPUE_allyears_raw.csv', ro
 head(dat5)
 
 ##### Long term trends ------
-#compare current years CPUE distribution to the long term mean
+#compare current years CPUE distribution to the long term mean 
+# calculate long term means - use years 1993 to 2007
+CPUE_wt_EI %>% filter(Year >= 1993, Year < 2008) %>% 
+  summarise_all(mean) %>% select(Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
+                                 Juvenile_wt, MatF_wt, SmallF_wt) -> base_EI
+
 # use dat5_current year
-#### 2013 - 2016 long term --------------
 dat5 %>% filter(Year == 2016) -> dat5_current
 
-# calculate long term means - use years 1993 to 2007
-dat5 %>% filter(Year)
-#make sure you have a file with only 2016 data
+#make sure you have a file with only current year data (2017)
 #Uses a weighted mean to help calculate the t.test - part of package weights
 juv <- wtd.t.test(dat5_current$Juvenile, y = 2.53, weight = dat5_current$weighting, samedata=FALSE)
 lfem <- wtd.t.test(dat5_current$Large.Females, y = 4.48, weight = dat5_current$weighting, samedata=FALSE)
