@@ -70,6 +70,8 @@ area %>%
   rename(Strata.Code = Density.Strata.Code)-> area
 dat3b %>%
   left_join(area) -> tab
+# added due to a 0 in the density strata code - raw data needs to be fixed
+tab %>% filter(Strata.Code != 0) -> tab
 #Calculates the number of pots per strata.  
 tab %>%
   group_by(Year, Location, Strata.Code) %>%
@@ -88,7 +90,7 @@ dat5 %>%
   rename(Missing = Var.7, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
 
 # save dat5 file for long term file. 
-write.csv(dat5, './results/redcrab/Excursion/matrix_baseline_redo/EI_79_16_bypot.csv', row.names = FALSE)
+write.csv(dat5, './results/redcrab/Peril/matrix_baseline_redo/PS_79_16_bypot.csv', row.names = FALSE)
 #This version is ready to calculate CPUE for each recruit class
 #Calculates a weighted mean CPUE and SE for each recruit class
 dat5 %>%
@@ -98,11 +100,11 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_EI
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_PS
 
-write.csv(CPUE_wt_EI, './results/redcrab/Excursion/matrix_baseline_redo/EI_CPUE_allyears_wtd.csv', row.names = FALSE)
+write.csv(CPUE_wt_PS, './results/redcrab/Peril/matrix_baseline_redo/PS_CPUE_allyears_wtd.csv', row.names = FALSE)
 
-CPUE_wt_EI %>% 
+CPUE_wt_PS %>% 
   select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, Juvenile_wt, SmallF_wt, MatF_wt) ->CPUE_graph
 CPUE_graph %>% gather(recruit.class, value, -Year) ->CPUE_graph_long
 
@@ -151,9 +153,9 @@ head(dat5)
 ##### Long term trends ------
 #compare current years CPUE distribution to the long term mean 
 # calculate long term means - use years 1993 to 2007
-CPUE_wt_EI %>% filter(Year >= 1993, Year < 2008) %>% 
+CPUE_wt_PS %>% filter(Year >= 1993, Year < 2008) %>% 
   summarise_all(mean) %>% select(Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
-                                 Juvenile_wt, MatF_wt, SmallF_wt) -> base_EI
+                                 Juvenile_wt, MatF_wt, SmallF_wt) -> base_PS
 
 # change year here and run for other years if needed. 
 # use dat5_current year
@@ -161,12 +163,12 @@ dat5 %>% filter(Year == 2016) -> dat5_current
 
 #make sure you have a file with only current year data (2017)
 #Uses a weighted mean to help calculate the t.test - part of package weights
-juv <- wtd.t.test(dat5_current$Juvenile, y = 6.75, weight = dat5_current$weighting, samedata=FALSE)
-lfem <- wtd.t.test(dat5_current$Large.Females, y = 2.42, weight = dat5_current$weighting, samedata=FALSE)
-postr <- wtd.t.test(dat5_current$Post_Recruit, y = 0.73, weight = dat5_current$weighting, samedata=FALSE)
-prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 1.69, weight = dat5_current$weighting, samedata=FALSE)
-rec <- wtd.t.test(dat5_current$Recruit, y = 0.55, weight = dat5_current$weighting, samedata=FALSE)
-sfem <- wtd.t.test(dat5_current$Small.Females, y = 5.44, weight = dat5_current$weighting, samedata=FALSE)
+juv <- wtd.t.test(dat5_current$Juvenile, y = 4.60, weight = dat5_current$weighting, samedata=FALSE)
+lfem <- wtd.t.test(dat5_current$Large.Females, y = 4.70, weight = dat5_current$weighting, samedata=FALSE)
+postr <- wtd.t.test(dat5_current$Post_Recruit, y = 0.517, weight = dat5_current$weighting, samedata=FALSE)
+prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 1.552, weight = dat5_current$weighting, samedata=FALSE)
+rec <- wtd.t.test(dat5_current$Recruit, y = 0.678, weight = dat5_current$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_current$Small.Females, y = 5.962, weight = dat5_current$weighting, samedata=FALSE)
 
 long_term <- matrix(nrow = 6, ncol = 2)
 rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
@@ -186,7 +188,7 @@ long_term[6,1] <-sfem$additional["Mean"]
 long_term[6,2] <- sfem$coefficients["p.value"]
 
 
-baseline <- c(6.75,2.42,0.73,1.69,0.55,5.44)
+baseline <- c(4.60,4.70,0.52,1.55,0.68,5.96)
 long_term_results <- cbind(long_term, baseline)
 long_term_results <- as.data.frame(long_term_results)
 
@@ -197,6 +199,6 @@ long_term_results %>%
                             "pre.recruit", "recruit", "small.female")) -> long_term_results #estimate is slope from regression
 
 # final results with score - save here
-write.csv(long_term_results, './results/redcrab/Excursion/matrix_baseline_redo/ei_longterm_16.csv', row.names = FALSE)
+write.csv(long_term_results, './results/redcrab/Peril/matrix_baseline_redo/ps_longterm_16.csv', row.names = FALSE)
 
 
