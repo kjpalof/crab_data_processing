@@ -153,9 +153,9 @@ head(dat5)
 ##### Long term trends ------
 #compare current years CPUE distribution to the long term mean 
 # calculate long term means - use years 1993 to 2007
-CPUE_wt_PS %>% filter(Year >= 1993, Year < 2008) %>% 
+CPUE_wt_SC %>% filter(Year >= 1993, Year < 2008) %>% 
   summarise_all(mean) %>% select(Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
-                                 Juvenile_wt, MatF_wt, SmallF_wt) -> base_PS
+                                 Juvenile_wt, MatF_wt, SmallF_wt) -> base_SC
 
 # change year here and run for other years if needed. 
 # use dat5_current year
