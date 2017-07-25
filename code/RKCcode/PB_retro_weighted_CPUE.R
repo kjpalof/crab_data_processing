@@ -24,9 +24,9 @@ dat <- read.csv("./data/redcrab/Pybus/RKC survey_historicpots_PB.csv")# data up 
 ### merge data with strata codes ---------
 # file from kellii  - change all area intials and references
 strata_PB_hist <- read.csv("./data/redcrab/Pybus/PybusStrataRKC.csv")
-strata_SC_hist %>% 
-  select(Strata = GRIDCODE, Year = Year, Trip.No = TripNo, Location, Pot.No = PotNo) -> strata_sc
-dat %>% left_join(strata_sc) -> dat_a
+strata_PB_hist %>% 
+  select(Strata = GRIDCODE, Year = Year, Trip.No = TripNo, Location, Pot.No = PotNo) -> strata_pb
+dat %>% left_join(strata_pb) -> dat_a
 
 ##### Initial review of new data -------------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
