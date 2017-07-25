@@ -103,7 +103,7 @@ dat5 %>%
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_PB
 
 write.csv(CPUE_wt_PB, './results/redcrab/Pybus/matrix_baseline_redo/PB_CPUE_allyears_wtd.csv', row.names = FALSE)
-
+# 2016 CPUEs dont' match - review last years data and code to see why.
 CPUE_wt_PS %>% 
   select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, Juvenile_wt, SmallF_wt, MatF_wt) ->CPUE_graph
 CPUE_graph %>% gather(recruit.class, value, -Year) ->CPUE_graph_long
@@ -153,9 +153,9 @@ head(dat5)
 ##### Long term trends ------
 #compare current years CPUE distribution to the long term mean 
 # calculate long term means - use years 1993 to 2007
-CPUE_wt_SC %>% filter(Year >= 1993, Year < 2008) %>% 
+CPUE_wt_PB %>% filter(Year >= 1993, Year < 2008) %>% 
   summarise_all(mean) %>% select(Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
-                                 Juvenile_wt, MatF_wt, SmallF_wt) -> base_SC
+                                 Juvenile_wt, MatF_wt, SmallF_wt) -> base_PB
 
 # change year here and run for other years if needed. 
 # use dat5_current year
@@ -163,12 +163,12 @@ dat5 %>% filter(Year == 2016) -> dat5_current
 
 #make sure you have a file with only current year data (2017)
 #Uses a weighted mean to help calculate the t.test - part of package weights
-juv <- wtd.t.test(dat5_current$Juvenile, y = 0.823, weight = dat5_current$weighting, samedata=FALSE)
-lfem <- wtd.t.test(dat5_current$Large.Females, y = 2.356, weight = dat5_current$weighting, samedata=FALSE)
-postr <- wtd.t.test(dat5_current$Post_Recruit, y = 0.818, weight = dat5_current$weighting, samedata=FALSE)
-prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 0.358, weight = dat5_current$weighting, samedata=FALSE)
-rec <- wtd.t.test(dat5_current$Recruit, y = 0.349, weight = dat5_current$weighting, samedata=FALSE)
-sfem <- wtd.t.test(dat5_current$Small.Females, y = 0.611, weight = dat5_current$weighting, samedata=FALSE)
+juv <- wtd.t.test(dat5_current$Juvenile, y = 1.20, weight = dat5_current$weighting, samedata=FALSE)
+lfem <- wtd.t.test(dat5_current$Large.Females, y = 3.07, weight = dat5_current$weighting, samedata=FALSE)
+postr <- wtd.t.test(dat5_current$Post_Recruit, y = 1.53, weight = dat5_current$weighting, samedata=FALSE)
+prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 0.979, weight = dat5_current$weighting, samedata=FALSE)
+rec <- wtd.t.test(dat5_current$Recruit, y = 1.04, weight = dat5_current$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_current$Small.Females, y = 0.813, weight = dat5_current$weighting, samedata=FALSE)
 
 long_term <- matrix(nrow = 6, ncol = 2)
 rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
@@ -188,7 +188,7 @@ long_term[6,1] <-sfem$additional["Mean"]
 long_term[6,2] <- sfem$coefficients["p.value"]
 
 
-baseline <- c(0.823,2.356,0.818,0.358,0.349,0.611)
+baseline <- c(1.20,3.07,1.53,0.98,1.04,0.81)
 long_term_results <- cbind(long_term, baseline)
 long_term_results <- as.data.frame(long_term_results)
 
@@ -199,6 +199,6 @@ long_term_results %>%
                             "pre.recruit", "recruit", "small.female")) -> long_term_results #estimate is slope from regression
 
 # final results with score - save here
-write.csv(long_term_results, './results/redcrab/Seymour/matrix_baseline_redo/sc_longterm_16.csv', row.names = FALSE)
+write.csv(long_term_results, './results/redcrab/Pybus/matrix_baseline_redo/pb_longterm_16.csv', row.names = FALSE)
 
 
