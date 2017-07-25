@@ -90,7 +90,7 @@ dat5 %>%
   rename(Missing = Var.7, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
 
 # save dat5 file for long term file. 
-write.csv(dat5, './results/redcrab/Pybus/matrix_baseline_redo/PB_79_16_bypot.csv', row.names = FALSE)
+write.csv(dat5, './results/redcrab/Gambier/matrix_baseline_redo/GB_79_16_bypot.csv', row.names = FALSE)
 #This version is ready to calculate CPUE for each recruit class
 #Calculates a weighted mean CPUE and SE for each recruit class
 dat5 %>%
@@ -100,9 +100,9 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_PB
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_GB
 
-write.csv(CPUE_wt_PB, './results/redcrab/Pybus/matrix_baseline_redo/PB_CPUE_allyears_wtd.csv', row.names = FALSE)
+write.csv(CPUE_wt_GB, './results/redcrab/Gambier/matrix_baseline_redo/GB_CPUE_allyears_wtd.csv', row.names = FALSE)
 # 2016 CPUEs dont' match - review last years data and code to see why.
 CPUE_wt_PS %>% 
   select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, Juvenile_wt, SmallF_wt, MatF_wt) ->CPUE_graph
