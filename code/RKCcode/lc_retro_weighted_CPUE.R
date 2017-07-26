@@ -18,15 +18,15 @@ library(SDMTools)
 library(weights)
 library(broom)
 #### load data ------------
-area <- read.csv("./data/redcrab/Gambier/Gambier_strata_area.csv")
-dat <- read.csv("./data/redcrab/Gambier/RKC survey_historicpots_GB.csv")# data up to 2016
+area <- read.csv("./data/redcrab/LynnSisters/LynnCanal_strata_area.csv")
+dat <- read.csv("./data/redcrab/LynnSisters/RKC survey_historicpots_LS.csv")# data up to 2016
 
 ### merge data with strata codes ---------
 # file from kellii  - change all area intials and references
-strata_GB_hist <- read.csv("./data/redcrab/Gambier/GambierStrataRKC.csv")
-strata_GB_hist %>% 
-  select(Strata = GRIDCODE, Year = Year, Trip.No = TripNo, Location, Pot.No = PotNo) -> strata_gb
-dat %>% left_join(strata_gb) -> dat_a
+strata_LS_hist <- read.csv("./data/redcrab/LynnSisters/LynnSistersStrataRKC.csv")
+strata_LS_hist %>% 
+  select(Strata = GRIDCODE, Year = Year, Trip.No = TripNo, Location, Pot.No = PotNo) -> strata_ls
+dat %>% left_join(strata_ls) -> dat_a
 
 ##### Initial review of new data -------------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
