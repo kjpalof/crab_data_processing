@@ -1,5 +1,5 @@
 #k.palof
-# code to recalculate weighted CPUE and SD for the Gambier Bay area by placing all pots older than 2005 into current (post-2005)
+# code to recalculate weighted CPUE and SD for the Lynn Canal (Lynn Sisters) area by placing all pots older than 2005 into current (post-2005)
 #   strata.  
 
 # step 1: assign old pots strata (kellii did this)
