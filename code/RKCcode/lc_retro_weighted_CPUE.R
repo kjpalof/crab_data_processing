@@ -163,12 +163,12 @@ dat5 %>% filter(Year == 2016) -> dat5_current
 
 #make sure you have a file with only current year data (2017)
 #Uses a weighted mean to help calculate the t.test - part of package weights
-juv <- wtd.t.test(dat5_current$Juvenile, y = 3.20, weight = dat5_current$weighting, samedata=FALSE)
-lfem <- wtd.t.test(dat5_current$Large.Females, y = 4.30, weight = dat5_current$weighting, samedata=FALSE)
-postr <- wtd.t.test(dat5_current$Post_Recruit, y = 1.65, weight = dat5_current$weighting, samedata=FALSE)
-prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 2.01, weight = dat5_current$weighting, samedata=FALSE)
-rec <- wtd.t.test(dat5_current$Recruit, y = 1.57, weight = dat5_current$weighting, samedata=FALSE)
-sfem <- wtd.t.test(dat5_current$Small.Females, y = 2.79, weight = dat5_current$weighting, samedata=FALSE)
+juv <- wtd.t.test(dat5_current$Juvenile, y = 3.23, weight = dat5_current$weighting, samedata=FALSE)
+lfem <- wtd.t.test(dat5_current$Large.Females, y = 2.61, weight = dat5_current$weighting, samedata=FALSE)
+postr <- wtd.t.test(dat5_current$Post_Recruit, y = 1.17, weight = dat5_current$weighting, samedata=FALSE)
+prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 1.61, weight = dat5_current$weighting, samedata=FALSE)
+rec <- wtd.t.test(dat5_current$Recruit, y = 0.97, weight = dat5_current$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_current$Small.Females, y = 3.48, weight = dat5_current$weighting, samedata=FALSE)
 
 long_term <- matrix(nrow = 6, ncol = 2)
 rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
@@ -188,7 +188,7 @@ long_term[6,1] <-sfem$additional["Mean"]
 long_term[6,2] <- sfem$coefficients["p.value"]
 
 
-baseline <- c(3.20,4.30,1.65,2.01,1.57,2.79)
+baseline <- c(3.23,2.61,1.17,1.61,0.97,3.48)
 long_term_results <- cbind(long_term, baseline)
 long_term_results <- as.data.frame(long_term_results)
 
@@ -199,6 +199,6 @@ long_term_results %>%
                             "pre.recruit", "recruit", "small.female")) -> long_term_results #estimate is slope from regression
 
 # final results with score - save here
-write.csv(long_term_results, './results/redcrab/Gambier/matrix_baseline_redo/gb_longterm_16.csv', row.names = FALSE)
+write.csv(long_term_results, './results/redcrab/LynnSisters/matrix_baseline_redo/ls_longterm_16.csv', row.names = FALSE)
 
 
