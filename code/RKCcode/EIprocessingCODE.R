@@ -18,13 +18,13 @@ library(weights)
 #####Load Data ---------------------------------------------------
 ##################################################################
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Excursion/RKC survey CSA_EI_15_16.csv")
+dat <- read.csv("./data/redcrab/Excursion/RKC survey CSA_EI_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Excursion/EI_perpot_all_16.csv")
+#histdat <- read.csv("./data/redcrab/Excursion/EI_perpot_all_16.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
+#females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
 
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
