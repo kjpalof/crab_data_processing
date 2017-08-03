@@ -1,19 +1,15 @@
 #K.Palof 
-# ADF&G 8-1-16 updated for Excursion Inlet  / updated 7-11-17
+# ADF&G 8-1-16 updated for Excursion Inlet  / updated 8-3-17
 # code to process data from Ocean AK to use in crab CSA models.  
 #  Currently this is done in excel then JMP, prior to 2016
 # Current year: 2017
 rm(list = ls())# clear workspace from previous area 
 #####Load Packages ---------------------------------
-library(plyr)
-library(dplyr)
+library(tidyverse)
 library(stringr)
-library(ggplot2)
-library(tidyr)
 library(reshape2)
 library(extrafont)
 library(ggthemes)
-#library(tidyr)
 library(plotrix)
 library(SDMTools)
 library(weights)
