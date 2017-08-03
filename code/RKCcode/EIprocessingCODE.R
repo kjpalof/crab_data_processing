@@ -55,7 +55,7 @@ dat1 %>%
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 # keep trip no to merge with historic data.
 
-dat3 <- dcast(dat2, Year + Location + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
+dat3 <- dcast(dat2, Year + Location + Trip.No + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
 
 head(dat3)# check to make sure things worked.
 
