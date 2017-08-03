@@ -35,11 +35,12 @@ glimpse(dat) # confirm that data was read in correctly.
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
-  filter(Pot.Condition == "Normal") -> dat1
+  filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> dat1
 
 dat1 %>%
   filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
+dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
@@ -50,8 +51,9 @@ dat1 %>%
 #Now summarize by pot - remember to keep areas seperate.
 #Need Number of Specimens by recruit class
 dat1 %>%
-  group_by(Year, Location, Pot.No, Density.Strata.Code, Recruit.Status) %>%
+  group_by(Year, Location, Trip.No, Pot.No, Density.Strata.Code, Recruit.Status) %>%
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
+# keep trip no to merge with historic data.
 
 dat3 <- dcast(dat2, Year + Location + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
 
