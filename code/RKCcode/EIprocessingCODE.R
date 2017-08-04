@@ -107,22 +107,24 @@ dat[2001,7] # 7-16
 
 head(histdat) # see if any columns don't match those in dat5 - why doesn't historic have npots?
 # new historic data has density strata as "Strata.Code"
+
 head(dat5)
 
+histdat %>% select(Year, Location, Trip.No, Pot.No, Strata.Code, Missing, 
+                   Juvenile, Large.Females, Post_Recruit, Pre_Recruit, 
+                   Recruit, Small.Females, Area, npots, inverse_n, 
+                   weighting) -> historicdata
+dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
 
-historicdata <- histdat [ ,2:15]# nothing needs to be removed here 
-historicdata %>% mutate(npots = 1/inverse_n)->historicdata
-historicdata %>% select(Year:Area, npots, inverse_n, weighting) ->historicdata
-
-# need to add 2016 to historicdata file
+# need to add 2017 to historicdata file
 # Locations in historic file are numbers.  Here I have names, should I change this?
-# only 2016 data 
-dat5 %>%
-  filter(Year == 2016) -> dat5_2016 
-CPUE_ALL_YEARS <- rbind(historicdata, dat5_2016)
+# only 2017 data 
+dat6 %>%
+  filter(Year == 2017) -> dat6_2017
+CPUE_ALL_YEARS <- rbind(historicdata, dat6_2017)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/Excursion/EI_perpot_all_16.csv')
+write.csv(CPUE_ALL_YEARS, './results/redcrab/Excursion/EI_perpot_all_17.csv')
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
