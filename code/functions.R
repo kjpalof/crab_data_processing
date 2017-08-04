@@ -72,3 +72,26 @@ weights <- function(dat1, slope, intercept, area){
   # final results with score - save here
   write_csv(male_weights, paste0('results/redcrab/', area, '/maleweights.csv'))
 }
+
+
+### female percent poor clutch ---------
+
+poor_clutch <- function (LgF_dat1, area, year){
+# large or mature females
+# % poor clutch - less than 10%
+LgF_dat1 %>%
+  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_dat1 # where 1 is yes and 2 is no
+
+LgF_dat1 %>%
+  group_by(Year, Location, Pot.No, Less25) %>%
+  summarise(hat = sum(Number.Of.Specimens)) -> poorclutch
+
+poorclutch1 <- dcast(poorclutch, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
+
+poorclutch1 %>%
+  mutate(var1 = y / (y+n)) -> poorclutch1
+poorclutch1 %>%
+  group_by(Year)%>%
+  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_17
+write_csv(poorclutch_17, paste0('results/redcrab/', area, '/poorclutch_17.csv'))
+}
