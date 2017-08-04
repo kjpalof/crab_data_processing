@@ -163,7 +163,7 @@ write.csv(short_term_results, './results/redcrab/Excursion/ei_shortterm.csv', ro
 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
-# short term plots
+### short term plots----------------
 plot(BYPOT_ST$Year, BYPOT_ST$Juvenile)
 Juv_fit <-lm(Juvenile ~ Year, data = BYPOT_ST, weights = weighting)
 abline(Juv_fit, col= 'red')
