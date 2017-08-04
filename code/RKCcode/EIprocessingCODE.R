@@ -121,8 +121,8 @@ dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
 # Locations in historic file are numbers.  Here I have names, should I change this?
 # only 2017 data 
 dat6 %>%
-  filter(Year == 2017) -> dat6_2017
-CPUE_ALL_YEARS <- rbind(historicdata, dat6_2017)
+  filter(Year == 2017) -> dat5_2017
+CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
 write.csv(CPUE_ALL_YEARS, './results/redcrab/Excursion/EI_perpot_all_17.csv')
@@ -196,19 +196,19 @@ summary(smF_fit)
 
 ##### Long term trends ---------------------
 #compare 2016 CPUE distribution to the long term mean
-dat5 %>%
-  filter(Year == 2016) ->dat5_2016
-#make sure you have a file with only 2016 data
+dat6 %>%
+ filter(Year == 2017) ->dat5_current
+#make sure you have a file with only current years data - created above
 
 #Uses a weighted mean to help calculate the t.test - part of package weights
 # the y = has to be changed for each area but once they are set they are the same from year to year
-wtd.t.test(dat5_2016$Juvenile, y = 9.14, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Small.Females, y = 7.79, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Large.Females, y = 3.26, weight = dat5_2016$weighting, samedata=FALSE)
+wtd.t.test(dat5_current$Juvenile, y = 9.14, weight = dat5_current$weighting, samedata=FALSE)
+wtd.t.test(dat5_current$Small.Females, y = 7.79, weight = dat5_current$weighting, samedata=FALSE)
+wtd.t.test(dat5_current$Large.Females, y = 3.26, weight = dat5_v$weighting, samedata=FALSE)
 
-wtd.t.test(dat5_2016$Pre_Recruit, y = 2.16, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Recruit, y = 0.66, weight = dat5_2016$weighting, samedata=FALSE)
-wtd.t.test(dat5_2016$Post_Recruit, y = 0.74, weight = dat5_2016$weighting, samedata=FALSE)
+wtd.t.test(dat5_current$Pre_Recruit, y = 2.16, weight = dat5_current$weighting, samedata=FALSE)
+wtd.t.test(dat5_current$Recruit, y = 0.66, weight = dat5_current$weighting, samedata=FALSE)
+wtd.t.test(dat5_current$Post_Recruit, y = 0.74, weight = dat5_current$weighting, samedata=FALSE)
 
 
 ##### Weights from length - weight relatinship.-----------------
