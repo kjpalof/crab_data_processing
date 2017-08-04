@@ -46,7 +46,7 @@ short_t <- function(bypot_st, year, area) {
 ### Long term function -------------------
 # need current years data and file with long term means
 
-long_t <- function(dat5_current, year, area) {
+long_t <- function(dat5_current, baseline, year, area) {
   
 }
 
@@ -163,3 +163,34 @@ egg_percent <-function(LgF_dat1, area, year){
   write_csv(egg_per_mean, paste0('results/redcrab/', area,'/egg_percent_mean.csv'))
   
 }
+
+
+### total stock health table --------------
+total_health <- function(area, year){
+  read.csv()
+}
+total_health <- sum(long_term_results$significant, short_term_results$score, 
+                    longt_female$significant, shortt_female$score) # long term scores CPUE
+# short term scores CPUE
+# need females poorclutch short and long term
+stock_health <- matrix(nrow = 1, ncol = 2)
+rownames(stock_health) <- c("Juneau")
+colnames(stock_health) <- c("location","score_f")
+
+stock_health[1,1] <- "juneau"
+stock_health[1,2] <- total_health
+stock_health <- as.data.frame(stock_health)
+stock_health %>% 
+  mutate(score = as.numeric(levels(score_f))) -> stock_health
+stock_health %>% 
+  mutate(health_status = ifelse(score < -4.25, "poor", ifelse(score > -4.25 & score<= -1.75, "below average", 
+                                                              ifelse(score > -1.75 & score <= 1.5, "moderate", 
+                                                                     ifelse(score > 1.75 & score <= 4.25, "above average", 
+                                                                            ifelse(score > 4.25, "healthy", "unknown")))))) %>% 
+  mutate (harvest_per = ifelse(health_status == "poor", 0, ifelse(health_status == "below average", 0.05, 
+                                                                  ifelse(health_status == "moderate", 0.10, 
+                                                                         ifelse(health_status == "above average", 0.15,
+                                                                                ifelse(health_status == "healthy", 0.20, "unk")))))) -> stock_health
+#select ( - score_f) -> stock_health
+write.csv(stock_health, './results/redcrab/Juneau/stock_health.csv', row.names = FALSE)
+
