@@ -25,7 +25,7 @@ area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv")
                   #this file is the same every year.  Unless the survey methods change
 histdat <- read.csv("./data/redcrab/Excursion/EI_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-#females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
+females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
 
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
@@ -255,21 +255,10 @@ poor_clutch_long(poorclutch_current, 'Excursion', 2017)
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
-#After that this should create a file to use in the future
-# open female input file (.csv) and delete N.rows and Missing columns also change variables names to n, y, var1
-females_all <- rbind(females, poorclutch1_2016)
-# here use females because it already has 2016
-#females_16 <- females
-
-females_all %>%
-  filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
-#output this file as .csv to add to next year
-write.csv(LgF_short, './results/Excursion/poorclutchfemales_16.csv')
-
-plot(LgF_short$Year, LgF_short$var1)
-LgF_fit <-lm(var1 ~ Year, data = LgF_short)
-abline(LgF_fit, col= 'red')
-summary(LgF_fit)
+# save this file here for future years
+females_all <- rbind(females, poorclutch_current)
+#function for short term trends and output saving.
+poor_clutch_short(females_all, 'Excursion', 2017)
 
 ##### egg percentage overall -----------------------------------
 LgF_dat1 %>%
