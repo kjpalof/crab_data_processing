@@ -14,9 +14,7 @@ library(plotrix)
 library(SDMTools)
 library(weights)
 
-##################################################################
 #####Load Data ---------------------------------------------------
-##################################################################
 # change input file and input folder for each
 dat <- read.csv("./data/redcrab/Excursion/RKC survey CSA_EI_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
@@ -29,9 +27,7 @@ area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
-##################################################################
 ##### Initial review of new data ---------------------------------
-##################################################################
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
@@ -45,9 +41,7 @@ dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
 
-##################################################################
 ##### By Pot ----------------------------------------------------
-##################################################################
 #Now summarize by pot - remember to keep areas seperate.
 #Need Number of Specimens by recruit class
 dat1 %>%
@@ -112,7 +106,9 @@ dat[2001,7] # 7-16
 # read in historic by pot file and make sure variable names match
 
 head(histdat) # see if any columns don't match those in dat5 - why doesn't historic have npots?
+# new historic data has density strata as "Strata.Code"
 head(dat5)
+
 
 historicdata <- histdat [ ,2:15]# nothing needs to be removed here 
 historicdata %>% mutate(npots = 1/inverse_n)->historicdata
