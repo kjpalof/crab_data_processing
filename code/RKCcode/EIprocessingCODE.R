@@ -261,13 +261,7 @@ females_all <- rbind(females, poorclutch_current)
 poor_clutch_short(females_all, 'Excursion', 2017)
 
 ##### egg percentage overall -----------------------------------
-LgF_dat1 %>%
-  group_by(Year, Location, Pot.No) %>%
-  summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
-
-clutch_by_pot %>%
-  group_by(Year)%>%
-  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
+egg_percent(LgF_dat1, 'Excursion', 2017)
 
 
 ##### Restrospective Analysis -----------------------------------
