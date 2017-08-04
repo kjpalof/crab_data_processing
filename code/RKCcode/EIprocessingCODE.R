@@ -218,36 +218,15 @@ long_term_results %>%
 # final results with score - save here
 write.csv(long_term_results, './results/redcrab/Excursion/ei_longterm.csv', row.names = FALSE)
 
-
 ##### Weights from length - weight relatinship.-----------------
 # Linear model is changed for each area
 # Excursion linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
-glimpse(dat1) # raw data for both 2015 and 2016 
-dat1 %>%
-  mutate(weight_lb = (exp((3.12*log(Length.Millimeters))-7.67))*(2.2/1000)) -> dat1
+glimpse(dat1) # raw data for both 2016 and 2017
+# slope = 3.12
+# intercept = 7.67
+# use function found in functions.R code file
+weights(dat1, 3.12, 7.67, "Excursion")
 
-Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
-Legal =c("Recruit", "Post_Recruit")
-#Mature
-dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Mature)%>%
-  group_by(Year) %>%
-  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> a
-#legal
-dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
-  group_by(Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> b
-#Pre-Recruit
-dat1 %>%
-  filter(Sex.Code ==1, Recruit.Status == "Pre_Recruit")%>%
-  group_by(Year) %>%
-  summarise(preR_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> c
-
-a %>%
-  right_join(b, by = "Year") %>%
-  right_join(c, by= "Year") -> weight_lb_16
-weight_lb_16
 
 ##### Females - large or mature females --------------------------
 # large or mature females
