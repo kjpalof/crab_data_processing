@@ -246,13 +246,11 @@ LgF_dat1 %>%
 poor_clutch(LgF_dat1, 'Excursion', 2017)
 
 ##### Long term females -------------------------
-glimpse(poorclutch1)
-#compare 2016 CPUE distribution to the long term mean
-poorclutch1 %>%
-  filter(Year == 2016) ->poorclutch1_2016
-#make sure you have a file with only 2016 data
-#calculate the t.test
-t.test(poorclutch1_2016$var1, mu = 0.10)
+poorclutch_current <- read.csv("./results/redcrab/Excursion/poorclutch1_current.csv")
+# bring in output from function above with the current years pots. 
+glimpse(poorclutch_current)
+# function to compare this to a long term mean of 10% and save for .Rmd output
+poor_clutch_long(poorclutch_current, 'Excursion', 2017)
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
