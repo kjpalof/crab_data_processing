@@ -202,13 +202,43 @@ dat6 %>%
 
 #Uses a weighted mean to help calculate the t.test - part of package weights
 # the y = has to be changed for each area but once they are set they are the same from year to year
-wtd.t.test(dat5_current$Juvenile, y = 9.14, weight = dat5_current$weighting, samedata=FALSE)
-wtd.t.test(dat5_current$Small.Females, y = 7.79, weight = dat5_current$weighting, samedata=FALSE)
-wtd.t.test(dat5_current$Large.Females, y = 3.26, weight = dat5_v$weighting, samedata=FALSE)
+juv <- wtd.t.test(dat5_current$Juvenile, y = 6.75, weight = dat5_current$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_current$Small.Females, y = 5.44, weight = dat5_current$weighting, samedata=FALSE)
+lfem <- wtd.t.test(dat5_current$Large.Females, y = 2.42, weight = dat5_current$weighting, samedata=FALSE)
 
-wtd.t.test(dat5_current$Pre_Recruit, y = 2.16, weight = dat5_current$weighting, samedata=FALSE)
-wtd.t.test(dat5_current$Recruit, y = 0.66, weight = dat5_current$weighting, samedata=FALSE)
-wtd.t.test(dat5_current$Post_Recruit, y = 0.74, weight = dat5_current$weighting, samedata=FALSE)
+prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 1.69, weight = dat5_current$weighting, samedata=FALSE)
+rec <- wtd.t.test(dat5_current$Recruit, y = 0.55, weight = dat5_current$weighting, samedata=FALSE)
+postr <- wtd.t.test(dat5_current$Post_Recruit, y = 0.73, weight = dat5_current$weighting, samedata=FALSE)
+
+long_term <- matrix(nrow = 6, ncol = 2)
+rownames(long_term) <- c("juv", "small.female", "large.female", "pre.recruit", "recruit", "post.recruit")
+colnames(long_term) <- c("mean", "p.value")
+
+long_term[1,1] <-juv$additional["Mean"]
+long_term[1,2] <- juv$coefficients["p.value"]
+long_term[2,1] <-sfem$additional["Mean"]
+long_term[2,2] <- sfem$coefficients["p.value"]
+long_term[3,1] <-lfem$additional["Mean"]
+long_term[3,2] <- lfem$coefficients["p.value"]
+long_term[4,1] <-prer$additional["Mean"]
+long_term[4,2] <- prer$coefficients["p.value"]
+long_term[5,1] <-rec$additional["Mean"]
+long_term[5,2] <- rec$coefficients["p.value"]
+long_term[6,1] <-postr$additional["Mean"]
+long_term[6,2] <- postr$coefficients["p.value"]
+
+baseline <- c(6.75,5.44,2.42,1.69,0.55,0.73)
+long_term_results <- cbind(long_term, baseline)
+long_term_results <- as.data.frame(long_term_results)
+
+long_term_results %>%
+  mutate(significant = ifelse(p.value < 0.05 & mean > baseline, 1,
+                              ifelse(p.value <0.05 & mean < baseline, -1, 0))) %>% 
+  mutate(recruit.status = c("juv", "small.female", "large.female",  
+                            "pre.recruit", "recruit","post.recruit" )) -> long_term_results #estimate is slope from regression
+
+# final results with score - save here
+write.csv(long_term_results, './results/redcrab/Excursion/ei_longterm.csv', row.names = FALSE)
 
 
 ##### Weights from length - weight relatinship.-----------------
