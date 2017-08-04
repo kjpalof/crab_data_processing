@@ -20,7 +20,7 @@ dat <- read.csv("./data/redcrab/Excursion/RKC survey CSA_EI_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-#histdat <- read.csv("./data/redcrab/Excursion/EI_perpot_all_16.csv")
+histdat <- read.csv("./data/redcrab/Excursion/EI_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
 #females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
 
@@ -124,9 +124,7 @@ CPUE_ALL_YEARS <- rbind(historicdata, dat5_2016)
 # change same of folder and file.
 write.csv(CPUE_ALL_YEARS, './results/Excursion/EI_perpot_all_16.csv')
 
-##################################################################
 ##### Short term trends -------------------------------------
-##################################################################
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
 CPUE_ALL_YEARS %>%
   filter(Year >=2013) -> BYPOT_ST # short term file has last 4 years in it
@@ -161,9 +159,7 @@ smF_fit <-lm(Small.Females ~ Year, data = BYPOT_ST, weights = weighting)
 abline(smF_fit, col= 'red')
 summary(smF_fit)
 
-##################################################################
 ##### Long term trends ---------------------
-##################################################################
 #compare 2016 CPUE distribution to the long term mean
 dat5 %>%
   filter(Year == 2016) ->dat5_2016
@@ -180,9 +176,7 @@ wtd.t.test(dat5_2016$Recruit, y = 0.66, weight = dat5_2016$weighting, samedata=F
 wtd.t.test(dat5_2016$Post_Recruit, y = 0.74, weight = dat5_2016$weighting, samedata=FALSE)
 
 
-##################################################################
 ##### Weights from length - weight relatinship.-----------------
-##################################################################
 # Linear model is changed for each area
 # Excursion linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
 glimpse(dat1) # raw data for both 2015 and 2016 
@@ -212,9 +206,7 @@ a %>%
   right_join(c, by= "Year") -> weight_lb_16
 weight_lb_16
 
-##################################################################
 ##### Females - large or mature females --------------------------
-##################################################################
 # large or mature females
 dat1 %>%
   filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
@@ -245,9 +237,7 @@ poorclutch1 %>%
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1))))
 # check to see if these match JMP file
 
-##################################################################
 ##### Long term females -------------------------
-##################################################################
 glimpse(poorclutch1)
 #compare 2016 CPUE distribution to the long term mean
 poorclutch1 %>%
@@ -256,9 +246,7 @@ poorclutch1 %>%
 #calculate the t.test
 t.test(poorclutch1_2016$var1, mu = 0.10)
 
-##################################################################
 ##### Short term females ------------------------
-##################################################################
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 #After that this should create a file to use in the future
@@ -277,9 +265,7 @@ LgF_fit <-lm(var1 ~ Year, data = LgF_short)
 abline(LgF_fit, col= 'red')
 summary(LgF_fit)
 
-##################################################################
 ##### egg percentage overall -----------------------------------
-##################################################################
 LgF_dat1 %>%
   group_by(Year, Location, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
@@ -289,9 +275,7 @@ clutch_by_pot %>%
   summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean)))))
 
 
-###################################################################
 ##### Restrospective Analysis -----------------------------------
-###################################################################
 head(CPUE_ALL_YEARS)
 
 # input file that has the old pots and their new assigned strata - prior to 2005
@@ -351,10 +335,7 @@ strata79_04 %>%
 CPUE_wt_79_04
 write.csv(CPUE_wt_79_04, './results/Excursion/EI_CPUE_79_04.csv')
 
-#################################################
 ##### graph retrospective ------------------------
-#############################################
-
 ggplot(CPUE_wt_all, aes(Year, Pre_Recruit_wt)) + geom_point() +geom_line() + ylim(0,8)
 
 #PreR
