@@ -263,6 +263,10 @@ poor_clutch_short(females_all, 'Excursion', 2017)
 ##### egg percentage overall -----------------------------------
 egg_percent(LgF_dat1, 'Excursion', 2017)
 
+### total stock health table -----------------------
+
+
+
 
 ##### Restrospective Analysis -----------------------------------
 head(CPUE_ALL_YEARS)
