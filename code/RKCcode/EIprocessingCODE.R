@@ -79,7 +79,7 @@ tab %>%
 dat4 %>%
   mutate(inverse_n = 1 / npots, weighting = inverse_n * Area) ->dat5
 dat5 %>%
-  rename(Missing = Var.5, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
+  rename(Missing = Var.6, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
 # this is neccessary so that current years file (dat5) matches the historic file names
 
 #This version is ready to calculate CPUE for each recruit class
@@ -101,9 +101,9 @@ write.csv(CPUE_wt_17, './results/redcrab/Excursion/EI_CPUE_17.csv')
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat[1,7] # 6-20
-dat[5843,7] # 6-27
-# so mid-date would be 24th.
+dat %>% filter(Year == 2017)  # 7-15
+dat[2001,7] # 7-16
+# so mid-date would be 16th.
 
 
 ##### Historic file ---------------------------------------
