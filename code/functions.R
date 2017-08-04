@@ -93,5 +93,9 @@ poorclutch1 %>%
 poorclutch1 %>%
   group_by(Year)%>%
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_17
+
+poorclutch1 %>% filter(Year == year) -> poorclutch1_current
+write_csv(poorclutch1_current, paste0('results/redcrab/', area, '/poorclutch1_current.csv'))
 write_csv(poorclutch_17, paste0('results/redcrab/', area, '/poorclutch_17.csv'))
+
 }
