@@ -13,6 +13,7 @@ library(ggthemes)
 library(plotrix)
 library(SDMTools)
 library(weights)
+library(broom)
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
@@ -129,8 +130,40 @@ write.csv(CPUE_ALL_YEARS, './results/redcrab/Excursion/EI_perpot_all_17.csv')
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
 CPUE_ALL_YEARS %>%
-  filter(Year >=2013) -> BYPOT_ST # short term file has last 4 years in it
+  filter(Year >=2014) -> bypot_st # short term file has last 4 years in it
 
+# long version for this 
+bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
+
+bypot_st_long %>% 
+  group_by(recruit.status) %>% 
+  do(fit = lm(crab ~ Year, data = ., weights = weighting)) ->short_term
+
+short_term %>%
+  tidy(fit) -> short_term_slope
+
+short_term %>%
+  glance(fit) ->short_term_out
+
+short_term_out %>%
+  select(recruit.status, r.squared, p.value)->short_term_out2
+
+short_term_slope %>%
+  select(recruit.status, term,  estimate) %>%
+  spread(term, estimate) %>% 
+  right_join(short_term_out2)->short_term_results # estimate here is slope from regression
+
+#Now need to add column for significance and score
+short_term_results %>%
+  mutate(significant = ifelse(p.value < 0.05 & Year > 0, 1,
+                              ifelse(p.value <0.05 & Year <0, -1, 0))) %>%
+  mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
+# final results with score - save here
+write.csv(short_term_results, './results/redcrab/Excursion/ei_shortterm.csv', row.names = FALSE)
+
+ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
+
+# short term plots
 plot(BYPOT_ST$Year, BYPOT_ST$Juvenile)
 Juv_fit <-lm(Juvenile ~ Year, data = BYPOT_ST, weights = weighting)
 abline(Juv_fit, col= 'red')
