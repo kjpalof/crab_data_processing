@@ -219,12 +219,12 @@ long_term_results %>%
 write.csv(long_term_results, './results/redcrab/Excursion/ei_longterm.csv', row.names = FALSE)
 
 ##### Weights from length - weight relatinship.-----------------
-# Linear model is changed for each area
-# Excursion linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
+    # Linear model is changed for each area
+    # Excursion linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
 glimpse(dat1) # raw data for both 2016 and 2017
-# slope = 3.12
-# intercept = 7.67
-# use function found in functions.R code file
+    # slope = 3.12
+    # intercept = 7.67
+    # use function found in functions.R code file
 weights(dat1, 3.12, 7.67, "Excursion")
 
 
@@ -243,21 +243,7 @@ LgF_dat1 %>%
   mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
 
 #write.csv(LgF_dat1, './results/Excursion/largefemales_16.csv')
-LgF_dat1 %>%
-  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_dat1 # where 1 is yes and 2 is no
-
-LgF_dat1 %>%
-  group_by(Year, Location, Pot.No, Less25) %>%
-  summarise(hat = sum(Number.Of.Specimens)) -> poorclutch
-
-poorclutch1 <- dcast(poorclutch, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
-
-poorclutch1 %>%
-  mutate(var1 = y / (y+n)) -> poorclutch1
-poorclutch1 %>%
-  group_by(Year)%>%
-  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1))))
-# check to see if these match JMP file
+poor_clutch(LgF_dat1, 'Excursion', 2017)
 
 ##### Long term females -------------------------
 glimpse(poorclutch1)
