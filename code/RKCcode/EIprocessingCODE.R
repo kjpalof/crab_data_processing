@@ -178,6 +178,8 @@ dat6 %>%
  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only current years data - created above
 
+long_t(dat5_current, 2017, 'Excursion')
+
 #Uses a weighted mean to help calculate the t.test - part of package weights
 # the y = has to be changed for each area but once they are set they are the same from year to year
 juv <- wtd.t.test(dat5_current$Juvenile, y = 6.75, weight = dat5_current$weighting, samedata=FALSE)
