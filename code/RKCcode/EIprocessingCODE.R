@@ -232,14 +232,8 @@ egg_percent(LgF_dat1, 'Excursion', 2017)
 # output saved as egg_percent_mean.csv
 
 ### total stock health table -----------------------
-
-
-
-
-
-
-
-
+total_health('Excursion', 2017)
+# works as long as all files are saved in folder with area name
 
 ##### Restrospective Analysis -----------------------------------
 head(CPUE_ALL_YEARS)
