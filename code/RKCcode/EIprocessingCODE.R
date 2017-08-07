@@ -27,6 +27,7 @@ histdat <- read.csv("./data/redcrab/Excursion/EI_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
 females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
 
+baseline <- read.csv("./data/redcrab/longterm_means.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
@@ -136,9 +137,8 @@ CPUE_ALL_YEARS %>%
 
 #function creates output file in folder /results/redcrab/'area'
 short_t(bypot_st, 2017, "Excursion")
-
+# output is saved as shortterm.csv
 bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
-
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
 ### short term plots----------------
@@ -178,47 +178,8 @@ dat6 %>%
  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, 2017, 'Excursion')
-
-#Uses a weighted mean to help calculate the t.test - part of package weights
-# the y = has to be changed for each area but once they are set they are the same from year to year
-juv <- wtd.t.test(dat5_current$Juvenile, y = 6.75, weight = dat5_current$weighting, samedata=FALSE)
-sfem <- wtd.t.test(dat5_current$Small.Females, y = 5.44, weight = dat5_current$weighting, samedata=FALSE)
-lfem <- wtd.t.test(dat5_current$Large.Females, y = 2.42, weight = dat5_current$weighting, samedata=FALSE)
-
-prer <- wtd.t.test(dat5_current$Pre_Recruit, y = 1.69, weight = dat5_current$weighting, samedata=FALSE)
-rec <- wtd.t.test(dat5_current$Recruit, y = 0.55, weight = dat5_current$weighting, samedata=FALSE)
-postr <- wtd.t.test(dat5_current$Post_Recruit, y = 0.73, weight = dat5_current$weighting, samedata=FALSE)
-
-long_term <- matrix(nrow = 6, ncol = 2)
-rownames(long_term) <- c("juv", "small.female", "large.female", "pre.recruit", "recruit", "post.recruit")
-colnames(long_term) <- c("mean", "p.value")
-
-long_term[1,1] <-juv$additional["Mean"]
-long_term[1,2] <- juv$coefficients["p.value"]
-long_term[2,1] <-sfem$additional["Mean"]
-long_term[2,2] <- sfem$coefficients["p.value"]
-long_term[3,1] <-lfem$additional["Mean"]
-long_term[3,2] <- lfem$coefficients["p.value"]
-long_term[4,1] <-prer$additional["Mean"]
-long_term[4,2] <- prer$coefficients["p.value"]
-long_term[5,1] <-rec$additional["Mean"]
-long_term[5,2] <- rec$coefficients["p.value"]
-long_term[6,1] <-postr$additional["Mean"]
-long_term[6,2] <- postr$coefficients["p.value"]
-
-baseline <- c(6.75,5.44,2.42,1.69,0.55,0.73)
-long_term_results <- cbind(long_term, baseline)
-long_term_results <- as.data.frame(long_term_results)
-
-long_term_results %>%
-  mutate(significant = ifelse(p.value < 0.05 & mean > baseline, 1,
-                              ifelse(p.value <0.05 & mean < baseline, -1, 0))) %>% 
-  mutate(recruit.status = c("juv", "small.female", "large.female",  
-                            "pre.recruit", "recruit","post.recruit" )) -> long_term_results #estimate is slope from regression
-
-# final results with score - save here
-write.csv(long_term_results, './results/redcrab/Excursion/ei_longterm.csv', row.names = FALSE)
+long_t(dat5_current, baseline, 2017, 'Excursion')
+# output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
