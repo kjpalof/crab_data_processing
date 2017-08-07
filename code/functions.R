@@ -78,7 +78,7 @@ long_t <- function(dat5_current, baseline, year, area) {
   long_term[6,1] <-postr$additional["Mean"]
   long_term[6,2] <- postr$coefficients["p.value"]
   
-  long_term[1:6,4] <- baseline_values_long$lt_mean
+  long_term[1:6,3] <- baseline_values_long$lt_mean
   
   long_term_results <- as.data.frame(long_term)
   
