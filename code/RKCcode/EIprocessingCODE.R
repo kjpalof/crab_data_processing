@@ -189,7 +189,7 @@ glimpse(dat1) # raw data for both 2016 and 2017
     # intercept = 7.67
     # use function found in functions.R code file
 weights(dat1, 3.12, 7.67, "Excursion")
-
+# output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
 # large or mature females
@@ -207,6 +207,8 @@ LgF_dat1 %>%
 
 #write.csv(LgF_dat1, './results/Excursion/largefemales_16.csv')
 poor_clutch(LgF_dat1, 'Excursion', 2017)
+# output is saved as poorclutch_current.csv - which has all pots for 2017
+#     and poorclutch_17.csv which has the percentage and SD of poor clutches for 2017 
 
 ##### Long term females -------------------------
 poorclutch_current <- read.csv("./results/redcrab/Excursion/poorclutch1_current.csv")
@@ -214,6 +216,7 @@ poorclutch_current <- read.csv("./results/redcrab/Excursion/poorclutch1_current.
 glimpse(poorclutch_current)
 # function to compare this to a long term mean of 10% and save for .Rmd output
 poor_clutch_long(poorclutch_current, 'Excursion', 2017)
+# output saved as lt_female.csv
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
@@ -222,11 +225,18 @@ poor_clutch_long(poorclutch_current, 'Excursion', 2017)
 females_all <- rbind(females, poorclutch_current)
 #function for short term trends and output saving.
 poor_clutch_short(females_all, 'Excursion', 2017)
+# output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
 egg_percent(LgF_dat1, 'Excursion', 2017)
+# output saved as egg_percent_mean.csv
 
 ### total stock health table -----------------------
+
+
+
+
+
 
 
 
