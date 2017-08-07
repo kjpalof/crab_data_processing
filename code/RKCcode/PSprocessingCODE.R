@@ -19,13 +19,13 @@ source('./code/functions.R')
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Peril/RKC survey CSA_EI_16_17.csv")
+dat <- read.csv("./data/redcrab/Peril/RKCsurveyCSA_PS_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/redcrab/Peril/Peril_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Peril/EI_79_16_bypot.csv")
+histdat <- read.csv("./data/redcrab/Peril/PS_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Peril/poorclutchfemales_16.csv")
+females <- read.csv("./data/redcrab/Peril/PS_11_15_largefemales_bypot.csv")
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 head(dat)
@@ -41,6 +41,7 @@ dat1 %>%
   filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
 dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)
+# some females here that don't have recruit status due to no lengths
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
