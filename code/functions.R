@@ -209,17 +209,20 @@ egg_percent <-function(LgF_dat1, area, year){
 
 ### total stock health table --------------
 total_health <- function(area, year){
-  read.csv()
-}
-total_health <- sum(long_term_results$significant, short_term_results$score, 
-                    longt_female$significant, shortt_female$score) # long term scores CPUE
+  longterm <- read_csv(paste0('results/redcrab', area, 'longterm.csv'))
+  shortterm <- read_csv(paste0('results/redcrab', area, 'shortterm.csv'))
+  lt_female <- read_csv(paste0('results/redcrab', area, 'lt_female.csv'))
+  short_female <- read_csv(paste0('results/redcrab', area, 'short_female.csv'))
+
+total_health <- sum(longterm$significant, shortterm$score, 
+                    lt_female$significant, short_female$score) # long term scores CPUE
 # short term scores CPUE
 # need females poorclutch short and long term
 stock_health <- matrix(nrow = 1, ncol = 2)
-rownames(stock_health) <- c("Juneau")
+rownames(stock_health) <- c("area")
 colnames(stock_health) <- c("location","score_f")
 
-stock_health[1,1] <- "juneau"
+stock_health[1,1] <- "area"
 stock_health[1,2] <- total_health
 stock_health <- as.data.frame(stock_health)
 stock_health %>% 
@@ -234,5 +237,5 @@ stock_health %>%
                                                                          ifelse(health_status == "above average", 0.15,
                                                                                 ifelse(health_status == "healthy", 0.20, "unk")))))) -> stock_health
 #select ( - score_f) -> stock_health
-write.csv(stock_health, './results/redcrab/Juneau/stock_health.csv', row.names = FALSE)
-
+write_csv(stock_health, paste0('results/redcrab/', area,'/stock_health.csv'))
+}
