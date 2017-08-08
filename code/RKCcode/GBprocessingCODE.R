@@ -1,5 +1,5 @@
 #K.Palof 
-# ADF&G 8-3-16 updated for Pybus Bay  / updated 8-8-17
+# ADF&G 8-12-16 updated for Gambier Bay  / updated 8-8-17
 # code to process data from Ocean AK to use in crab CSA models.  
 #  
 # Current year: 2017
