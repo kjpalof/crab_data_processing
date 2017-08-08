@@ -19,13 +19,13 @@ source('./code/functions.R')
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Pybus/RKCsurveyCSA_PS_16_17.csv")
+dat <- read.csv("./data/redcrab/Pybus/RKCsurveyCSA_PB_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/redcrab/Pybus/Pybus_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Pybus/PS_79_16_bypot.csv")
+histdat <- read.csv("./data/redcrab/Pybus/PB_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Pybus/PS_11_15_largefemales_bypot.csv")
+females <- read.csv("./data/redcrab/Pybus/PB_largeF_11_16.csv")
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 head(dat)
