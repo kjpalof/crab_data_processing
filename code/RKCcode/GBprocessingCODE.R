@@ -19,13 +19,13 @@ source('./code/functions.R')
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Pybus/RKCsurveyCSA_PB_16_17.csv")
+dat <- read.csv("./data/redcrab/Gambier/RKCsurveyCSA_GB_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
-area <- read.csv("./data/redcrab/Pybus/Pybus_strata_area.csv") 
+area <- read.csv("./data/redcrab/Gambier/Gambier_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Pybus/PB_79_16_bypot.csv")
+histdat <- read.csv("./data/redcrab/Gambier/GB_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Pybus/PB_largeF_11_16.csv")
+females <- read.csv("./data/redcrab/Gambier/GB_largeF_11_16.csv")
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 head(dat)
@@ -94,7 +94,7 @@ dat5 %>%
 CPUE_wt_17
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Pybus/PB_CPUE_17.csv')
+write.csv(CPUE_wt_17, './results/redcrab/Gambier/PB_CPUE_17.csv')
 
 #### survey mid date -----
 head(dat)
@@ -129,7 +129,7 @@ dat6 %>%
 CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Pybus/PB_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, './results/redcrab/Gambier/PB_perpot_all_17.csv')
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -137,7 +137,7 @@ CPUE_ALL_YEARS %>%
   filter(Year >=2014) -> bypot_st # short term file has last 4 years in it
 
 #function creates output file in folder /results/redcrab/'area'
-short_t(bypot_st, 2017, "Pybus")
+short_t(bypot_st, 2017, "Gambier")
 # output is saved as shortterm.csv
 bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
@@ -179,17 +179,17 @@ dat6 %>%
  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'Pybus', 'Pybus')
+long_t(dat5_current, baseline, 2017, 'Gambier', 'Gambier')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
-    # Pybus linear model: exp(3.06*log(length in mm)-7.383)*2.2/1000
+    # Gambier linear model: exp(3.06*log(length in mm)-7.383)*2.2/1000
 glimpse(dat1) # raw data for both 2016 and 2017
     # slope = 3.06
     # intercept = 7.383
     # use function found in functions.R code file
-weights(dat1, 3.06, 7.383, "Pybus")
+weights(dat1, 3.06, 7.383, "Gambier")
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
@@ -206,17 +206,17 @@ LgF_dat1[is.na(LgF_dat1$Egg.Percent),]
 LgF_dat1 %>%
   mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
 
-#write.csv(LgF_dat1, './results/Pybus/largefemales_16.csv')
-poor_clutch(LgF_dat1, 'Pybus', 2017)
+#write.csv(LgF_dat1, './results/Gambier/largefemales_16.csv')
+poor_clutch(LgF_dat1, 'Gambier', 2017)
 # output is saved as poorclutch_current.csv - which has all pots for 2017
 #     and poorclutch_17.csv which has the percentage and SD of poor clutches for 2017 
 
 ##### Long term females -------------------------
-poorclutch_current <- read.csv("./results/redcrab/Pybus/poorclutch1_current.csv")
+poorclutch_current <- read.csv("./results/redcrab/Gambier/poorclutch1_current.csv")
 # bring in output from function above with the current years pots. 
 glimpse(poorclutch_current)
 # function to compare this to a long term mean of 10% and save for .Rmd output
-poor_clutch_long(poorclutch_current, 'Pybus', 2017)
+poor_clutch_long(poorclutch_current, 'Gambier', 2017)
 # output saved as lt_female.csv
 
 ##### Short term females ------------------------
@@ -225,15 +225,15 @@ poor_clutch_long(poorclutch_current, 'Pybus', 2017)
 # save this file here for future years
 females_all <- rbind(females, poorclutch_current)
 #function for short term trends and output saving.
-poor_clutch_short(females_all, 'Pybus', 2017)
+poor_clutch_short(females_all, 'Gambier', 2017)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
-egg_percent(LgF_dat1, 'Pybus', 2017)
+egg_percent(LgF_dat1, 'Gambier', 2017)
 # output saved as egg_percent_mean.csv
 
 ### total stock health table -----------------------
-total_health('Pybus', 2017)
+total_health('Gambier', 2017)
 # works as long as all files are saved in folder with area name
 
 ##### Restrospective Analysis -----------------------------------
@@ -245,7 +245,7 @@ head(CPUE_ALL_YEARS)
 retrodata <- read.csv("./data/1979_2004_RKCS_Strata.csv")
 levels(retrodata$Location)
 # this is input from OceanAK - set up as red crab survey data for CSA
-EI = c("Pybus Inlet")
+EI = c("Gambier Inlet")
 retrodata %>%
   filter(Location %in% EI) -> EIretrodata
 EIretrodata %>%
@@ -283,7 +283,7 @@ CPUE_ALL_YEARS %>%
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_all
 CPUE_wt_all
-write.csv(CPUE_wt_all, './results/Pybus/EI_CPUE_historical.csv')
+write.csv(CPUE_wt_all, './results/Gambier/EI_CPUE_historical.csv')
 
 strata79_04 %>%
   group_by(Year) %>%
@@ -294,7 +294,7 @@ strata79_04 %>%
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_79_04
 CPUE_wt_79_04
-write.csv(CPUE_wt_79_04, './results/Pybus/EI_CPUE_79_04.csv')
+write.csv(CPUE_wt_79_04, './results/Gambier/EI_CPUE_79_04.csv')
 
 ##### graph retrospective ------------------------
 ggplot(CPUE_wt_all, aes(Year, Pre_Recruit_wt)) + geom_point() +geom_line() + ylim(0,8)
