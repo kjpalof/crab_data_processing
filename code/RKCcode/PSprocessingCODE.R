@@ -129,7 +129,7 @@ dat6 %>%
 CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Peril/EI_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, './results/redcrab/Peril/PS_perpot_all_17.csv')
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -179,7 +179,7 @@ dat6 %>%
  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'Peril')
+long_t(dat5_current, baseline, 2017, 'Peril', 'Deadman Reach')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
@@ -189,7 +189,7 @@ glimpse(dat1) # raw data for both 2016 and 2017
     # slope = 3.12
     # intercept = 7.67
     # use function found in functions.R code file
-weights(dat1, 3.12, 7.67, "Peril")
+weights(dat1, 3.02, 7.18, "Peril")
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
