@@ -46,9 +46,9 @@ short_t <- function(bypot_st, year, area) {
 ### Long term function -------------------
 # need current years data and file with long term means
 
-long_t <- function(dat5_current, baseline, year, area) {
+long_t <- function(dat5_current, baseline, year, area, location) {
   #baseline <- read.csv("./data/redcrab/longterm_means.csv")
-  baseline %>% filter(Location == area)-> baseline_values
+  baseline %>% filter(Location == location)-> baseline_values
   baseline_values_long <- gather(baseline_values, recruit.status, lt_mean, Juvenile:Post_Recruit, factor_key = TRUE)
   #Uses a weighted mean to help calculate the t.test - part of package weights
   # the y = has to be changed for each area but once they are set they are the same from year to year
