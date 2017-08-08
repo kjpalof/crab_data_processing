@@ -129,7 +129,7 @@ dat6 %>%
 CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Seymour/GB_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, './results/redcrab/Seymour/SC_perpot_all_17.csv')
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -179,17 +179,17 @@ dat6 %>%
  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'Seymour', 'Seymour')
+long_t(dat5_current, baseline, 2017, 'Seymour', 'Seymour Canal')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
-    # Seymour linear model: exp(2.921*log(length in mm)-6.695)*2.2/1000
+    # Seymour linear model: exp(2.87*log(length in mm)-6.438)*2.2/1000
 glimpse(dat1) # raw data for both 2016 and 2017
-    # slope = 2.921
-    # intercept = 6.695
+    # slope = 2.87
+    # intercept = 6.438
     # use function found in functions.R code file
-weights(dat1, 2.921, 6.695, "Seymour")
+weights(dat1, 2.87, 6.438, "Seymour")
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
@@ -211,6 +211,29 @@ LgF_dat1 %>%
 
 #write.csv(LgF_dat1, './results/Seymour/largefemales_16.csv')
 poor_clutch(LgF_dat1, 'Seymour', 2017)
+# problem since there are no poor clutches - therefore no y's.  
+LgF_dat1 %>%
+  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_dat1 # where 1 is yes and 2 is no
+
+LgF_dat1 %>%
+  group_by(Year, Location, Pot.No, Less25) %>%
+  summarise(hat = sum(Number.Of.Specimens)) -> poorclutch
+
+poorclutch1 <- dcast(poorclutch, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
+
+poorclutch1 %>% mutate(y = 0) -> poorclutch1
+
+poorclutch1 %>%
+  mutate(var1 = y / (y+n)) -> poorclutch1
+poorclutch1 %>%
+  group_by(Year)%>%
+  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_17
+
+poorclutch1 %>% filter(Year == 2017) -> poorclutch1_current
+write.csv(poorclutch1_current, ('./results/redcrab/Seymour/poorclutch1_current.csv'))
+write.csv(poorclutch_17, ('./results/redcrab/Seymour/poorclutch_17.csv'))
+
+
 # output is saved as poorclutch_current.csv - which has all pots for 2017
 #     and poorclutch_17.csv which has the percentage and SD of poor clutches for 2017 
 
