@@ -44,6 +44,7 @@ kable(long_term_results, digits = 3)
 ```
 
 ## Female health
+#### percentage and SD of poor clutches (<25%)
 ```{r female health,echo = FALSE  }
 poorclutch_17 <- read.csv("../results/redcrab/Peril/poorclutch_17.csv")
 kable(poorclutch_17, digits = 3)
