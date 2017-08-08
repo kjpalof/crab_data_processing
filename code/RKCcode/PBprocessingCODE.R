@@ -41,7 +41,7 @@ dat1 %>%
   filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
 dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)
-# some females here that don't have recruit status due to no lengths
+# one female here that don't have recruit status due to no lengths
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
@@ -94,14 +94,14 @@ dat5 %>%
 CPUE_wt_17
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Pybus/PS_CPUE_17.csv')
+write.csv(CPUE_wt_17, './results/redcrab/Pybus/PB_CPUE_17.csv')
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-12
-dat[661,8] # 7-14
+dat %>% filter(Year == 2017)  # 7-25
+dat[1173,8] # 7-27
 # so mid-date would be 16th.
 
 
@@ -129,7 +129,7 @@ dat6 %>%
 CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Pybus/PS_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, './results/redcrab/Pybus/PB_perpot_all_17.csv')
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -179,17 +179,17 @@ dat6 %>%
  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'Pybus', 'Deadman Reach')
+long_t(dat5_current, baseline, 2017, 'Pybus', 'Pybus')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
-    # Pybus linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
+    # Pybus linear model: exp(3.06*log(length in mm)-7.383)*2.2/1000
 glimpse(dat1) # raw data for both 2016 and 2017
-    # slope = 3.12
-    # intercept = 7.67
+    # slope = 3.06
+    # intercept = 7.383
     # use function found in functions.R code file
-weights(dat1, 3.02, 7.18, "Pybus")
+weights(dat1, 3.06, 7.383, "Pybus")
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
