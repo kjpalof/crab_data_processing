@@ -226,8 +226,7 @@ poor_clutch_long(poorclutch_current, 'Gambier', 2017)
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 # save this file here for future years
-#need to remove NAs
-poorclutch_current %>% select(-NA.) ->poorclutch_current
+
 females_all <- rbind(females, poorclutch_current)
 
 #function for short term trends and output saving.
