@@ -94,15 +94,15 @@ dat5 %>%
 CPUE_wt_17
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Gambier/PB_CPUE_17.csv')
+write.csv(CPUE_wt_17, './results/redcrab/Gambier/GB_CPUE_17.csv')
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-25
-dat[1173,8] # 7-27
-# so mid-date would be 16th.
+dat %>% filter(Year == 2017)  # 7-27
+dat[1467,8] # 7-29
+# so mid-date would be 28th.
 
 
 ##### Historic file ---------------------------------------
@@ -129,7 +129,7 @@ dat6 %>%
 CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Gambier/PB_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, './results/redcrab/Gambier/GB_perpot_all_17.csv')
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -184,12 +184,12 @@ long_t(dat5_current, baseline, 2017, 'Gambier', 'Gambier')
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
-    # Gambier linear model: exp(3.06*log(length in mm)-7.383)*2.2/1000
+    # Gambier linear model: exp(2.921*log(length in mm)-6.695)*2.2/1000
 glimpse(dat1) # raw data for both 2016 and 2017
-    # slope = 3.06
-    # intercept = 7.383
+    # slope = 2.921
+    # intercept = 6.695
     # use function found in functions.R code file
-weights(dat1, 3.06, 7.383, "Gambier")
+weights(dat1, 2.921, 6.695, "Gambier")
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
