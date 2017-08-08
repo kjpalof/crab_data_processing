@@ -230,8 +230,8 @@ poorclutch1 %>%
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_17
 
 poorclutch1 %>% filter(Year == 2017) -> poorclutch1_current
-write.csv(poorclutch1_current, ('./results/redcrab/Seymour/poorclutch1_current.csv'))
-write.csv(poorclutch_17, ('./results/redcrab/Seymour/poorclutch_17.csv'))
+write.csv(poorclutch1_current, ('./results/redcrab/Seymour/poorclutch1_current.csv'),row.names =FALSE)
+write.csv(poorclutch_17, ('./results/redcrab/Seymour/poorclutch_17.csv'), row.names =FALSE)
 
 
 # output is saved as poorclutch_current.csv - which has all pots for 2017
