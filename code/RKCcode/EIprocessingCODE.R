@@ -178,7 +178,7 @@ dat6 %>%
  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'Excursion')
+long_t(dat5_current, baseline, 2017, 'Excursion', 'Excursion')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
