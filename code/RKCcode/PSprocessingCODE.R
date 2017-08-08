@@ -94,14 +94,14 @@ dat5 %>%
 CPUE_wt_17
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Peril/EI_CPUE_17.csv')
+write.csv(CPUE_wt_17, './results/redcrab/Peril/PS_CPUE_17.csv')
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-15
-dat[2001,7] # 7-16
+dat %>% filter(Year == 2017)  # 7-12
+dat[661,8] # 7-14
 # so mid-date would be 16th.
 
 
