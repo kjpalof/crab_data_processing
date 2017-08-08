@@ -19,13 +19,13 @@ source('./code/functions.R')
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Seymour/RKCsurveyCSA_GB_16_17.csv")
+dat <- read.csv("./data/redcrab/Seymour/RKCsurveyCSA_SC_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/redcrab/Seymour/Seymour_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Seymour/GB_79_16_bypot.csv")
+histdat <- read.csv("./data/redcrab/Seymour/SC_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Seymour/GB_largeF_11_16.csv")
+females <- read.csv("./data/redcrab/Seymour/SC_largeF_11_16.csv")
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 head(dat)
@@ -94,15 +94,15 @@ dat5 %>%
 CPUE_wt_17
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Seymour/GB_CPUE_17.csv')
+write.csv(CPUE_wt_17, './results/redcrab/Seymour/SC_CPUE_17.csv')
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-27
-dat[1467,8] # 7-29
-# so mid-date would be 28th.
+dat %>% filter(Year == 2017)  # 7-29
+dat[628,8] # 7-31
+# so mid-date would be 30th.
 
 
 ##### Historic file ---------------------------------------
