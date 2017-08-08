@@ -1,7 +1,7 @@
 ---
-title: "Peril strait 2017 survey results"
+title: "Pybus Bay 2017 survey results"
 author: "Katie Palof"
-date: "August 7, 2017"
+date: "August 8, 2017"
 output: html_document
 ---
 
@@ -14,7 +14,7 @@ library(tidyverse)
 
 ## CPUE from survey / data for CSA
 ```{r CPUE, echo = FALSE }
-cpue_2017 <- read.csv("../results/redcrab/Peril/PS_CPUE_17.csv")
+cpue_2017 <- read.csv("../results/redcrab/Pybus/PB_CPUE_17.csv")
 kable(cpue_2017, digits = 6)
 
 
@@ -26,47 +26,47 @@ kable(cpue_2017, digits = 6)
 
 ### Male weights from survey 
 ```{r weights, echo = FALSE }
-male_weights <- read.csv("../results/redcrab/Peril/maleweights.csv")
+male_weights <- read.csv("../results/redcrab/Pybus/maleweights.csv")
 kable(male_weights, digits = 3)
 ```
 
 ## Short term trends in CPUE
 ```{r short term, echo = FALSE }
-short_term_results <- read.csv("../results/redcrab/Peril/shortterm.csv")
+short_term_results <- read.csv("../results/redcrab/Pybus/shortterm.csv")
 kable(short_term_results, digits = 3)
 ```
 
 
 ## Long term trends in CPUE
 ```{r long term,echo = FALSE  }
-long_term_results <- read.csv("../results/redcrab/Peril/longterm.csv")
+long_term_results <- read.csv("../results/redcrab/Pybus/longterm.csv")
 kable(long_term_results, digits = 3)
 ```
 
 ## Female health
 #### percentage and SD of poor clutches (<25%)
 ```{r female health,echo = FALSE  }
-poorclutch_17 <- read.csv("../results/redcrab/Peril/poorclutch_17.csv")
+poorclutch_17 <- read.csv("../results/redcrab/Pybus/poorclutch_17.csv")
 kable(poorclutch_17, digits = 3)
 ```
 
 
 ####long term mean comparison
 ```{r long term female, echo = FALSE}
-lt_female <- read.csv("../results/redcrab/Peril/lt_female.csv")
+lt_female <- read.csv("../results/redcrab/Pybus/lt_female.csv")
 kable(lt_female, digits = 3)
 ```
 
 ####short term females
 ```{r short term female, echo = FALSE}
-short_female <- read.csv("../results/redcrab/Peril/short_female.csv")
+short_female <- read.csv("../results/redcrab/Pybus/short_female.csv")
 kable(short_female, digits = 3)
 ```
 
 
 ####Mean egg percentage for mature females
 ```{r egg per female, echo = FALSE}
-egg_per_mean <- read.csv("../results/redcrab/Peril/egg_percent_mean.csv")
+egg_per_mean <- read.csv("../results/redcrab/Pybus/egg_percent_mean.csv")
 kable(egg_per_mean, digits = 3)
 ```
 
@@ -74,7 +74,7 @@ kable(egg_per_mean, digits = 3)
 
 ## Stock health
 ```{r stock health, echo = FALSE}
-stock_health <- read.csv("../results/redcrab/Peril/stock_health.csv")
+stock_health <- read.csv("../results/redcrab/Pybus/stock_health.csv")
 kable(stock_health, digits = 3)
 ```
 
