@@ -202,9 +202,12 @@ dat1 %>%
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
 LgF_dat1[is.na(LgF_dat1$Egg.Percent),]
-# need to change these to 0. 
+# need to change these to 0 if just juvenile
+#LgF_dat1 %>%
+ # mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
+#need to remove if missing data
 LgF_dat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
+ filter(!is.na(Egg.Percent)) -> LgF_dat1
 
 #write.csv(LgF_dat1, './results/Gambier/largefemales_16.csv')
 poor_clutch(LgF_dat1, 'Gambier', 2017)
