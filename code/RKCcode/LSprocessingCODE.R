@@ -181,6 +181,13 @@ dat6 %>%
 
 long_t(dat5_current, baseline, 2017, 'LynnSisters', 'Lynn Sisters')
 # output is saved as longterm.csv
+# visualizaton
+ggplot(dat5_current, aes(Year,Juvenile)) +geom_point() 
+ggplot(dat5_current, aes(Year,Small.Females)) +geom_point() 
+
+baseline %>% filter(Location == "Lynn Sisters") -> baseline_values
+juv <- wtd.t.test(dat5_current$Juvenile, y = baseline_values$Juvenile, weight = dat5_current$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_current$Small.Females, y = baseline_values$Small.Female, weight = dat5_current$weighting, samedata=FALSE)
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
