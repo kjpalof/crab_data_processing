@@ -19,13 +19,13 @@ source('./code/functions.R')
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/LynnSisters/RKCsurveyCSA_GB_16_17.csv")
+dat <- read.csv("./data/redcrab/LynnSisters/RKCsurveyCSA_LS_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
-area <- read.csv("./data/redcrab/LynnSisters/LynnSisters_strata_area.csv") 
+area <- read.csv("./data/redcrab/LynnSisters/LynnCanal_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/LynnSisters/GB_79_16_bypot.csv")
+histdat <- read.csv("./data/redcrab/LynnSisters/LS_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/LynnSisters/GB_largeF_11_16.csv")
+females <- read.csv("./data/redcrab/LynnSisters/LS_largeF_11_16.csv")
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 head(dat)
@@ -94,15 +94,15 @@ dat5 %>%
 CPUE_wt_17
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/LynnSisters/GB_CPUE_17.csv')
+write.csv(CPUE_wt_17, './results/redcrab/LynnSisters/LS_CPUE_17.csv')
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-27
-dat[1467,8] # 7-29
-# so mid-date would be 28th.
+dat %>% filter(Year == 2017)  # 7-18
+dat[738,8] # 7-19
+# so mid-date would be 19th.
 
 
 ##### Historic file ---------------------------------------
@@ -129,7 +129,7 @@ dat6 %>%
 CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/LynnSisters/GB_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, './results/redcrab/LynnSisters/LS_perpot_all_17.csv')
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -179,17 +179,17 @@ dat6 %>%
  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'LynnSisters', 'LynnSisters')
+long_t(dat5_current, baseline, 2017, 'LynnSisters', 'Lynn Sisters')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
-    # LynnSisters linear model: exp(2.921*log(length in mm)-6.695)*2.2/1000
+    # LynnSisters linear model: exp(3.07*log(length in mm)-7.42)*2.2/1000
 glimpse(dat1) # raw data for both 2016 and 2017
-    # slope = 2.921
-    # intercept = 6.695
+    # slope = 3.07
+    # intercept = 7.42
     # use function found in functions.R code file
-weights(dat1, 2.921, 6.695, "LynnSisters")
+weights(dat1,3.07, 7.42, "LynnSisters")
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
