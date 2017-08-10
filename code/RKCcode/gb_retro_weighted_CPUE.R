@@ -202,3 +202,6 @@ long_term_results %>%
 write.csv(long_term_results, './results/redcrab/Gambier/matrix_baseline_redo/gb_longterm_16.csv', row.names = FALSE)
 
 
+# female percentage of poor clutch and egg historically
+
+
