@@ -381,6 +381,14 @@ stock_health %>%
   #select ( - score_f) -> stock_health
 write.csv(stock_health, './results/redcrab/Juneau/stock_health.csv', row.names = FALSE)
 
+### raw sample size -----------
+head(dat5)
+dat5 %>% group_by(Year) %>%  select(Year, Juvenile, Small.Females, 
+                                              Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
+  summarise_all(funs(sum)) -> raw_samp
+write.csv(raw_samp, './results/redcrab/Juneau/raw_sample.csv')
+
+
 ##### Restrospective Analysis -----------------------------------
 
 CPUE_ALL_YEARS <- read.csv("./results/redcrab/Juneau/JNU_perpot_all_17.csv")
