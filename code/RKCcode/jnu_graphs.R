@@ -4,6 +4,7 @@
 ### Load packages -----
 library(tidyverse)
 library(extrafont)
+#font_import()
 loadfonts(device="win")
 windowsFonts(Times=windowsFont("TT Times New Roman"))
 
