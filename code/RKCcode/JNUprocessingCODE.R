@@ -387,7 +387,7 @@ dat5 %>% group_by(Year) %>%  select(Year, Juvenile, Small.Females,
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
 write.csv(raw_samp, './results/redcrab/Juneau/raw_sample.csv')
-
+dat5 %>% group_by(Year) %>% summarise (n=n())
 
 ##### Restrospective Analysis -----------------------------------
 
