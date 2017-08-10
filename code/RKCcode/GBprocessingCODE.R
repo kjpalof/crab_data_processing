@@ -241,6 +241,14 @@ egg_percent(LgF_dat1, 'Gambier', 2017)
 total_health('Gambier', 2017)
 # works as long as all files are saved in folder with area name
 
+### raw sample size -----------
+head(dat5)
+dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
+                                              Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
+  summarise_all(funs(sum)) -> raw_samp
+write.csv(raw_samp, './results/redcrab/Gambier/raw_sample.csv')
+
+
 ##### Restrospective Analysis -----------------------------------
 head(CPUE_ALL_YEARS)
 
