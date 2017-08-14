@@ -345,7 +345,9 @@ plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Pre_Recruit_wt)) + geom_point(color = "
   geom_line(color = 'grey76') + 
   geom_errorbar(aes(ymin = Pre_Recruit_wt - PreR_SE, ymax = Pre_Recruit_wt+ PreR_SE), 
                 width =.4, color = "grey76") +
-  ylim(0,8) +ggtitle("EI Mature males") + ylab("CPUE (number/pot)")
+  ylim(0,8) +ggtitle("EI Mature males") + ylab("CPUE (number/pot)")+ xlab("")+
+  theme(axis.text.x = element_blank()) + 
+  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2))
 
 
 plot1a <- plot1 + geom_point(data = CPUE_wt_93_17, aes(Year, Recruit_wt), 
@@ -353,7 +355,7 @@ plot1a <- plot1 + geom_point(data = CPUE_wt_93_17, aes(Year, Recruit_wt),
            geom_line(data = CPUE_wt_93_17, aes(Year, Recruit_wt), color = "grey42")+
   geom_errorbar(data = CPUE_wt_93_17, aes(ymin = Recruit_wt - Rec_SE,
                                           ymax = Recruit_wt + Rec_SE), 
-                width = .4, color = 'grey42')
+                width = .4, color = 'grey42') 
 
 plot1a + geom_point(data = CPUE_wt_93_17, aes(Year, Post_Recruit_wt), 
                     shape =15, fill = 'black', color ="black")+
