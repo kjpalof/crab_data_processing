@@ -14,6 +14,14 @@ library(plotrix)
 library(SDMTools)
 library(weights)
 library(broom)
+#font_import()
+loadfonts(device="win")
+windowsFonts(Times=windowsFont("TT Times New Roman"))
+
+theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
+            theme(panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()))
+
 
 source('./code/functions.R')
 
@@ -319,13 +327,33 @@ ggplot(CPUE_wt_all, aes(Year, Post_Recruit_wt)) + geom_point() +geom_line(color 
   ylim(0,5) + ggtitle("EI Post Recruits")+
   geom_line(data = CPUE_wt_79_04)
 
-  
-  
+### stock assessment figures --------------
+CPUE_ALL_YEARS
+CPUE_ALL_YEARS %>%
+  group_by(Year) %>%
+  summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
+            Recruit_wt = wt.mean(Recruit, weighting), Rec_SE = (wt.sd(Recruit, weighting)/(sqrt(sum(!is.na(Recruit))))), 
+            Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
+            Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
+            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_all
+CPUE_wt_all  
+CPUE_wt_all %>% filter(Year >= 1993) -> CPUE_wt_93_17
+
+### Mature males-----
+plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Pre_Recruit_wt)) + geom_point(color = "grey76") +
+  geom_line(color = 'grey76') + 
+  geom_errorbar(aes(ymin = Pre_Recruit_wt - PreR_SE, ymax = Pre_Recruit_wt+ PreR_SE), 
+                width =.4, color = "grey76") +
+  ylim(0,8) +ggtitle("EI Mature males") + ylab("CPUE (number/pot)")
 
 
-
-
-
+plot1 + geom_point(data = CPUE_wt_93_17, aes(Year, Recruit_wt), 
+                   shape =25, fill = 'grey42', color ="grey42")+
+           geom_line(data = CPUE_wt_93_17, aes(Year, Recruit_wt), color = "grey42")+
+  geom_errorbar(data = CPUE_wt_93_17, aes(ymin = Recruit_wt - Recruit_SE,
+                                          ymax = Recruit_wt + Recruit_SE), 
+                width = .4, color = 'grey42')
 
 
 
