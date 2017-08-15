@@ -400,3 +400,23 @@ plot1b <- plot1a + geom_point(data = CPUE_wt_93_17, aes(Year, MatF_wt),
 
 # need to create legend
 femjuv <- plot1b
+
+### poor clutch egg percent ------------
+raw_data <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")
+
+raw_data %>%
+  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> largef
+largef %>%
+  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> largef # where 1 is yes and 2 is no
+
+largef %>%
+  group_by(Year, Location, Pot.No, Less25) %>%
+  summarise(hat = sum(Number.Of.Specimens)) -> poorclutch_all
+
+poorclutch_all2 <- dcast(poorclutch_all, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
+
+poorclutch_all2 %>%
+  mutate(var1 = y / (y+n)) -> poorclutch_all2
+poorclutch_all2 %>%
+  group_by(Year)%>%
+  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) 
