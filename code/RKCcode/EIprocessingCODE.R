@@ -376,6 +376,17 @@ males_long %>% mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_wt",
                                                         "se", "mean"))))-> males_long
 males_long %>% select (-recruit.status) %>% spread(type, value1) -> males_graph
 
+#### mature male plot -----------
+group.colors = c(post.recruit = "black", pre.recruit = "grey76", recruit = "grey42")
+
+ggplot(males_graph, aes(Year, mean, group = recruit.class))+ geom_point(aes(color = recruit.class)) +
+  geom_line(aes(color = recruit.class))+ scale_colour_manual(values = group.colors) +
+  ylim(0,7) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
+  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
+  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  geom_hline(yintercept = baseline[3,5], color = "grey76")+
+  geom_hline(yintercept = baseline [3,6], color = "grey42")+
+  geom_hline(yintercept = baseline [3,7], color = "black") 
 
 plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Pre_Recruit_wt)) + geom_point(color = "grey76", size = 3) +
   geom_line(color = 'grey76') + 
