@@ -300,7 +300,7 @@ strata79_04 %>%
   mutate(inverse_n = 1 / npots, weighting = inverse_n * Area) -> strata79_04
 
 # Now calculate CPUE from CPUE_ALL_YEARS and strata79_04 and compare values prior to 2005
-
+### cpue all years --------------------
 CPUE_ALL_YEARS %>%
   group_by(Year) %>%
   summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
@@ -414,23 +414,14 @@ plot1b <- plot1a + geom_point(data = CPUE_wt_93_17, aes(Year, MatF_wt),
 femjuv <- plot1b
 
 ### poor clutch egg percent ------------
-
-largef_all %>%
-  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> largef_all # where 1 is yes and 2 is no
-
-largef_all %>%
-  group_by(Year, Location, Pot.No, Less25) %>%
-  summarise(hat = sum(Number.Of.Specimens)) -> poorclutch_all
-
-poorclutch_all2 <- dcast(poorclutch_all, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
-
-poorclutch_all2 %>%
-  mutate(var1 = y / (y+n)) -> poorclutch_all2
-poorclutch_all2 %>%
-  group_by(Year)%>% filter(!is.na(var1)) %>% 
-  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_summary
+poorclutch_summary <- read.csv("./results/redcrab/Excursion/poorclutch_summary_all.csv")
 poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
-# file with year and mean percent poor clutch and se poor clutch
+# file with year and mean percent poor clutch and se poor clutch from 1993 to current
+egg_mean_all <- read.csv("./results/redcrab/Excursion/egg_percent_mean_all.csv")
+egg_mean_all %>% filter(Year >= 1993) -> egg_mean_all_93
+
+# combine these data sets for graphing.  Create one with means and one with SEs.
+poorclutch_summary93 %>% left_join(egg_mean_all_93) -> female_egg
 
 
 
