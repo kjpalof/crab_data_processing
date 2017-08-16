@@ -34,7 +34,8 @@ area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv")
 histdat <- read.csv("./data/redcrab/Excursion/EI_79_16_bypot.csv")
                   ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
 females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
-
+raw_data <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")
+        ## use this for raw historic female data in 2017, create input file for future
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
@@ -202,7 +203,18 @@ weights(dat1, 3.12, 7.67, "Excursion")
 ##### Females - large or mature females --------------------------
 # large or mature females
 dat1 %>%
-  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
+  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1 # current 2 years
+
+raw_data %>%
+  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> largef
+largef %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+                  Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+                  Egg.Development.Code, Egg.Condition.Code) -> largef
+LgF_dat1 %>% filter(Year == 2017) %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+                                             Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+                                             Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_2017
+
+largef_all <- rbind(largef, LgF_dat1_2017) # raw female data for all years.
 
 ##### % poor (<10 %) clutch -----------------------------------
 # This selects those rows that do not have an egg percentage.
@@ -236,8 +248,8 @@ poor_clutch_short(females_all, 'Excursion', 2017)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
-egg_percent(LgF_dat1, 'Excursion', 2017)
-# output saved as egg_percent_mean.csv
+egg_percent(largef_all, 'Excursion', 2017)
+# output saved as egg_percent_mean_all.csv, creates mean and SE egg percentage for all years
 
 ### total stock health table -----------------------
 total_health('Excursion', 2017)
@@ -430,6 +442,9 @@ poorclutch_all2 %>%
   group_by(Year)%>% filter(!is.na(var1)) %>% 
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_summary
 poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
+
+
+
 
 #### Female eggs graph -----------
 plot1 <- ggplot(poorclutch_summary93, aes(Year,Pclutch)) + geom_point(color = "black", size = 3, shape =1) +
