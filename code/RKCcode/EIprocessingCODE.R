@@ -431,4 +431,12 @@ poorclutch_all2 %>%
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_summary
 poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
 
-
+#### Female eggs graph -----------
+plot1 <- ggplot(poorclutch_summary93, aes(Year,Pclutch)) + geom_point(color = "black", size = 3, shape =1) +
+  geom_line(color = 'black') + 
+  geom_errorbar(aes(ymin = Pclutch-Pclutch.se, ymax = Pclutch + Pclutch.se), 
+                width =.4, color = "black") +
+  ylim(0,0.5) + ylab("Ratio poor clutch/pot")+ xlab("")+
+  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
+  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2))
+ 
