@@ -226,7 +226,6 @@ LgF_dat1 %>%
   mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
 
 #write.csv(LgF_dat1, './results/Excursion/largefemales_16.csv')
-poor_clutch(LgF_dat1, 'Excursion', 2017)
 poor_clutch(largef_all, 'Excursion', 2017)
 # output is saved as poorclutch_current.csv - which has all pots for 2017
 #     and poorclutch_summary_all.csv which has the percentage and SD of poor clutches for all years
