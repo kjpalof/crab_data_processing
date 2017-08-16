@@ -415,10 +415,10 @@ LgF_dat1 %>% filter(Year == 2017) %>% select(Year, Project.Code, Trip.No, Locati
 
 largef_all <- rbind(largef, LgF_dat1_2017)
 
-largef %>%
-  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> largef # where 1 is yes and 2 is no
+largef_all %>%
+  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> largef_all # where 1 is yes and 2 is no
 
-largef %>%
+largef_all %>%
   group_by(Year, Location, Pot.No, Less25) %>%
   summarise(hat = sum(Number.Of.Specimens)) -> poorclutch_all
 
@@ -427,7 +427,8 @@ poorclutch_all2 <- dcast(poorclutch_all, Year + Location + Pot.No ~ Less25, sum,
 poorclutch_all2 %>%
   mutate(var1 = y / (y+n)) -> poorclutch_all2
 poorclutch_all2 %>%
-  group_by(Year)%>%
+  group_by(Year)%>% filter(!is.na(var1)) %>% 
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_summary
+poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
 
 
