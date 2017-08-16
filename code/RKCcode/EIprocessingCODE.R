@@ -414,18 +414,6 @@ plot1b <- plot1a + geom_point(data = CPUE_wt_93_17, aes(Year, MatF_wt),
 femjuv <- plot1b
 
 ### poor clutch egg percent ------------
-raw_data <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")
-
-raw_data %>%
-  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> largef
-largef %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-                  Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-                  Egg.Development.Code, Egg.Condition.Code) -> largef
-LgF_dat1 %>% filter(Year == 2017) %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-                                             Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-                                             Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_2017
-
-largef_all <- rbind(largef, LgF_dat1_2017)
 
 largef_all %>%
   mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> largef_all # where 1 is yes and 2 is no
@@ -442,7 +430,7 @@ poorclutch_all2 %>%
   group_by(Year)%>% filter(!is.na(var1)) %>% 
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_summary
 poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
-
+# file with year and mean percent poor clutch and se poor clutch
 
 
 
