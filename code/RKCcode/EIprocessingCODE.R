@@ -360,6 +360,21 @@ CPUE_wt_93_17 %>% select(Year, PreR_SE, Rec_SE, PR_SE) -> males_se
 
 male_mean_long <- gather(males_mean, recruit.status, mean, Pre_Recruit_wt:Post_Recruit_wt, factor_key = TRUE)
 
+CPUE_wt_93_17 %>% select(Year,Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
+                         PreR_SE, Rec_SE, PR_SE) -> males
+males_long <- gather(males, recruit.status, value1, Pre_Recruit_wt:PR_SE, factor_key = TRUE)
+males_long %>% mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_wt",
+                                             "pre.recruit", 
+                                             ifelse(recruit.status == "Recruit_wt", 
+                                                    "recruit", ifelse(recruit.status == "PreR_SE", 
+                                                    "pre.recruit", ifelse(recruit.status == "Rec_SE", 
+                                                      "recruit", "post.recruit "))))) %>% 
+          mutate(type = ifelse(recruit.status == "PreR_SE",
+                               "se", 
+                               ifelse(recruit.status == "Rec_SE", 
+                                      "se", ifelse(recruit.status == "PR_SE", 
+                                                        "se", "mean"))))-> males_long
+males_long %>% select (-recruit.status) %>% spread(type, value1) -> males_graph
 
 
 plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Pre_Recruit_wt)) + geom_point(color = "grey76", size = 3) +
