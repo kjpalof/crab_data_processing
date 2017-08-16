@@ -203,7 +203,7 @@ egg_percent <-function(LgF_dat1, area, year){
     group_by(Year) %>% 
     summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) -> egg_per_mean
   write_csv(egg_per_mean, paste0('results/redcrab/', area,'/egg_percent_mean_all.csv'))
-  
+  write_csv(LgF_dat1, paste0('results/redcrab/', area, '/largef_all.csv'))
 }
 
 
