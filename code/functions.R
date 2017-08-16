@@ -121,7 +121,7 @@ weights <- function(dat1, slope, intercept, area){
 poor_clutch <- function (LgF_dat1, area, year){
 # large or mature females
 # % poor clutch - less than 10%
-LgF_dat1 %>%
+LgF_dat1 %>% filter(!is.na(Egg.Percent)) %>% 
   mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_dat1 # where 1 is yes and 2 is no
 
 LgF_dat1 %>%
