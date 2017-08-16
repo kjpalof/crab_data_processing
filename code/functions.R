@@ -200,9 +200,9 @@ egg_percent <-function(LgF_dat1, area, year){
     summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
   
   clutch_by_pot %>%
-    group_by(Year)
+    group_by(Year) %>% 
     summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) -> egg_per_mean
-  write_csv(egg_per_mean, paste0('results/redcrab/', area,'/egg_percent_mean.csv'))
+  write_csv(egg_per_mean, paste0('results/redcrab/', area,'/egg_percent_mean_all.csv'))
   
 }
 
