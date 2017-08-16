@@ -423,10 +423,8 @@ egg_mean_all %>% filter(Year >= 1993) -> egg_mean_all_93
 # combine these data sets for graphing.  Create one with means and one with SEs.
 poorclutch_summary93 %>% left_join(egg_mean_all_93) -> female_egg
 
-
-
 #### Female eggs graph -----------
-plot1 <- ggplot(poorclutch_summary93, aes(Year,Pclutch)) + geom_point(color = "black", size = 3, shape =1) +
+plot1 <- ggplot(female_egg, aes(Year,Pclutch)) + geom_point(color = "black", size = 3, shape =1) +
   geom_line(color = 'black') + 
   geom_errorbar(aes(ymin = Pclutch-Pclutch.se, ymax = Pclutch + Pclutch.se), 
                 width =.4, color = "black") +
