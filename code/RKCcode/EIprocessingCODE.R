@@ -377,17 +377,27 @@ males_long %>% mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_wt",
 males_long %>% select (-recruit.status) %>% spread(type, value1) -> males_graph
 
 #### mature male plot -----------
-group.colors = c(post.recruit = "black", pre.recruit = "grey76", recruit = "grey42")
+group.colors = c(pre.recruit = "grey76", recruit = "grey42", post.recruit = "grey1")
+group.shapes = c(pre.recruit = 16, recruit = 25, post.recruit = 15)
 
-ggplot(males_graph, aes(Year, mean, group = recruit.class))+ geom_point(aes(color = recruit.class)) +
-  geom_line(aes(color = recruit.class))+ scale_colour_manual(values = group.colors) +
+ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
+  
+  geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
+  geom_line(aes(color = recruit.class, group = recruit.class))+
+  
+  scale_colour_manual(values = c("grey1", "grey76", "grey42"))+
+  scale_shape_manual(values = c(15, 16, 17))+
+  
   ylim(0,7) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+    geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
+                width =.4) +
   geom_hline(yintercept = baseline[3,5], color = "grey76")+
   geom_hline(yintercept = baseline [3,6], color = "grey42")+
   geom_hline(yintercept = baseline [3,7], color = "black") 
-
+  
+#### IGNORE --------------
 plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Pre_Recruit_wt)) + geom_point(color = "grey76", size = 3) +
   geom_line(color = 'grey76') + 
   geom_errorbar(aes(ymin = Pre_Recruit_wt - PreR_SE, ymax = Pre_Recruit_wt+ PreR_SE), 
