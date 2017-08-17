@@ -377,9 +377,6 @@ males_long %>% mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_wt",
 males_long %>% select (-recruit.status) %>% spread(type, value1) -> males_graph
 
 #### mature male plot -----------
-group.colors = c(pre.recruit = "grey76", recruit = "grey42", post.recruit = "grey1")
-group.shapes = c(pre.recruit = 16, recruit = 25, post.recruit = 15)
-
 ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
@@ -395,7 +392,10 @@ ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   geom_hline(yintercept = baseline [3,6], color = "grey34")+
   geom_hline(yintercept = baseline [3,7], color = "black")+
   theme(legend.position = c(0.8,0.8))
-  
+
+
+
+
 #### IGNORE --------------
 plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Pre_Recruit_wt)) + geom_point(color = "grey76", size = 3) +
   geom_line(color = 'grey76') + 
