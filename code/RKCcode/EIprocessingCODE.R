@@ -457,7 +457,7 @@ plot1b <- plot1a + geom_point(data = CPUE_wt_93_17, aes(Year, Post_Recruit_wt),
 # need to create legend
 mature_males <- plot1b
 
-### Females and Juveniles -------------------
+### IGNORE2 -------------------
 plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Juvenile_wt)) + geom_point(color = "grey76", size = 3) +
   geom_line(color = 'grey76') + 
   geom_errorbar(aes(ymin = Juvenile_wt - Juv_SE, ymax = Juvenile_wt+ Juv_SE), 
@@ -497,6 +497,17 @@ egg_mean_all %>% filter(Year >= 1993) -> egg_mean_all_93
 
 # combine these data sets for graphing.  Create one with means and one with SEs.
 poorclutch_summary93 %>% left_join(egg_mean_all_93) -> female_egg
+female_egg_long <- gather(female_egg, vname, value1, Pclutch:egg.se, factor_key = TRUE)
+female_egg_long %>% mutate(female.egg = ifelse(vname == "Pclutch",
+                               "% poor clutch", 
+                              ifelse(vname == "mean", 
+                              "total % clutch", ifelse(vname == "Pclutch.se", 
+                              "% poor clutch", "total % clutch")))) %>% 
+  mutate(type = ifelse(vname == "Pclutch.se",
+                       "se", 
+                       ifelse(vname == "egg.se", 
+                              "se", "mean")))-> female_egg_long
+female_egg_long %>% select (-vname) %>% spread(type, value1) -> female_egg_graph
 
 #### Female eggs graph -----------
 plot1 <- ggplot(female_egg, aes(Year,Pclutch)) + geom_point(color = "black", size = 3, shape =1) +
