@@ -416,7 +416,7 @@ ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
   scale_colour_manual(values = c("grey34","grey62", "grey1"))+
   scale_shape_manual(values = c(17, 16, 15))+
   
-  ylim(0,25) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
+  ylim(0,25) +ggtitle("") + ylab("CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
@@ -491,20 +491,22 @@ femjuv <- plot1b
 ### poor clutch egg percent ------------
 poorclutch_summary <- read.csv("./results/redcrab/Excursion/poorclutch_summary_all.csv")
 poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
+poorclutch_summary93 %>% mutate(Pclutch100 = Pclutch *100, 
+                           Pclutch.se100 = Pclutch.se*100) %>% 
+  select(Year, Pclutch100, Pclutch.se100) ->poorclutch_summary93
 # file with year and mean percent poor clutch and se poor clutch from 1993 to current
 egg_mean_all <- read.csv("./results/redcrab/Excursion/egg_percent_mean_all.csv")
 egg_mean_all %>% filter(Year >= 1993) -> egg_mean_all_93
 
-
 # combine these data sets for graphing.  Create one with means and one with SEs.
 poorclutch_summary93 %>% left_join(egg_mean_all_93) -> female_egg
-female_egg_long <- gather(female_egg, vname, value1, Pclutch:egg.se, factor_key = TRUE)
-female_egg_long %>% mutate(female.egg = ifelse(vname == "Pclutch",
+female_egg_long <- gather(female_egg, vname, value1, Pclutch100:egg.se, factor_key = TRUE)
+female_egg_long %>% mutate(female.egg = ifelse(vname == "Pclutch100",
                                "% poor clutch", 
                               ifelse(vname == "mean", 
-                              "total % clutch", ifelse(vname == "Pclutch.se", 
+                              "total % clutch", ifelse(vname == "Pclutch.se100", 
                               "% poor clutch", "total % clutch")))) %>% 
-  mutate(type = ifelse(vname == "Pclutch.se",
+  mutate(type = ifelse(vname == "Pclutch.se100",
                        "se", 
                        ifelse(vname == "egg.se", 
                               "se", "mean")))-> female_egg_long
@@ -514,18 +516,15 @@ female_egg_long %>% select (-vname) %>% spread(type, value1) -> female_egg_graph
 ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+ 
   geom_point(aes(color = female.egg, shape = female.egg), size =3) +
   geom_line(aes(color = female.egg, group = female.egg))+
-  scale_colour_manual(values = c("grey62", "grey1"))+
-  scale_shape_manual(values = c(1, 15))+
+  scale_colour_manual(values = c("grey1", "black"))+
+  scale_shape_manual(values = c(16, 1))+
   
-  ylim(0,100) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
+  ylim(0,100) +ggtitle("") + ylab("Percentage")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-  geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
                 width =.4) +
-  geom_hline(yintercept = baseline[3,2], color = "grey62")+
-  geom_hline(yintercept = baseline [3,3], color = "grey50")+
-  geom_hline(yintercept = baseline [3,4], color = "grey1")+
-  theme(legend.position = c(0.8,0.8))
+  theme(legend.position = c(0.2,0.5))
 
 
 
