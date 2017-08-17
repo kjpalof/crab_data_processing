@@ -495,6 +495,7 @@ poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
 egg_mean_all <- read.csv("./results/redcrab/Excursion/egg_percent_mean_all.csv")
 egg_mean_all %>% filter(Year >= 1993) -> egg_mean_all_93
 
+
 # combine these data sets for graphing.  Create one with means and one with SEs.
 poorclutch_summary93 %>% left_join(egg_mean_all_93) -> female_egg
 female_egg_long <- gather(female_egg, vname, value1, Pclutch:egg.se, factor_key = TRUE)
@@ -510,6 +511,26 @@ female_egg_long %>% mutate(female.egg = ifelse(vname == "Pclutch",
 female_egg_long %>% select (-vname) %>% spread(type, value1) -> female_egg_graph
 
 #### Female eggs graph -----------
+ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+ 
+  geom_point(aes(color = female.egg, shape = female.egg), size =3) +
+  geom_line(aes(color = female.egg, group = female.egg))+
+  scale_colour_manual(values = c("grey62", "grey1"))+
+  scale_shape_manual(values = c(1, 15))+
+  
+  ylim(0,100) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
+  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
+  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
+                width =.4) +
+  geom_hline(yintercept = baseline[3,2], color = "grey62")+
+  geom_hline(yintercept = baseline [3,3], color = "grey50")+
+  geom_hline(yintercept = baseline [3,4], color = "grey1")+
+  theme(legend.position = c(0.8,0.8))
+
+
+
+
+
 plot1 <- ggplot(female_egg, aes(Year,Pclutch)) + geom_point(color = "black", size = 3, shape =1) +
   geom_line(color = 'black') + 
   geom_errorbar(aes(ymin = Pclutch-Pclutch.se, ymax = Pclutch + Pclutch.se), 
