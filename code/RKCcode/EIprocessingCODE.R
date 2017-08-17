@@ -527,14 +527,3 @@ ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+
   theme(legend.position = c(0.2,0.5))
 
 
-
-
-
-plot1 <- ggplot(female_egg, aes(Year,Pclutch)) + geom_point(color = "black", size = 3, shape =1) +
-  geom_line(color = 'black') + 
-  geom_errorbar(aes(ymin = Pclutch-Pclutch.se, ymax = Pclutch + Pclutch.se), 
-                width =.4, color = "black") +
-  ylim(0,0.5) + ylab("Ratio poor clutch/pot")+ xlab("")+
-  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
-  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2))
- 
