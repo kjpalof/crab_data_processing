@@ -381,11 +381,9 @@ group.colors = c(pre.recruit = "grey76", recruit = "grey42", post.recruit = "gre
 group.shapes = c(pre.recruit = 16, recruit = 25, post.recruit = 15)
 
 ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
-  
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
-  
-  scale_colour_manual(values = c("grey1", "grey76", "grey42"))+
+  scale_colour_manual(values = c("grey1", "grey62", "grey34"))+
   scale_shape_manual(values = c(15, 16, 17))+
   
   ylim(0,7) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
@@ -393,9 +391,10 @@ ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                 width =.4) +
-  geom_hline(yintercept = baseline[3,5], color = "grey76")+
-  geom_hline(yintercept = baseline [3,6], color = "grey42")+
-  geom_hline(yintercept = baseline [3,7], color = "black") 
+  geom_hline(yintercept = baseline[3,5], color = "grey62")+
+  geom_hline(yintercept = baseline [3,6], color = "grey34")+
+  geom_hline(yintercept = baseline [3,7], color = "black")+
+  theme(legend.position = c(0.8,0.8))
   
 #### IGNORE --------------
 plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Pre_Recruit_wt)) + geom_point(color = "grey76", size = 3) +
