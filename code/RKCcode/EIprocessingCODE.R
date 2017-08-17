@@ -392,7 +392,7 @@ femjuv_long %>% mutate(recruit.class = ifelse(recruit.status == "Juvenile_wt",
                               "se", ifelse(recruit.status == "MatF_SE", 
                                            "se", "mean"))))-> femjuv_long
 femjuv_long %>% select (-recruit.status) %>% spread(type, value1) -> femjuv_graph
-#### mature male plot -----------
+#### F1a mature male plot -----------
 ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
@@ -409,7 +409,7 @@ ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   geom_hline(yintercept = baseline [3,7], color = "black")+
   theme(legend.position = c(0.8,0.8))
 
-### females/juvenile plot ---------------
+### F1b females/juvenile plot ---------------
 ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
@@ -512,7 +512,7 @@ female_egg_long %>% mutate(female.egg = ifelse(vname == "Pclutch100",
                               "se", "mean")))-> female_egg_long
 female_egg_long %>% select (-vname) %>% spread(type, value1) -> female_egg_graph
 
-#### Female eggs graph -----------
+#### F1c Female eggs graph -----------
 ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+ 
   geom_point(aes(color = female.egg, shape = female.egg), size =3) +
   geom_line(aes(color = female.egg, group = female.egg))+
@@ -526,4 +526,22 @@ ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+
                 width =.4) +
   theme(legend.position = c(0.2,0.5))
 
+### biomass harvest graph --------------
+biomass <- read.csv("./data/redcrab/biomass.csv")
+# file for all locations.  Has legal biomass from CSA, harvest
+# mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
+# adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
+biomass %>% filter(Location == "Excursion") %>% 
+  select(Year, legal.biomass, harvest, mr.biomass, adj.biomass) ->ei.biomass
+ei.biomass_long <- gather(ei.biomass, type, pounds, legal.biomass:adj.biomass, factor_key = TRUE)
 
+ggplot(ei.biomass_long, aes(Year, pounds, group = type))+ 
+  geom_point(aes(color = type, shape = type), size =3) +
+  geom_line(aes(color = type, group = type))+
+  #scale_colour_manual(values = c("grey1", "black"))+
+  #scale_shape_manual(values = c(16, 1))+
+  
+  ylim(0,700000) +ggtitle("") + ylab("Legal biomass (lbs)")+ xlab("Year")+
+  theme(plot.title = element_text(hjust =0.5)) + 
+  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+    theme(legend.position = c(0.8,0.8))
