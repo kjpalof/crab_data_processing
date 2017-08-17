@@ -410,20 +410,20 @@ ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   theme(legend.position = c(0.8,0.8))
 
 ### females/juvenile plot ---------------
-ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
+ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
-  scale_colour_manual(values = c("grey1", "grey62", "grey34"))+
-  scale_shape_manual(values = c(15, 16, 17))+
+  scale_colour_manual(values = c("grey34","grey62", "grey1"))+
+  scale_shape_manual(values = c(17, 16, 15))+
   
-  ylim(0,7) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
+  ylim(0,25) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                 width =.4) +
-  geom_hline(yintercept = baseline[3,5], color = "grey62")+
-  geom_hline(yintercept = baseline [3,6], color = "grey34")+
-  geom_hline(yintercept = baseline [3,7], color = "black")+
+  geom_hline(yintercept = baseline[3,2], color = "grey62")+
+  geom_hline(yintercept = baseline [3,3], color = "grey50")+
+  geom_hline(yintercept = baseline [3,4], color = "grey1")+
   theme(legend.position = c(0.8,0.8))
 
 
