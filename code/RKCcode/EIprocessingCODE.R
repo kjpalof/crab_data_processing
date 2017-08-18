@@ -14,6 +14,8 @@ library(plotrix)
 library(SDMTools)
 library(weights)
 library(broom)
+library(grid)
+library(gridExtra)
 #font_import()
 loadfonts(device="win")
 windowsFonts(Times=windowsFont("TT Times New Roman"))
@@ -393,7 +395,7 @@ femjuv_long %>% mutate(recruit.class = ifelse(recruit.status == "Juvenile_wt",
                                            "se", "mean"))))-> femjuv_long
 femjuv_long %>% select (-recruit.status) %>% spread(type, value1) -> femjuv_graph
 #### F1a mature male plot -----------
-ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
+p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
   scale_colour_manual(values = c("grey1", "grey62", "grey34"))+
@@ -410,7 +412,7 @@ ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   theme(legend.position = c(0.8,0.8))
 
 ### F1b females/juvenile plot ---------------
-ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+ 
+p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
   scale_colour_manual(values = c("grey34","grey62", "grey1"))+
@@ -513,7 +515,7 @@ female_egg_long %>% mutate(female.egg = ifelse(vname == "Pclutch100",
 female_egg_long %>% select (-vname) %>% spread(type, value1) -> female_egg_graph
 
 #### F1c Female eggs graph -----------
-ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+ 
+p3 <- ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+ 
   geom_point(aes(color = female.egg, shape = female.egg), size =3) +
   geom_line(aes(color = female.egg, group = female.egg))+
   scale_colour_manual(values = c("grey1", "black"))+
@@ -535,7 +537,7 @@ biomass %>% filter(Location == "Excursion") %>%
   select(Year, legal.biomass, harvest, mr.biomass, adj.biomass) ->ei.biomass
 ei.biomass_long <- gather(ei.biomass, type, pounds, legal.biomass:adj.biomass, factor_key = TRUE)
 
-ggplot(ei.biomass_long, aes(Year, pounds, group = type))+ 
+p4 <- ggplot(ei.biomass_long, aes(Year, pounds, group = type))+ 
   geom_point(aes(color = type, shape = type), size =3) +
   geom_line(aes(color = type, group = type))+
   scale_colour_manual(values = c("grey1", "grey1", "grey1", "grey62"))+
@@ -544,5 +546,10 @@ ggplot(ei.biomass_long, aes(Year, pounds, group = type))+
   ylim(0,700000) +ggtitle("") + ylab("Legal biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-    theme(legend.position = c(0.8,0.8)) +
+    theme(legend.position = c(0.8,0.8)) + 
   geom_hline(yintercept = 83350, color = "grey1")
+
+
+### FINAL plot -------------
+grid.arrange(p1, p2, p3, p4, ncol = 1)
+
