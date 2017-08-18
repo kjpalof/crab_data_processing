@@ -344,7 +344,7 @@ ggplot(CPUE_wt_all, aes(Year, Post_Recruit_wt)) + geom_point() +geom_line(color 
   geom_line(data = CPUE_wt_79_04)
 
 ### stock assessment figures --------------
-CPUE_ALL_YEARS
+head(CPUE_ALL_YEARS)
 CPUE_ALL_YEARS %>%
   group_by(Year) %>%
   summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
