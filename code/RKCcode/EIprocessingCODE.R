@@ -538,10 +538,11 @@ ei.biomass_long <- gather(ei.biomass, type, pounds, legal.biomass:adj.biomass, f
 ggplot(ei.biomass_long, aes(Year, pounds, group = type))+ 
   geom_point(aes(color = type, shape = type), size =3) +
   geom_line(aes(color = type, group = type))+
-  #scale_colour_manual(values = c("grey1", "black"))+
-  #scale_shape_manual(values = c(16, 1))+
+  scale_colour_manual(values = c("grey1", "grey1", "grey1", "grey62"))+
+  scale_shape_manual(values = c(16, 1, 18, 18))+
   
   ylim(0,700000) +ggtitle("") + ylab("Legal biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-    theme(legend.position = c(0.8,0.8))
+    theme(legend.position = c(0.8,0.8)) +
+  geom_hline(yintercept = 83350, color = "grey1")
