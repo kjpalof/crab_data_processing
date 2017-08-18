@@ -425,36 +425,6 @@ p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
   geom_hline(yintercept = baseline [3,4], color = "grey1")+
   theme(legend.position = c(0.8,0.7))
 
-### IGNORE2 -------------------
-plot1 <- ggplot(CPUE_wt_93_17, aes(Year, Juvenile_wt)) + geom_point(color = "grey76", size = 3) +
-  geom_line(color = 'grey76') + 
-  geom_errorbar(aes(ymin = Juvenile_wt - Juv_SE, ymax = Juvenile_wt+ Juv_SE), 
-                width =.4, color = "grey76") +
-  ylim(0,25) + ylab("CPUE (number/pot)")+ xlab("")+
-  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
-  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2))+
-  geom_hline(yintercept = baseline [3,2], color = "grey76")
-
-
-plot1a <- plot1 + geom_point(data = CPUE_wt_93_17, aes(Year, SmallF_wt), 
-                             shape =25, fill = 'grey42', color ="grey42", size = 3)+
-  geom_line(data = CPUE_wt_93_17, aes(Year, SmallF_wt), color = "grey42")+
-  geom_errorbar(data = CPUE_wt_93_17, aes(ymin = SmallF_wt - SmallF_SE,
-                                          ymax = SmallF_wt + SmallF_SE), 
-                width = .4, color = 'grey42') +
-  geom_hline(yintercept = baseline [3,3], color = "grey42")
-
-plot1b <- plot1a + geom_point(data = CPUE_wt_93_17, aes(Year, MatF_wt), 
-                              shape =15, fill = 'black', color ="black", size =3)+
-  geom_line(data = CPUE_wt_93_17, aes(Year, MatF_wt), color = "black")+
-  geom_errorbar(data = CPUE_wt_93_17, aes(ymin = MatF_wt - MatF_SE,
-                                          ymax = MatF_wt + MatF_SE), 
-                width = .4, color = 'black')+
-  geom_hline(yintercept = baseline [3,4], color = "black") 
-
-
-# need to create legend
-femjuv <- plot1b
 
 ### poor clutch egg percent ------------
 poorclutch_summary <- read.csv("./results/redcrab/Excursion/poorclutch_summary_all.csv")
