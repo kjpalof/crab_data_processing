@@ -398,8 +398,8 @@ femjuv_long %>% select (-recruit.status) %>% spread(type, value1) -> femjuv_grap
 p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
-  scale_colour_manual(values = c("grey1", "grey62", "grey34"))+
-  scale_shape_manual(values = c(15, 16, 17))+
+  scale_colour_manual(name = "", values = c("grey1", "grey62", "grey34"))+
+  scale_shape_manual(name = "", values = c(15, 16, 17))+
   
   ylim(0,7) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
@@ -409,14 +409,14 @@ p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   geom_hline(yintercept = baseline[3,5], color = "grey62")+
   geom_hline(yintercept = baseline [3,6], color = "grey34")+
   geom_hline(yintercept = baseline [3,7], color = "black")+
-  theme(legend.position = c(0.8,0.8))
+  theme(legend.position = c(0.8,0.7))
 
 ### F1b females/juvenile plot ---------------
 p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
-  scale_colour_manual(values = c("grey34","grey62", "grey1"))+
-  scale_shape_manual(values = c(17, 16, 15))+
+  scale_colour_manual(name = "", values = c("grey34","grey62", "grey1"))+
+  scale_shape_manual(name = "", values = c(17, 16, 15))+
   
   ylim(0,25) +ggtitle("") + ylab("CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
@@ -426,7 +426,7 @@ p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
   geom_hline(yintercept = baseline[3,2], color = "grey62")+
   geom_hline(yintercept = baseline [3,3], color = "grey50")+
   geom_hline(yintercept = baseline [3,4], color = "grey1")+
-  theme(legend.position = c(0.8,0.8))
+  theme(legend.position = c(0.8,0.7))
 
 
 #### IGNORE --------------
@@ -518,8 +518,8 @@ female_egg_long %>% select (-vname) %>% spread(type, value1) -> female_egg_graph
 p3 <- ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+ 
   geom_point(aes(color = female.egg, shape = female.egg), size =3) +
   geom_line(aes(color = female.egg, group = female.egg))+
-  scale_colour_manual(values = c("grey1", "black"))+
-  scale_shape_manual(values = c(16, 1))+
+  scale_colour_manual(name = "", values = c("grey1", "black"))+
+  scale_shape_manual(name = "", values = c(16, 1))+
   
   ylim(0,100) +ggtitle("") + ylab("Percentage")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
@@ -540,16 +540,20 @@ ei.biomass_long <- gather(ei.biomass, type, pounds, legal.biomass:adj.biomass, f
 p4 <- ggplot(ei.biomass_long, aes(Year, pounds, group = type))+ 
   geom_point(aes(color = type, shape = type), size =3) +
   geom_line(aes(color = type, group = type))+
-  scale_colour_manual(values = c("grey1", "grey1", "grey1", "grey62"))+
-  scale_shape_manual(values = c(16, 1, 18, 18))+
+  scale_colour_manual(name = "", values = c("grey1", "grey1", "grey1", "grey62"))+
+  scale_shape_manual(name = "", values = c(16, 1, 18, 18))+
   
-  ylim(0,700000) +ggtitle("") + ylab("Legal biomass (lbs)")+ xlab("Year")+
+  ylim(0,715000) +ggtitle("") + ylab("Legal biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-    theme(legend.position = c(0.8,0.8)) + 
-  geom_hline(yintercept = 83350, color = "grey1")
-
-
+    theme(legend.position = c(0.8,0.6)) + 
+  geom_hline(yintercept = 83351, color = "grey1")+
+  geom_hline(yintercept = 411756, color = "grey62", linetype = "dashed")
+  
+ei.biomass %>% filter(Year <= 2007) %>% summarise(mean(legal.biomass))
+ei.biomass %>% filter(Year <= 2007) %>% summarise(mean(adj.biomass))
 ### FINAL plot -------------
+png('./results/redcrab/Excursion/figure1.png', res= 300, width = 8, height =11, units = "in")
 grid.arrange(p1, p2, p3, p4, ncol = 1)
+dev.off()
 
