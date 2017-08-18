@@ -138,7 +138,7 @@ poorclutch1 %>%
 
 poorclutch1 %>% filter(Year == year) -> poorclutch1_current
 write_csv(poorclutch1_current, paste0('results/redcrab/', area, '/poorclutch1_current.csv'))
-write_csv(poorclutch1, paste0('results/redcrab/', area, '/poorclutch1.csv'))
+write_csv(poorclutch1, paste0('results/redcrab/', area, '/poorclutch_all.csv'))
 write_csv(poorclutch_summary_all, paste0('results/redcrab/', area, '/poorclutch_summary_all.csv'))
 
 }
