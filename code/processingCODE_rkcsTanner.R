@@ -1,6 +1,7 @@
 #K.Palof 
-# ADF&G 8-1-16 updated /10-6-16 
+# ADF&G 8-1-16 updated /10-6-16 / 8-18-17
 # Areas: RKCS areas for Tanner crab - EXCLUDES north juneau and stephens passage
+# includes: Excursion, 
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP, prior to 2016  
 
 rm(list = ls()) # clear workspace since data frames have same names
