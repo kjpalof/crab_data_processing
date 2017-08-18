@@ -194,7 +194,7 @@ long_t(dat5_current, baseline, 2017, 'Excursion', 'Excursion')
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
-    # Excursion linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
+    # Excursion linear model: exp(3.12*log(length in mm)-7.67)*2.2/1000
 glimpse(dat1) # raw data for both 2016 and 2017
     # slope = 3.12
     # intercept = 7.67
