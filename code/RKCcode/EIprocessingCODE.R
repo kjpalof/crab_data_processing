@@ -230,7 +230,7 @@ largef_all <- rbind(largef, LgF_dat1_2017) # raw female data for all years.
 ##### % poor (<10 %) clutch -----------------------------------
 
 poor_clutch(largef_all, 'Excursion', 2017)
-# output is saved as poorclutch_current.csv - which has all pots for 2017
+# output is saved as poorclutch1_current.csv - which has all pots for 2017
 # and poorclutch_summary_all.csv which has the percentage and 
 #                                          SD of poor clutches for all years
 
@@ -246,9 +246,9 @@ poor_clutch_long(poorclutch_current, 'Excursion', 2017)
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 # save this file here for future years
-females_all <- rbind(females, poorclutch_current)
+poorclutch_all <- read.csv("./results/redcrab/Excursion/poorclutch_all.csv")
 #function for short term trends and output saving.
-poor_clutch_short(females_all, 'Excursion', 2017)
+poor_clutch_short(poorclutch_all, 'Excursion', 2017)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
