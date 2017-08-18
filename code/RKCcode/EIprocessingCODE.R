@@ -359,11 +359,6 @@ CPUE_wt_all %>% filter(Year >= 1993) -> CPUE_wt_93_17
 ### Mature males-----
 #create data frame that has mature males - just means
 # data fame that has mature males - just SE
-CPUE_wt_93_17 %>% select(Year, Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt) -> males_mean
-CPUE_wt_93_17 %>% select(Year, PreR_SE, Rec_SE, PR_SE) -> males_se
-
-male_mean_long <- gather(males_mean, recruit.status, mean, Pre_Recruit_wt:Post_Recruit_wt, factor_key = TRUE)
-
 CPUE_wt_93_17 %>% select(Year,Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
                          PreR_SE, Rec_SE, PR_SE) -> males
 males_long <- gather(males, recruit.status, value1, Pre_Recruit_wt:PR_SE, factor_key = TRUE)
