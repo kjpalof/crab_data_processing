@@ -166,7 +166,7 @@ poor_clutch_short <- function(females_all, area, year){
   females_all %>%
     filter(Year >= (year-3)) -> LgF_short # short term file has last 4 years in it
   #output this file as .csv to add to next year
-  write_csv(females_all, paste0('results/redcrab/', area,'/poorclutch_females_all.csv'))
+  #write_csv(females_all, paste0('results/redcrab/', area,'/poorclutch_females_all.csv'))
   
   LgF_short %>% 
     mutate(per_poorclt = var1)  -> LgF_short
