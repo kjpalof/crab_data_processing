@@ -206,19 +206,6 @@ weights(dat1, 3.12, 7.67, "Excursion")
 # large or mature females
 dat1 %>%
   filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1 # current 2 years
-
-raw_data %>%
-  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> largef
-largef %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-                  Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-                  Egg.Development.Code, Egg.Condition.Code) -> largef
-LgF_dat1 %>% filter(Year == 2017) %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-                                             Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-                                             Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_2017
-
-largef_all <- rbind(largef, LgF_dat1_2017) # raw female data for all years.
-
-##### % poor (<10 %) clutch -----------------------------------
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
@@ -227,10 +214,25 @@ LgF_dat1[is.na(LgF_dat1$Egg.Percent),]
 LgF_dat1 %>%
   mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
 
-#write.csv(LgF_dat1, './results/Excursion/largefemales_16.csv')
+
+raw_data %>%
+  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> largef
+largef %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+                  Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+                  Egg.Development.Code, Egg.Condition.Code) -> largef
+
+LgF_dat1 %>% filter(Year == 2017) %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+                                             Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+                                             Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_2017
+
+largef_all <- rbind(largef, LgF_dat1_2017) # raw female data for all years.
+
+##### % poor (<10 %) clutch -----------------------------------
+
 poor_clutch(largef_all, 'Excursion', 2017)
 # output is saved as poorclutch_current.csv - which has all pots for 2017
-#     and poorclutch_summary_all.csv which has the percentage and SD of poor clutches for all years
+# and poorclutch_summary_all.csv which has the percentage and 
+#                                          SD of poor clutches for all years
 
 ##### Long term females -------------------------
 poorclutch_current <- read.csv("./results/redcrab/Excursion/poorclutch1_current.csv")
