@@ -38,7 +38,12 @@ histdat <- read.csv("./data/redcrab/Excursion/EI_79_16_bypot.csv")
 females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
 raw_data <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")
         ## use this for raw historic female data in 2017, create input file for future
+
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
+biomass <- read.csv("./data/redcrab/biomass.csv")
+# file for all locations.  Has legal biomass from CSA, harvest
+# mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
+# adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
@@ -426,7 +431,7 @@ p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
   theme(legend.position = c(0.8,0.7))
 
 
-### poor clutch egg percent ------------
+### poor clutch egg percent data processing------------
 poorclutch_summary <- read.csv("./results/redcrab/Excursion/poorclutch_summary_all.csv")
 poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
 poorclutch_summary93 %>% mutate(Pclutch100 = Pclutch *100, 
@@ -465,7 +470,7 @@ p3 <- ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+
   theme(legend.position = c(0.2,0.5))
 
 ### biomass harvest graph --------------
-biomass <- read.csv("./data/redcrab/biomass.csv")
+
 # file for all locations.  Has legal biomass from CSA, harvest
 # mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
 # adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
