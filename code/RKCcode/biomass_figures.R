@@ -33,10 +33,10 @@ pb <- ggplot(pb.biomass_long, aes(Year, pounds, group = type))+
   scale_colour_manual(name = "", values = c("grey1", "grey1"))+
   scale_shape_manual(name = "", values = c(16, 1))+
   
-  ylim(0,325000) +ggtitle("Pybus Bay 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
-  theme(plot.title = element_text(hjust =0.5)) + 
+  ylim(0,325000) +ggtitle("Pybus Bay 2017 Model") + ylab("Biomass (lbs)")+ xlab("")+
+  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-  theme(legend.position = c(0.8,0.6)) + 
+  theme(legend.position = c(0.8,0.7)) + 
   geom_hline(yintercept = 102618, color = "grey1")+
   geom_hline(yintercept = 129266, color = "grey1", linetype = "dashed")
 
@@ -53,10 +53,10 @@ gb <- ggplot(gb.biomass_long, aes(Year, pounds, group = type))+
   scale_colour_manual(name = "", values = c("grey1", "grey1"))+
   scale_shape_manual(name = "", values = c(16, 1))+
   
-  ylim(0,125000) +ggtitle("Gambier Bay 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
-  theme(plot.title = element_text(hjust =0.5)) + 
+  ylim(0,125000) +ggtitle("Gambier Bay 2017 Model") + ylab("Biomass (lbs)")+ xlab("")+
+  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-  theme(legend.position = c(0.8,0.6)) + 
+  theme(legend.position = c(0.8,0.7)) + 
   geom_hline(yintercept = 44763, color = "grey1")+
   geom_hline(yintercept = 62684, color = "grey1", linetype = "dashed")
 
@@ -74,10 +74,10 @@ sc <- ggplot(sc.biomass_long, aes(Year, pounds, group = type))+
   scale_colour_manual(name = "", values = c("grey1", "grey1"))+
   scale_shape_manual(name = "", values = c(16, 1))+
   
-  ylim(0,600000) +ggtitle("Seymour Canal 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
-  theme(plot.title = element_text(hjust =0.5)) + 
+  ylim(0,600000) +ggtitle("Seymour Canal 2017 Model") + ylab("Biomass (lbs)")+ xlab("")+
+  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-  theme(legend.position = c(0.8,0.6)) + 
+  theme(legend.position = c(0.8,0.7)) + 
   geom_hline(yintercept = 119837, color = "grey1")+
   geom_hline(yintercept = 147620, color = "grey1", linetype = "dashed")
 
@@ -97,7 +97,7 @@ ps <- ggplot(ps.biomass_long, aes(Year, pounds, group = type))+
   ylim(0,175000) +ggtitle("Peril Strait 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-  theme(legend.position = c(0.8,0.6)) + 
+  theme(legend.position = c(0.8,0.7)) + 
   geom_hline(yintercept = 32486, color = "grey1")+
   geom_hline(yintercept = 67031, color = "grey1", linetype = "dashed")
 
@@ -114,10 +114,10 @@ jn <- ggplot(jn.biomass_long, aes(Year, pounds, group = type))+
   scale_colour_manual(name = "", values = c("grey1", "grey1"))+
   scale_shape_manual(name = "", values = c(16, 1))+
   
-  ylim(0,700000) +ggtitle("Juneau Area 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
-  theme(plot.title = element_text(hjust =0.5)) + 
+  ylim(0,700000) +ggtitle("Juneau Area 2017 Model") + ylab("Biomass (lbs)")+ xlab("")+
+  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-  theme(legend.position = c(0.8,0.6)) + 
+  theme(legend.position = c(0.8,0.7)) + 
   geom_hline(yintercept = 302966, color = "grey1")+
   geom_hline(yintercept = 419518, color = "grey1", linetype = "dashed")
 
@@ -134,10 +134,10 @@ lc <- ggplot(lc.biomass_long, aes(Year, pounds, group = type))+
   scale_colour_manual(name = "", values = c("grey1", "grey1"))+
   scale_shape_manual(name = "", values = c(16, 1))+
   
-  ylim(0,60000) +ggtitle("Lynn Sisters 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
-  theme(plot.title = element_text(hjust =0.5)) + 
+  ylim(0,60000) +ggtitle("Lynn Sisters 2017 Model") + ylab("Biomass (lbs)")+ xlab("")+
+  theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-  theme(legend.position = c(0.8,0.6)) + 
+  theme(legend.position = c(0.8,0.7)) + 
   geom_hline(yintercept = 14989, color = "grey1")+
   geom_hline(yintercept = 24799, color = "grey1", linetype = "dashed")
 
@@ -158,9 +158,18 @@ ei <- ggplot(ei.biomass_long, aes(Year, pounds, group = type))+
   ylim(0,150000) +ggtitle("Excursion Inlet 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
-  theme(legend.position = c(0.8,0.6)) + 
+  theme(legend.position = c(0.8,0.7)) + 
   geom_hline(yintercept = 29095, color = "grey1")+
   geom_hline(yintercept = 56413, color = "grey1", linetype = "dashed")
 
 ei.biomass %>% filter(Year <= 2007) %>% summarise(mean(legal))
 ei.biomass %>% filter(Year <= 2007) %>% summarise(mean(mature))
+
+
+# summarize all together 
+png('./results/redcrab/figure_mature.png', res= 300, width = 8, height =11, units = "in")
+grid.arrange(pb, gb, sc, ps, ncol = 1)
+dev.off()
+png('./results/redcrab/figure_mature2.png', res= 300, width = 8, height =11, units = "in")
+grid.arrange(jn, lc, ei, ncol = 1)
+dev.off()
