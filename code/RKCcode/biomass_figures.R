@@ -68,7 +68,7 @@ biomass %>% filter(Location == "Seymour") %>%
   select(Year, legal, mature) ->sc.biomass
 sc.biomass_long <- gather(sc.biomass, type, pounds, legal:mature, factor_key = TRUE)
 
-ggplot(sc.biomass_long, aes(Year, pounds, group = type))+ 
+sc <- ggplot(sc.biomass_long, aes(Year, pounds, group = type))+ 
   geom_point(aes(color = type, shape = type), size =3) +
   geom_line(aes(color = type, group = type))+
   scale_colour_manual(name = "", values = c("grey1", "grey1"))+
@@ -83,12 +83,73 @@ ggplot(sc.biomass_long, aes(Year, pounds, group = type))+
 
 sc.biomass %>% filter(Year <= 2007) %>% summarise(mean(legal))
 sc.biomass %>% filter(Year <= 2007) %>% summarise(mean(mature))
+# Peril strait ------------
+biomass %>% filter(Location == "Peril") %>% 
+  select(Year, legal, mature) ->ps.biomass
+ps.biomass_long <- gather(ps.biomass, type, pounds, legal:mature, factor_key = TRUE)
+
+ps <- ggplot(ps.biomass_long, aes(Year, pounds, group = type))+ 
+  geom_point(aes(color = type, shape = type), size =3) +
+  geom_line(aes(color = type, group = type))+
+  scale_colour_manual(name = "", values = c("grey1", "grey1"))+
+  scale_shape_manual(name = "", values = c(16, 1))+
+  
+  ylim(0,175000) +ggtitle("Peril Strait 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
+  theme(plot.title = element_text(hjust =0.5)) + 
+  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  theme(legend.position = c(0.8,0.6)) + 
+  geom_hline(yintercept = 32486, color = "grey1")+
+  geom_hline(yintercept = 67031, color = "grey1", linetype = "dashed")
+
+ps.biomass %>% filter(Year <= 2007) %>% summarise(mean(legal))
+ps.biomass %>% filter(Year <= 2007) %>% summarise(mean(mature))
+#Juneau ----------------
+biomass %>% filter(Location == "Juneau") %>% 
+  select(Year, legal, mature) ->jn.biomass
+jn.biomass_long <- gather(jn.biomass, type, pounds, legal:mature, factor_key = TRUE)
+
+jn <- ggplot(jn.biomass_long, aes(Year, pounds, group = type))+ 
+  geom_point(aes(color = type, shape = type), size =3) +
+  geom_line(aes(color = type, group = type))+
+  scale_colour_manual(name = "", values = c("grey1", "grey1"))+
+  scale_shape_manual(name = "", values = c(16, 1))+
+  
+  ylim(0,700000) +ggtitle("Juneau Area 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
+  theme(plot.title = element_text(hjust =0.5)) + 
+  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  theme(legend.position = c(0.8,0.6)) + 
+  geom_hline(yintercept = 302966, color = "grey1")+
+  geom_hline(yintercept = 419518, color = "grey1", linetype = "dashed")
+
+jn.biomass %>% filter(Year <= 2007) %>% summarise(mean(legal))
+jn.biomass %>% filter(Year <= 2007) %>% summarise(mean(mature))
+# lynn sisters ------------
+biomass %>% filter(Location == "Lynn Canal") %>% 
+  select(Year, legal, mature) ->lc.biomass
+lc.biomass_long <- gather(lc.biomass, type, pounds, legal:mature, factor_key = TRUE)
+
+lc <- ggplot(lc.biomass_long, aes(Year, pounds, group = type))+ 
+  geom_point(aes(color = type, shape = type), size =3) +
+  geom_line(aes(color = type, group = type))+
+  scale_colour_manual(name = "", values = c("grey1", "grey1"))+
+  scale_shape_manual(name = "", values = c(16, 1))+
+  
+  ylim(0,60000) +ggtitle("Lynn Sisters 2017 Model") + ylab("Biomass (lbs)")+ xlab("Year")+
+  theme(plot.title = element_text(hjust =0.5)) + 
+  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  theme(legend.position = c(0.8,0.6)) + 
+  geom_hline(yintercept = 14989, color = "grey1")+
+  geom_hline(yintercept = 24799, color = "grey1", linetype = "dashed")
+
+lc.biomass %>% filter(Year <= 2007) %>% summarise(mean(legal))
+lc.biomass %>% filter(Year <= 2007) %>% summarise(mean(mature))
+
 # excursion ---------------------
 biomass %>% filter(Location == "Excursion") %>% 
   select(Year, legal, mature) ->ei.biomass
 ei.biomass_long <- gather(ei.biomass, type, pounds, legal:mature, factor_key = TRUE)
 
-ggplot(ei.biomass_long, aes(Year, pounds, group = type))+ 
+ei <- ggplot(ei.biomass_long, aes(Year, pounds, group = type))+ 
   geom_point(aes(color = type, shape = type), size =3) +
   geom_line(aes(color = type, group = type))+
   scale_colour_manual(name = "", values = c("grey1", "grey1"))+
