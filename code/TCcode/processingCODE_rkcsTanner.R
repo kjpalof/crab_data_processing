@@ -1,16 +1,13 @@
 #K.Palof 
-# ADF&G 8-1-16 updated /10-6-16 / 8-18-17
+# ADF&G 8-1-16 updated /10-6-16 / 8-18-17/9-25-17
 # Areas: RKCS areas for Tanner crab - EXCLUDES north juneau and stephens passage
-# includes: Excursion, 
+# includes: Excursion, Seymour Canal, Pybus Bay, Gambier Bay, Peril Strait, and Lynn Sisters
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP, prior to 2016  
 
 rm(list = ls()) # clear workspace since data frames have same names
 #####Load Packages ---------------------------------
-library(plyr)
-library(dplyr)
+library(tidyverse)
 library(stringr)
-library(ggplot2)
-#library(tidyr)
 library(reshape2)
 library(extrafont)
 library(ggthemes)
@@ -18,6 +15,16 @@ library(plotrix)
 library(SDMTools)
 library(weights)
 library(broom)
+library(grid)
+library(gridExtra)
+#font_import()
+loadfonts(device="win")
+windowsFonts(Times=windowsFont("TT Times New Roman"))
+
+theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
+            theme(panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()))
+#source('./code/functions_TC.R')
 
 ###
 #####Load Data ---------------------------------------------------
