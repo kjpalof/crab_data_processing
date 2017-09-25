@@ -19,7 +19,7 @@ theme_set(theme_bw(base_size=12,base_family='Times New Roman')+
 #biomass <- read.csv("./data/redcrab/biomass.csv") no record of historic mature biomass point estimates
 # in each year so using 2017 model output
 
-biomass <- read_excel(path = "./data/redcrab/2017_biomass_model.xlsx")
+biomass <- read_excel(path = "./data/2017_biomass_model.xlsx")
 
 # Area figures ---------------------
 # pybus ---------------
