@@ -24,13 +24,13 @@ windowsFonts(Times=windowsFont("TT Times New Roman"))
 theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
             theme(panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank()))
-#source('./code/functions_TC.R')
+#source('./code/functions_TC.R') # need to create versions of this code to deal with mutiple areas at once.
 
 ###
 #####Load Data ---------------------------------------------------
 ###
 # change input file and input folder for each
-dat <- read.csv("./data/rkc_tanner/RKCS_forTanner16.csv")
+dat <- read.csv("./data/rkc_tanner/red crab survey for Tanner crab CSA.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
 #area <- read.csv("./data/Juneau/Juneau_Barlow_strata_area.csv") 
                 #NO area for this data since these are stratified by RKCS area.  
@@ -40,9 +40,11 @@ dat <- read.csv("./data/rkc_tanner/RKCS_forTanner16.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
+#baseline <- read.csv("./data/redcrab/longterm_means.csv")
+biomass <- read.csv("./data/rkc_tanner/biomass_tanner_RKCareas.csv")
+
 ###
 ##### Initial review of new data ---------------------------------
-###
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
