@@ -48,11 +48,13 @@ biomass <- read.csv("./data/rkc_tanner/biomass_tanner_RKCareas.csv")
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
-  filter(Pot.Condition == "Normal") -> dat1
+  filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> dat1
 
 dat1 %>%
-  filter(Recruit.Status == "", Width.Millimeters >= 1) -> test1 # this SHOULD produce NO rows.  If it does you have data problems go back and correct
+  filter(Recruit.Status == "", Width.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
+dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1) -> test1
+# come back and redo this analysis once the 2017 data is edited and fixed!!!!!!!!!
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
