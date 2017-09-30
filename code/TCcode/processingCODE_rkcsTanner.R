@@ -94,6 +94,7 @@ dat1ab %>%
                                          ifelse(Sex.Code ==2 & Width.Millimeters>0 & !is.na(Width.Millimeters), 'Large.Females', 
                                                 ifelse(is.na(Width.Millimeters), 'Missing', 'Missing'))))))))) -> Tdat1
 #write.csv(Tdat1, './results/problemstanner3.csv')
+Tdat1 %>% filter(mod_recruit == "Missing")
 
 ###
 ##### By Pot ----------------------------------------------------
