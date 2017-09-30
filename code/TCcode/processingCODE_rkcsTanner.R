@@ -18,7 +18,7 @@ library(broom)
 library(grid)
 library(gridExtra)
 #font_import()
-loadfonts(device="win")
+#loadfonts(device="win")
 windowsFonts(Times=windowsFont("TT Times New Roman"))
 
 theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
