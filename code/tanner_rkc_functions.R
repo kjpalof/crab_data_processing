@@ -35,12 +35,10 @@ short_t <- function(bypot_st, year) {
     select(AREA, mod_recruit, estimate) %>%
     right_join(short_term_out2)->short_term_results # estimate here is slope from regression
   
-  short_term_results %>% 
-    rename(slope = Year) -> short_term_results
   #Now need to add column for significance and score
   short_term_results %>%
     mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
                                 ifelse(p.value <0.05 & slope <0, -1, 0))) %>%
     mutate(score = 0.25*significant) -> short_term_results
-  write_csv(short_term_results, paste0('results/redcrab/', area, '/shortterm.csv'))
+  write_csv(short_term_results, paste0('results/rkc_tanner/shortterm.csv'))
 }
