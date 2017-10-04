@@ -32,7 +32,8 @@ short_t <- function(bypot_st, year) {
   
   short_term_slope %>%
     filter(mod_recruit %in% recruit_used, term == 'Year') %>%
-    select(AREA, mod_recruit, estimate) %>%
+    rename(slope = estimate) %>% 
+    select(AREA, mod_recruit, slope) %>%
     right_join(short_term_out2)->short_term_results # estimate here is slope from regression
   
   #Now need to add column for significance and score
