@@ -96,6 +96,7 @@ dat1ab %>%
 #write.csv(Tdat1, './results/problemstanner3.csv')
 Tdat1 %>% filter(mod_recruit == "Missing")
 
+Tdat1 %>% filter(is.na(mod_recruit))
 ###
 ##### By Pot ----------------------------------------------------
 ####
@@ -112,12 +113,7 @@ dat3 <- dcast(dat2, Year + AREA + Pot.No ~ mod_recruit, sum, drop=TRUE)
 # No weighting by strata here for RKCS data due to it being designed for RKC.
 
 ####
-##### CPUE last four year -----------------------------------
-####
-
-#dat3 %>%
- # rename(Missing = Var.5, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
-# this is neccessary so that current years file (dat5) matches the historic file names
+##### CPUE for all years ----------------------------------
 
 #This version is ready to calculate CPUE for each recruit class
 #Calculates a  mean CPUE and SE for each recruit class # not weighted due to lack of tanner specific strata on red crab survey
@@ -153,11 +149,11 @@ write.csv(dat3, './results/RKCS_tanner/RKCS_perpot_allyears.csv')
 
 head(dat3)
 dat3 %>%
-  filter(Year >=2013) -> dat3 # confirm that is only contains the last 4 years.  This year needs to be changed every year
+  filter(Year >=2014) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
 
-dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
+dat3a_long <- gather(dat3a, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
-dat3_long %>% # doesn't work with dat2 data because there are no 0's for missing data
+dat3a_long %>% # doesn't work with dat2 data because there are no 0's for missing data
   group_by(AREA, mod_recruit) %>%
   do(fit = lm(crab ~ Year, data =.)) -> short_term
 
