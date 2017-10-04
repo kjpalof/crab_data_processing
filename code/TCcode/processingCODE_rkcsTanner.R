@@ -154,6 +154,8 @@ dat3 %>%
   select( -Missing) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
 #remove Missing and NA columns
 
+short_t(dat3a, 2017)
+
 dat3a_long <- gather(dat3a, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
 dat3a_long %>% # doesn't work with dat2 data because there are no 0's for missing data
