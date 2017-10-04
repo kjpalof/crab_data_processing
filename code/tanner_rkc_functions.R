@@ -12,7 +12,7 @@ library(broom)
 #input is file with last four years of data summarized by pot
 # area
 # year
-short_t <- function(bypot_st, year) {
+short_t_tanner <- function(bypot_st, year) {
   bypot_st_long <- gather(bypot_st, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) 
   
   bypot_st_long %>% 
