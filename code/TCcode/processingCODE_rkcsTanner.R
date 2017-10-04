@@ -104,7 +104,8 @@ Tdat1 %>% filter(is.na(mod_recruit))
 #Need Number of Specimens by recruit class
 Tdat1 %>%
   group_by(Year, AREA, Pot.No, mod_recruit) %>% # use AREA here instead of location due to multiple location names for one survey area
-  summarise(crab = sum(Number.Of.Specimens)) -> dat2
+  summarise(crab = sum(Number.Of.Specimens)) %>% 
+  filter(!is.na(mod_recruit)) -> dat2 #remove any NAs due to data issues.
 
 dat3 <- dcast(dat2, Year + AREA + Pot.No ~ mod_recruit, sum, drop=TRUE)
 
@@ -149,7 +150,9 @@ write.csv(dat3, './results/RKCS_tanner/RKCS_perpot_allyears.csv')
 
 head(dat3)
 dat3 %>%
-  filter(Year >=2014) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
+  filter(Year >=2014) %>% 
+  filter(-Missing) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
+#remove Missing and NA columns
 
 dat3a_long <- gather(dat3a, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
