@@ -151,7 +151,7 @@ write.csv(dat3, './results/RKCS_tanner/RKCS_perpot_allyears.csv')
 head(dat3)
 dat3 %>%
   filter(Year >=2014) %>% 
-  filter(-Missing) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
+  select( -Missing) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
 #remove Missing and NA columns
 
 dat3a_long <- gather(dat3a, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
