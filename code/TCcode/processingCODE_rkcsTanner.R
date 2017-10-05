@@ -40,7 +40,7 @@ dat <- read.csv("./data/rkc_tanner/red crab survey for Tanner crab CSA.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
-#baseline <- read.csv("./data/redcrab/longterm_means.csv")
+baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
 biomass <- read.csv("./data/rkc_tanner/biomass_tanner_RKCareas.csv")
 
 ###
@@ -164,10 +164,11 @@ ggplot(dat3a_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wra
 ###
 ##### Long term trends ---------------------
 ###
-#compare 2016 CPUE distribution to the long term mean
+#compare 2017 CPUE distribution to the long term mean - need to create or have file with long term means.
 dat3 %>%
-  filter(Year == 2016) ->dat3_2016
-#make sure you have a file with only 2016 data
+  filter(Year == 2017) ->dat3_2017
+baseline
+#make sure you have a file with only current years data 
 # long term baseline values are different for each area, I guess make a file for each area?
 #
 # the y = has to be changed for each area but once they are set they are the same from year to year
