@@ -171,7 +171,7 @@ baseline
 #make sure you have a file with only current years data 
 
 # create a function to run the t.test and loop it over each area
-long_ttest(EI, 2017, baseline = baseline, bypot = dat3)
+long_ttest('EI', 2017, baseline = baseline, bypot = dat3)
 
 baseline %>% 
   filter(AREA == "EI") -> baseline_values
