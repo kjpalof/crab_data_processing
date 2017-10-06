@@ -49,9 +49,9 @@ short_t_tanner <- function(bypot_st, year) {
 
 long_ttest <- function(area, year, baseline, bypot){
   baseline %>% 
-    filter(AREA == "area") -> baseline_values
+    filter(AREA == area) -> baseline_values
   bypot %>% 
-    filter(AREA == "area" & Year == year) ->data.use
+    filter(AREA == area & Year == year) ->data.use
   lfem <- t.test(data.use$Large.Females, mu = baseline_values$Large.Female)
   prer <- t.test(data.use$Pre_Recruit, mu = baseline_values$Pre_Recruit)
   rec <- t.test(data.use$Recruit, mu = baseline_values$Recruit)
