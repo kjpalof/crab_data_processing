@@ -249,30 +249,6 @@ datWL %>%
 
 write.csv(male_weights, './results/RKCS_tanner/RKCS_weights.csv')
 
-datWL %>%
-  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
-  group_by (AREA, Year, mod_recruit) %>%
-  summarise(mean_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_all
-weight_all %>%
-  filter(mod_recruit == "Pre_Recruit") %>%
-  group_by(AREA, Year) -> weight_pre
-datWL %>%
-  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
-  group_by (AREA, Year) %>%
-  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_mature
-
-datWL %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
-  group_by(AREA, Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_legal
-  #summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens), legal_lb)
-
-weight_mature %>%
-  right_join(weight_legal) %>%
-  right_join(weight_pre)  %>%
-  select( -mod_recruit) %>%
-  rename(pre_recruit_lb = mean_lbs) -> weights_summary
-write.csv(weights_summary, './results/RKCS_weights.csv')
 
 ##### mid-date survey-------------
 glimpse(Tdat1)
