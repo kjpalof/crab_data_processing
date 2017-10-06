@@ -1,6 +1,8 @@
 #K.Palof 
 # ADF&G 11-2-16
 # data from OceanAK summarize for use in Tanner CSA's 
+# have to modify the output from "detailed fish tickets" need to add "Number of Animals...sum" to this.
+
 # commercial catch
 rm(list = ls()) # clear workspace since data frames have same names
 #####Load Packages ---------------------------------
