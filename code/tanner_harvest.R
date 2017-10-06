@@ -60,6 +60,7 @@ harvest %>%
 write.csv(comm.catch.sum, './results/tanner/tanner_comm_catch.csv')
 ### mid-catch date ------------------
 harvest %>%
+  filter (Season == "Sep2016 - Aug17") %>% 
   group_by(survey.area, Date.of.Landing) %>%
   summarise(numbers = sum(Number.Of.Animals)) ->mid.catch
 write.csv(mid.catch, './results/tanner/tanner_mid_catch_date.csv')
