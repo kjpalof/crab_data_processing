@@ -47,6 +47,44 @@ short_t_tanner <- function(bypot_st, year) {
 ### Long term function -------------------
 # need current years data and file with long term means
 
+long_ttest <- function(area, year, baseline, bypot){
+  baseline %>% 
+    filter(AREA == "area") -> baseline_values
+  bypot %>% 
+    filter(AREA == "area" & Year == year) ->data.use
+  lfem <- t.test(data.use$Large.Females, mu = baseline_values$Large.Female)
+  prer <- t.test(data.use$Pre_Recruit, mu = baseline_values$Pre_Recruit)
+  rec <- t.test(data.use$Recruit, mu = baseline_values$Recruit)
+  postr <- t.test(data.use$Post_Recruit, mu = baseline_values$Post_Recruit)
+  
+  long_term <- matrix(nrow = 4, ncol = 3)
+  rownames(long_term) <- c("large.female", "pre.recruit", "recruit", "post.recruit")
+  colnames(long_term) <- c("mean", "p.value", "lt.mean")
+  
+  long_term[1,1] <-lfem$estimate
+  long_term[1,2] <- lfem$p.value
+  long_term[1,3] <- lfem$null.value
+  long_term[2,1] <-prer$estimate
+  long_term[2,2] <- prer$p.value
+  long_term[2,3] <- prer$null.value
+  long_term[3,1] <-rec$estimate
+  long_term[3,2] <- rec$p.value
+  long_term[3,3] <- rec$null.value
+  long_term[4,1] <-postr$estimate
+  long_term[4,2] <- postr$p.value
+  long_term[4,3] <- postr$null.value
+  
+  long_term_results <- as.data.frame(long_term)
+  
+  long_term_results %>%
+    mutate(significant = ifelse(p.value < 0.05 & mean > lt.mean, 1,
+                                ifelse(p.value <0.05 & mean < lt.mean, -1, 0))) -> long_term_results #estimate is slope from regression
+  
+  # final results with score - save here
+  #write_csv(long_term_results, paste0('results/redcrab/', area, '/longterm.csv'))
+  long_term_results 
+}
+
 long_t <- function(dat5_current, baseline, year, area, location) {
   #baseline <- read.csv("./data/redcrab/longterm_means.csv")
   baseline %>% filter(Location == location)-> baseline_values
