@@ -255,9 +255,8 @@ glimpse(Tdat1)
 #Tdat1 %>%
 # mutate(time.set = as.POSIXlt(Time.Set)) -> Tdat1
 
-####
 ##### Females - large or mature females --------------------------
-####
+
 # large or mature females
 Tdat1 %>%
   filter(Sex.Code == 2, mod_recruit == 'Large.Females') -> LgF_Tdat1
@@ -266,7 +265,7 @@ Tdat1 %>%
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
 LgF_Tdat1[is.na(LgF_Tdat1$Egg.Percent),]
-# need to change these to 0. 
+# change to 0 only if followed by a Egg.Development.Code and Egg.Condition. Code
 LgF_Tdat1 %>%
   mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_Tdat1
 
