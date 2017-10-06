@@ -228,7 +228,6 @@ weight_length <- data.frame(AREA =character(),  slope =numeric(), coeff = numeri
 weight_length <- data.frame(AREA = unique(Tdat1$AREA), slope = c(2.86,3.13, 3.30, 3.26, 3.05, 3.10),
                             coeff = c(7.33, 8.69, 9.48, 9.39, 8.34, 8.55))
 
-# Pybus Bay linear model: exp(3.05*log(length in mm)-8.34)*2.2/1000
 glimpse(Tdat1) # raw data for both 2015 and 2016 
 Tdat1 %>%
   right_join(weight_length) %>%
