@@ -237,6 +237,18 @@ Tdat1 %>%
 Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
 Legal =c("Recruit", "Post_Recruit")
 
+datWL %>% 
+  group_by(AREA, Year) %>% 
+  filter(Sex.Code == 1) %>% 
+  summarise(mature_lbs = wt.mean(weight_lb[mod_recruit %in% Mature], 
+                                 Number.Of.Specimens[mod_recruit %in% Mature]), 
+            legal_lbs = wt.mean(weight_lb[mod_recruit %in% Legal], 
+                                Number.Of.Specimens[mod_recruit %in% Legal]), 
+            prer_lbs = wt.mean(weight_lb[mod_recruit == "Pre_Recruit"], 
+                               Number.Of.Specimens[mod_recruit == "Pre_Recruit"])) -> male_weights
+
+write.csv(male_weights, './results/RKCS_tanner/RKCS_weights.csv')
+
 datWL %>%
   filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
   group_by (AREA, Year, mod_recruit) %>%
