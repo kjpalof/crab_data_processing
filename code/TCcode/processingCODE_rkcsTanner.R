@@ -171,18 +171,9 @@ baseline
 #make sure you have a file with only current years data 
 
 # create a function to run the t.test and loop it over each area
-long_ttest('EI', 2017, baseline = baseline, bypot = dat3)
-
-baseline %>% 
-  filter(AREA == "EI") -> baseline_values
-dat3 %>% 
-  filter(AREA == "EI" & Year == 2017) ->data.use
-lfem <- t.test(data.use$Large.Females, mu = baseline_values$Large.Female)
-prer <- t.test(data.use$Pre_Recruit, mu = baseline_values$Pre_Recruit)
-rec <- t.test(data.use$Recruit, mu = baseline_values$Recruit)
-postr <- t.test(data.use$Post_Recruit, mu = baseline_values$Post_Recruit)
-
-
+test1 <- long_ttest('EI', 2017, baseline = baseline, bypot = dat3)
+# baseline data and data input file names should not change.  
+# Update with the current year.  Need to figure out how to loop or lappy over all AREAs
 
 
 
