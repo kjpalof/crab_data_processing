@@ -78,7 +78,8 @@ long_ttest <- function(area, year, baseline, bypot){
   
   long_term_results %>%
     mutate(significant = ifelse(p.value < 0.05 & mean > lt.mean, 1,
-                                ifelse(p.value <0.05 & mean < lt.mean, -1, 0))) -> long_term_results #estimate is slope from regression
+                                ifelse(p.value <0.05 & mean < lt.mean, -1, 0))) %>% 
+    mutate(recruit.status = c("large.female", "pre.recruit", "recruit", "post.recruit"))-> long_term_results #estimate is slope from regression
   
   # final results with score - save here
   #write_csv(long_term_results, paste0('results/redcrab/', area, '/longterm.csv'))
