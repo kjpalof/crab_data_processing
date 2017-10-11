@@ -181,56 +181,8 @@ areas <- c('PB', 'EI', 'LS', 'GB', 'SC', 'PS')
 
 long_term <- lapply(areas, long_loop_17)
 
-
-# long term baseline values are different for each area, I guess make a file for each area?
-#
-# the y = has to be changed for each area but once they are set they are the same from year to year
-dat3_2016 %>%
-  filter(AREA == "PB") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 2.18)
-t.test(long_term_16$Pre_Recruit, mu = 1.61)
-t.test(long_term_16$Recruit, mu = 1.20)
-t.test(long_term_16$Post_Recruit, mu = 0.96)
-#
-dat3_2016 %>%
-  filter(AREA == "GB") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 5.77)
-t.test(long_term_16$Pre_Recruit, mu = 4.91)
-t.test(long_term_16$Recruit, mu = 3.39)
-t.test(long_term_16$Post_Recruit, mu = 1.72)
-#
-dat3_2016 %>%
-  filter(AREA == "SC") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 4.19)
-t.test(long_term_16$Pre_Recruit, mu = 2.96)
-t.test(long_term_16$Recruit, mu = 2.83)
-t.test(long_term_16$Post_Recruit, mu = 1.19)
-#
-dat3_2016 %>%
-  filter(AREA == "LS") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 3.33)
-t.test(long_term_16$Pre_Recruit, mu = 3.47)
-t.test(long_term_16$Recruit, mu = 3.61)
-t.test(long_term_16$Post_Recruit, mu = 2.73)
-#
-dat3_2016 %>%
-  filter(AREA == "EI") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 9.15)
-t.test(long_term_16$Pre_Recruit, mu = 6.91)
-t.test(long_term_16$Recruit, mu = 3.78)
-t.test(long_term_16$Post_Recruit, mu = 2.36)
-#
-dat3_2016 %>%
-  filter(AREA == "PS") ->long_term_16
-t.test(long_term_16$Large.Females, mu = 2.55)
-t.test(long_term_16$Pre_Recruit, mu = 4.19)
-t.test(long_term_16$Recruit, mu = 0.94)
-t.test(long_term_16$Post_Recruit, mu = 1.27)
-
-
-#
 ##### Weights from length - weight relatinship--------------------
-#
+
 # Linear model is changed for each area
 weight_length <- data.frame(AREA =character(),  slope =numeric(), coeff = numeric())
 
