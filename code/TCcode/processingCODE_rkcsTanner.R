@@ -234,8 +234,8 @@ Tdat1 %>%
 LgF_Tdat1[is.na(LgF_Tdat1$Egg.Percent),]
 # change to 0 only if followed by a Egg.Development.Code and Egg.Condition. Code
 LgF_Tdat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent) & is.na(Egg.Development.Code),
-                             "NA", ifelse(is.na(Egg.Percent), 0, Egg.Percent))) -> LgF_Tdat1
+  mutate(Egg.Percent =ifelse(is.na(Egg.Percent) & Egg.Development.Code > 0,
+                             0, Egg.Percent)) -> LgF_Tdat1
 
 LgF_Tdat1 %>%
   mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_Tdat1 # where 1 is yes and 2 is no
