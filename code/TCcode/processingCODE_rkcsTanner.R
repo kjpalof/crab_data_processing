@@ -171,10 +171,15 @@ baseline
 #make sure you have a file with only current years data 
 
 # create a function to run the t.test and loop it over each area
-test1 <- long_ttest('EI', 2017, baseline = baseline, bypot = dat3)
-# baseline data and data input file names should not change.  
-# Update with the current year.  Need to figure out how to loop or lappy over all AREAs
+#test1 <- long_ttest('EI', 2017, baseline = baseline, bypot = dat3)
 
+# long_ttest function does not need editing each year, BUT the long_loop_17 
+#     function needs to be edited with the current year and confirmed that the 
+#     input files are the same names.
+
+areas <- c('PB', 'EI', 'LS', 'GB', 'SC', 'PS')
+
+long_term <- lapply(areas, long_loop_17)
 
 
 # long term baseline values are different for each area, I guess make a file for each area?
