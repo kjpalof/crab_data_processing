@@ -180,6 +180,7 @@ baseline
 areas <- c('PB', 'EI', 'LS', 'GB', 'SC', 'PS')
 
 long_term <- lapply(areas, long_loop_17)
+write.csv(long_term, './results/RKCS_tanner/long_term.csv')
 
 ##### Weights from length - weight relatinship--------------------
 
