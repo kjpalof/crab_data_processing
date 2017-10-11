@@ -94,51 +94,6 @@ long_loop_17 <- function(x){
 
 
 
-long_t <- function(dat5_current, baseline, year, area, location) {
-  #baseline <- read.csv("./data/redcrab/longterm_means.csv")
-  baseline %>% filter(Location == location)-> baseline_values
-  baseline_values_long <- gather(baseline_values, recruit.status, lt_mean, Juvenile:Post_Recruit, factor_key = TRUE)
-  #Uses a weighted mean to help calculate the t.test - part of package weights
-  # the y = has to be changed for each area but once they are set they are the same from year to year
-  
-  juv <- wtd.t.test(dat5_current$Juvenile, y = baseline_values$Juvenile, weight = dat5_current$weighting, samedata=FALSE)
-  sfem <- wtd.t.test(dat5_current$Small.Females, y = baseline_values$Small.Female, weight = dat5_current$weighting, samedata=FALSE)
-  lfem <- wtd.t.test(dat5_current$Large.Females, y = baseline_values$Large.Female, weight = dat5_current$weighting, samedata=FALSE)
-  
-  prer <- wtd.t.test(dat5_current$Pre_Recruit, y = baseline_values$Pre_Recruit, weight = dat5_current$weighting, samedata=FALSE)
-  rec <- wtd.t.test(dat5_current$Recruit, y = baseline_values$Recruit , weight = dat5_current$weighting, samedata=FALSE)
-  postr <- wtd.t.test(dat5_current$Post_Recruit, y = baseline_values$Post_Recruit, weight = dat5_current$weighting, samedata=FALSE)
-  
-  long_term <- matrix(nrow = 6, ncol = 3)
-  rownames(long_term) <- c("juv", "small.female", "large.female", "pre.recruit", "recruit", "post.recruit")
-  colnames(long_term) <- c("mean", "p.value", "lt.mean")
-  
-  long_term[1,1] <-juv$additional["Mean"]
-  long_term[1,2] <- juv$coefficients["p.value"]
-  long_term[2,1] <-sfem$additional["Mean"]
-  long_term[2,2] <- sfem$coefficients["p.value"]
-  long_term[3,1] <-lfem$additional["Mean"]
-  long_term[3,2] <- lfem$coefficients["p.value"]
-  long_term[4,1] <-prer$additional["Mean"]
-  long_term[4,2] <- prer$coefficients["p.value"]
-  long_term[5,1] <-rec$additional["Mean"]
-  long_term[5,2] <- rec$coefficients["p.value"]
-  long_term[6,1] <-postr$additional["Mean"]
-  long_term[6,2] <- postr$coefficients["p.value"]
-  
-  long_term[1:6,3] <- baseline_values_long$lt_mean
-  
-  long_term_results <- as.data.frame(long_term)
-  
-  long_term_results %>%
-    mutate(significant = ifelse(p.value < 0.05 & mean > lt.mean, 1,
-                                ifelse(p.value <0.05 & mean < lt.mean, -1, 0))) %>% 
-    mutate(recruit.status = baseline_values_long$recruit.status) -> long_term_results #estimate is slope from regression
-  
-  # final results with score - save here
-  write_csv(long_term_results, paste0('results/redcrab/', area, '/longterm.csv'))
-  
-}
 
 
 
