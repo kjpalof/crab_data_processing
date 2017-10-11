@@ -23,7 +23,7 @@ library(broom)
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/nj_stp/rkcs_tanner_nj_stp_oceanAKraw.csv")
+dat <- read.csv("./data/nj_stp/Juneau_red crab survey for Tanner crab CSA.csv")
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/nj_stp/stp_strata_area.csv") 
 seperate <- read.csv("./data/nj_stp/Pots_SP2016_Katie.csv") 
@@ -34,8 +34,16 @@ seperate <- read.csv("./data/nj_stp/Pots_SP2016_Katie.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
-##### Initial review of new data ---------------------------------
+### prep pots to give to Kellii----------
+dat %>% select(Year, Location.Code, Location, Pot.No, Depth.Fathoms, Latitude.Decimal.Degrees, 
+               Longitude.Decimal.Degrees) %>% 
+  group_by(Year, Location, Pot.No) %>% 
+  summarise(Depth.Fathoms = mean(Depth.Fathoms), Latitude.Decimal.Degrees = mean(Latitude.Decimal.Degrees), 
+            Longitude.Decimal.Degrees = mean(Longitude.Decimal.Degrees)) -> juneau_pot_info_17
+write.csv(juneau_pot_info_17, './data/nj_stp/juneau_pot_info_17.csv')
 
+
+##### Initial review of new data ---------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
