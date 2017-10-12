@@ -118,3 +118,38 @@ poor_clutch_long <- function(poorclutch_current, area){
 Fem_long_loop <- function(x){
   poor_clutch_long(poorclutch_current = poorclutch1_current, x)
 }
+
+poor_clutch_short <- function(females_all, area, year){
+  females_all %>%
+    filter(Year >= (year-3)) -> LgF_short # short term file has last 4 years in it
+  #output this file as .csv to add to next year
+  #write_csv(females_all, paste0('results/redcrab/', area,'/poorclutch_females_all.csv'))
+  
+  LgF_short %>% 
+    mutate(per_poorclt = var1)  -> LgF_short
+  
+  plot(LgF_short$Year, LgF_short$per_poorclt)
+  LgF_fit <-lm(per_poorclt ~ Year, data = LgF_short)
+  #abline(LgF_fit, col= 'red')
+  #summary(LgF_fit)
+  
+  shortt_female <- matrix(nrow = 1, ncol = 4)
+  rownames(shortt_female) <- c("large.female")
+  colnames(shortt_female) <- c("intercept", "slope", "p.value", "r_squared")
+  
+  shortt_female[1,1:2] <- tidy(LgF_fit)$estimate # extract estimate column which is intercept and slope
+  shortt_female[1,3] <- glance(LgF_fit)$p.value # extract r.squared, and p.value
+  shortt_female[1,4] <- glance(LgF_fit)$r.squared # extract r.squared, and p.value
+  shortt_female <- as.data.frame(shortt_female)
+  #Now need to add column for significance and score
+  shortt_female %>%
+    mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
+                                ifelse(p.value <0.05 & slope <0, -1, 0))) %>%
+    mutate(score = 0.25*significant) -> shortt_female #estimate is slope from regression
+  # final results with score - save here
+  
+  write.csv(shortt_female, paste0('results/redcrab/', area,'/short_female.csv'))
+}
+
+
+
