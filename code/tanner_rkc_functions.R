@@ -92,8 +92,26 @@ long_loop_17 <- function(x){
   long_ttest(x, 2017, baseline = baseline, bypot = dat3)
 }
 
+### female percent poor clutch ---------
+poor_clutch_long <- function(poorclutch_current, area){
+  lt_female <- t.test(poorclutch_current$var1, mu = 0.10)
+  
+  longt_female <- matrix(nrow = 1, ncol = 2)
+  rownames(longt_female) <- c("large.female")
+  colnames(longt_female) <- c("mean", "p.value")
+  
+  longt_female[1,1] <-mean(poorclutch_current$var1)
+  longt_female[1,2] <- lt_female$p.value
+  
+  longt_female <- as.data.frame(longt_female)
+  longt_female %>%
+    mutate(significant = ifelse(p.value < 0.05 & mean > 0.10, -1,
+                                ifelse(p.value <0.05 & mean < 0.10, 1, 0))) %>% 
+    mutate(recruit.status = c("large.female")) -> longt_female #estimate is slope from regression
+  
+  longt_female
+}
 
-
-
-
-
+Fem_long_loop <- function(x){
+  poor_clutch_long(poorclutch_current = poorclutch1_current, x)
+}
