@@ -253,16 +253,35 @@ poorclutch1 %>%
   summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
 write.csv(percent_low_clutch, './results/RKCS_tanner/RKCS_percent_low_clutch.csv')
 
+##### egg percentage overall -----------------------------------
+####
+LgF_Tdat1 %>%
+  group_by(Year, AREA, Pot.No) %>%
+  summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
+
+clutch_by_pot %>%
+  group_by(AREA, Year)%>%
+  summarise(mean = mean(egg_mean), 
+            egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
+
+# add this to the table with percent_low_clutch?
+percent_low_clutch %>%
+  right_join(percent_clutch) -> female_clutch_info
+write.csv(female_clutch_info, './results/RKCS_tanner/RKCS_percent_clutch.csv')
+
+
 ##### Long term females -------------------------
 ####
 glimpse(poorclutch1)
-#compare 2016 CPUE distribution to the long term mean
+#compare 2017 CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2016) ->poorclutch1_2016
+  filter(Year == 2017) ->poorclutch1_current
 #make sure you have a file with only 2016 data
 #calculate the t.test
-#make sure you have a file with only 2016 data
-#calculate the t.test
+
+Fem_long_term <- lapply(areas, Fem_long_loop)
+write.csv(Fem_long_term, './results/RKCS_tanner/Female_long_term.csv')
+
 poorclutch1_2016 %>%
   filter(AREA == "EI") -> LT_poor
 t.test(LT_poor$var1, mu = 0.10)
@@ -317,20 +336,7 @@ write.csv(F_short_term_results, './results/RKCS_tanner/RKCS_Fem_shortterm.csv')
 ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~AREA)
 ###
 
-##### egg percentage overall -----------------------------------
-####
-LgF_Tdat1 %>%
-  group_by(Year, AREA, Pot.No) %>%
-  summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
 
-clutch_by_pot %>%
-  group_by(AREA, Year)%>%
-  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
-
-# add this to the table with percent_low_clutch?
-percent_low_clutch %>%
-  right_join(percent_clutch) -> female_clutch_info
-write.csv(female_clutch_info, './results/RKCS_tanner/RKCS_percent_clutch.csv')
 ####
 ##### input for CSA in R ---------------------------
 ####
