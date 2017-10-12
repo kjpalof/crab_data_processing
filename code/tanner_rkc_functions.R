@@ -94,13 +94,15 @@ long_loop_17 <- function(x){
 
 ### female percent poor clutch ---------
 poor_clutch_long <- function(poorclutch_current, area){
-  lt_female <- t.test(poorclutch_current$var1, mu = 0.10)
+  poorclutch_current %>% 
+    filter(AREA == area) -> data.use
+  lt_female <- t.test(data.use$var1, mu = 0.10)
   
   longt_female <- matrix(nrow = 1, ncol = 2)
   rownames(longt_female) <- c("large.female")
   colnames(longt_female) <- c("mean", "p.value")
   
-  longt_female[1,1] <-mean(poorclutch_current$var1)
+  longt_female[1,1] <-mean(data.use$var1)
   longt_female[1,2] <- lt_female$p.value
   
   longt_female <- as.data.frame(longt_female)
