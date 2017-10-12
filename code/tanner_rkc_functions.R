@@ -107,7 +107,8 @@ poor_clutch_long <- function(poorclutch_current, area){
   longt_female %>%
     mutate(significant = ifelse(p.value < 0.05 & mean > 0.10, -1,
                                 ifelse(p.value <0.05 & mean < 0.10, 1, 0))) %>% 
-    mutate(recruit.status = c("large.female")) -> longt_female #estimate is slope from regression
+    mutate(recruit.status = c("large.female")) %>% 
+    mutate(area = area) -> longt_female #estimate is slope from regression
   
   longt_female
 }
