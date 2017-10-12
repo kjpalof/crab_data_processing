@@ -285,9 +285,8 @@ write.csv(Fem_long_term, './results/RKCS_tanner/Female_long_term.csv')
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
-# input data the first time (2016) and then add to it.
-#After that this should create a file to use in the future
-head(poorclutch1) # should have the last 4 years from OceanAK
+
+head(poorclutch1) # has all years of data from OceanAK
 
 poorclutch1 %>%
   filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
