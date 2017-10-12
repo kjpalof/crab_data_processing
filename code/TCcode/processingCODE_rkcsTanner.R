@@ -281,29 +281,9 @@ poorclutch1 %>%
 
 Fem_long_term <- lapply(areas, Fem_long_loop)
 write.csv(Fem_long_term, './results/RKCS_tanner/Female_long_term.csv')
+# need to figure out a way to store these results in a better format
 
-poorclutch1_2016 %>%
-  filter(AREA == "EI") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_2016 %>%
-  filter(AREA == "GB") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_2016 %>%
-  filter(AREA == "LS") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_2016 %>%
-  filter(AREA == "PB") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_2016 %>%
-  filter(AREA == "PS") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_2016 %>%
-  filter(AREA == "SC") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-
-####
 ##### Short term females ------------------------
-####
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 #After that this should create a file to use in the future
