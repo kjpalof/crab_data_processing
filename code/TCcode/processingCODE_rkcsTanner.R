@@ -293,9 +293,26 @@ poorclutch1 %>%
 #output this file as .csv to add to next year
 write.csv(LgF_short, './results/RKCS_tanner/poorclutchfemales_16.csv')
 # need to run the regression for each area.
+
 LgF_short %>% 
-  group_by(AREA) %>%
-  do(fit = lm(var1 ~ Year, data =.)) %>%
+  group_by(AREA) %>% 
+  do(fit = lm(var1 ~ Year, data =.)) -> fem_short
+fem_short %>% 
+  tidy(fit) -> fem_short_slope
+fem_short %>% 
+  glance(fit) -> fem_short_out
+
+fem_short_out %>% 
+  select(AREA, r.squared, p.value) -> fem_short_term_out
+fem_short_slope %>% 
+  rename(slope = estimate) %>% 
+  
+
+
+LgF_short %>% 
+  group_by(AREA) %>% 
+  mutate(per_poorclt = var1) %>% 
+  do(fit = lm(per_poorclt ~ Year, data =.)) %>%
   tidy(fit) %>% select(AREA, estimate) -> one
 LgF_short %>% 
   group_by(AREA) %>%
