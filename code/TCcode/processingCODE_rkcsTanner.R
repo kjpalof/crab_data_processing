@@ -24,7 +24,7 @@ windowsFonts(Times=windowsFont("TT Times New Roman"))
 theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
             theme(panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank()))
-#source('./code/functions_TC.R') # need to create versions of this code to deal with mutiple areas at once.
+source('./code/tanner_rkc_functions.R') # need to create versions of this code to deal with mutiple areas at once.
 
 ###
 #####Load Data ---------------------------------------------------
@@ -288,47 +288,10 @@ write.csv(Fem_long_term, './results/RKCS_tanner/Female_long_term.csv')
 
 head(poorclutch1) # has all years of data from OceanAK
 
-poorclutch1 %>%
-  filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
-#output this file as .csv to add to next year
-write.csv(LgF_short, './results/RKCS_tanner/poorclutchfemales_16.csv')
 # need to run the regression for each area.
+# use function found in source function code
+poor_clutch_short(poorclutch1, 2017)
 
-LgF_short %>% 
-  group_by(AREA) %>% 
-  do(fit = lm(var1 ~ Year, data =.)) -> fem_short
-fem_short %>% 
-  tidy(fit) -> fem_short_slope
-fem_short %>% 
-  glance(fit) -> fem_short_out
-
-fem_short_out %>% 
-  select(AREA, r.squared, p.value) -> fem_short_term_out
-fem_short_slope %>% 
-  rename(slope = estimate) %>% 
-  
-
-
-LgF_short %>% 
-  group_by(AREA) %>% 
-  mutate(per_poorclt = var1) %>% 
-  do(fit = lm(per_poorclt ~ Year, data =.)) %>%
-  tidy(fit) %>% select(AREA, estimate) -> one
-LgF_short %>% 
-  group_by(AREA) %>%
-  do(fit = lm(var1 ~ Year, data =.)) %>%
-  glance(fit) %>% select(AREA, r.squared, p.value) ->two
-one %>%
-  right_join(two) -> F_short_term_results # estimate here is slope from regression
-
-#Now need to add column for significance and score
-F_short_term_results %>%
-  mutate(significant = ifelse(p.value < 0.05 & estimate > 0, -1,
-                              ifelse(p.value <0.05 & estimate <0, 1, 0))) %>%
-  mutate(score = 0.25*significant) -> F_short_term_results #estimate is slope from regression
-# this is opposite for percent clutch short term trend since decreasing is good.
-# final results with score - save here
-write.csv(F_short_term_results, './results/RKCS_tanner/RKCS_Fem_shortterm.csv')
 ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~AREA)
 ###
 
