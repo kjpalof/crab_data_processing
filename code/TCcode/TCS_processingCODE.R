@@ -1,8 +1,8 @@
 #K.Palof 
-# ADF&G 11-4-16
+# ADF&G 11-4-16 / 10-17-17
 # Areas: Tanner crab survey areas - includes Holkham, Thomas, Glacier Bay and Icy Strait
 # code to process data from Ocean AK to use in crab CSA models.  
-#Currently this is done in excel then JMP, prior to 2016  
+#Prior to 2016 this was done in excel then JMP
 
 rm(list = ls()) # clear workspace since data frames have same names
 #####Load Packages ---------------------------------
