@@ -26,9 +26,9 @@ library(broom)
 dat <- read.csv("./data/nj_stp/Juneau_red crab survey for Tanner crab CSA.csv")
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/nj_stp/stp_strata_area.csv") 
-seperate <- read.csv("./data/nj_stp/Pots_SP2016_Katie.csv") 
+seperate <- read.csv("./data/nj_stp/RKC_TannerStrata_SP.csv") 
 # avoid this by bringing in last four year in original OceanAK data pull.  
-#histdat <- read.csv("./data/nj_stp/2Juneau Stratified CPUE 2015_area formula.csv")
+nj_histdat <- read.csv("./data/nj_stp/NJ_rawdata_all.csv")
 ## !!!!  In future years this file will be 'JNU_CPUE_ALL' and just get updated with current years data.
 #females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
 head(dat)
@@ -50,7 +50,7 @@ dat %>%
   filter(Pot.Condition == "Normal") -> dat1
 
 dat1 %>%
-  filter(Recruit.Status == "", Width.Millimeters >= 1) -> test1 # this SHOULD produce NO rows.  If it does you have data problems go back and correct
+  filter(Recruit.Status == "", Width.Millimeters >= 1)  # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
