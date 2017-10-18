@@ -27,8 +27,7 @@ dat <- read.csv("./data/nj_stp/Juneau_red crab survey for Tanner crab CSA.csv")
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/nj_stp/stp_strata_area.csv") 
 seperate <- read.csv("./data/nj_stp/RKC_TannerStrata_SP.csv") 
-# avoid this by bringing in last four year in original OceanAK data pull.  
-nj_histdat <- read.csv("./data/nj_stp/NJ_rawdata_all.csv")
+# bring in historic data for each area below.
 ## !!!!  In future years this file will be 'JNU_CPUE_ALL' and just get updated with current years data.
 #females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
 head(dat)
@@ -59,7 +58,7 @@ dat1 %>%
 ##### seperate NJ and Juneau (also known as SP) ---------------------
 dat %>%
   mutate(area = ifelse(Location == "Barlow Cove", "NJ", 
-                       ifelse(Location == "Juneau" & Pot.No %in% seperate$PotNo, "Juneau", "NJ"))) ->dat
+                       ifelse(Location == "Juneau" & Pot.No %in% seperate$Pot_No, "Juneau", "NJ"))) ->dat
 #seperating the areas since North Juneau does not have density strata - since it's a red crab area
 # and Juneau does since it's based on the Tanner Stephens Passage strata.
 dat %>% 
@@ -74,9 +73,11 @@ dat %>%
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
-histdat <- read.csv("./data/nj_stp/NJ ONLY!_RKC_tannerdata_09-15.csv")
+nj_histdat <- read.csv("./data/nj_stp/NJ_rawdata_all.csv")
 glimpse(histdat) # make sure the column names here match those in dat.NJ
-data.NJ.all <- rbind(histdat, dat.NJ)
+dat.NJ %>% select(- Latitude.Decimal.Degrees, -Longitude.Decimal.Degrees) -> dat.NJ
+nj_histdat %>% select ( -X ) -> nj_histdat
+data.NJ.all <- rbind(nj_histdat, dat.NJ)
 write.csv(data.NJ.all, './results/nj_stp/NJ_rawdata_all.csv')
 
 ### data manipulations ----------------------
