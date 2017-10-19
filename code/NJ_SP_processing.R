@@ -27,6 +27,7 @@ dat <- read.csv("./data/nj_stp/Juneau_red crab survey for Tanner crab CSA.csv")
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/nj_stp/stp_strata_area.csv") 
 seperate <- read.csv("./data/nj_stp/RKC_TannerStrata_SP.csv") 
+baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
 # bring in historic data for each area below.
 ## !!!!  In future years this file will be 'JNU_CPUE_ALL' and just get updated with current years data.
 #females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
@@ -134,7 +135,7 @@ write.csv(CPUE_ALL, './results/nj_stp/NJ_CPUE_ALL.csv')
 #glance(Lfem_fit) # want to save r.squared and p.value
 
 # can I use red crab function here? 
-source('./code/functions.R')
+#source('./code/functions.R')
 head(dat3)
 
 dat3 %>%
@@ -173,18 +174,21 @@ dat3_long %>%
 ggplot(st_dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() 
 
 ##### Long term trends ---------------------
-#compare 2016 CPUE distribution to the long term mean
+#compare 2017 CPUE distribution to the long term mean
 dat3 %>%
-  filter(Year == 2016) ->dat3_2016
-#make sure you have a file with only 2016 data
+  filter(Year == 2017) ->dat3_2017
+#make sure you have a file with only current years data
+baseline %>% 
+  filter(AREA == 'NJ') -> baseline_NJ
 # long term baseline values are different for each area, I guess make a file for each area?
 #
 # the y = has to be changed for each area but once they are set they are the same from year to year
-dat3_2016  ->long_term_16
-t.test(long_term_16$Large.Females, mu = 4.14)
-t.test(long_term_16$Pre_Recruit, mu = 3.87)
-t.test(long_term_16$Recruit, mu = 4.56)
-t.test(long_term_16$Post_Recruit, mu = 2.93)
+t.test(dat3_2017$Large.Females, mu = baseline_NJ$Large.Female)
+t.test(dat3_2017$Pre_Recruit, mu = baseline_NJ$Pre_Recruit)
+t.test(dat3_2017$Recruit, mu = baseline_NJ$Recruit)
+t.test(dat3_2017$Post_Recruit, mu = baseline_NJ$Post_Recruit)
+
+# need to summarize these to save the results - see function for red crab
 
 #
 ##### Weights from length - weight relatinship--------------------
