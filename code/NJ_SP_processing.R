@@ -190,50 +190,34 @@ t.test(dat3_2017$Post_Recruit, mu = baseline_NJ$Post_Recruit)
 
 # need to summarize these to save the results - see function for red crab
 
-#
 ##### Weights from length - weight relatinship--------------------
-#
 # Linear model is changed for each area
 # North Juneau linear model: exp(3.16*log(length in mm)-8.84)*2.2/1000
 glimpse(Tdat1) # raw data for all years
 Tdat1 %>%
-  filter(Year > 2012)%>%
   mutate(weight_lb = (exp((3.16*log(Width.Millimeters)) - 8.84 ))*(2.2/1000))-> datWL
 
 Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
 Legal =c("Recruit", "Post_Recruit")
 
-datWL %>%
-  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
-  group_by (Year, mod_recruit) %>%
-  summarise(mean_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_all
-weight_all %>%
-  filter(mod_recruit == "Pre_Recruit") %>%
-  group_by(Year) -> weight_pre
-datWL %>%
-  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
-  group_by (Year) %>%
-  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_mature
+datWL %>% 
+  group_by(Year) %>% 
+  filter(Sex.Code == 1) %>% 
+  summarise(mature_lbs = wt.mean(weight_lb[Recruit.Status %in% Mature], 
+                                 Number.Of.Specimens[Recruit.Status %in% Mature]), 
+            legal_lbs = wt.mean(weight_lb[Recruit.Status %in% Legal], 
+                                Number.Of.Specimens[Recruit.Status %in% Legal]), 
+            prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
+                               Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
 
-datWL %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
-  group_by( Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_legal
-#summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens), legal_lb)
-
-weight_mature %>%
-  right_join(weight_legal) %>%
-  right_join(weight_pre)  %>%
-  select( -mod_recruit) %>%
-  rename(pre_recruit_lb = mean_lbs) -> weights_summary
-write.csv(weights_summary, './results/nj_stp/NJ_weights.csv')
+write.csv(male_weights, './results/nj_stp/NJ_weights.csv')
 
 ##### survey mid-date --------------------
 Tdat1 %>%
   filter(Year ==2016) %>%
   distinct(Time.Hauled)
+
 ##### Females - large or mature females --------------------------
-####
 # large or mature females
 Tdat1 %>%
   filter(Sex.Code == 2, mod_recruit == 'Large.Females') -> LgF_Tdat1
