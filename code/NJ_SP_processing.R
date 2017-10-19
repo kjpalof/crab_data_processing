@@ -127,19 +127,20 @@ dat3 %>%
 # change name and folder for each area
 write.csv(CPUE_ALL, './results/nj_stp/NJ_CPUE_ALL.csv')
 
-###
 ##### Short term trends -------------------------------------
-###
 #look at trend for the last 4 years.  Need a file with last four years
 # attempt to use broom for short term trends 
 #tidy(Lfem_fit) # want to save $estimate here
 #glance(Lfem_fit) # want to save r.squared and p.value
 
+# can I use red crab function here? 
+source('./code/functions.R')
 head(dat3)
-dat3 %>%
-  filter(Year >=2013) -> dat3 # confirm that is only contains the last 4 years.  This year needs to be changed every year
 
-dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
+dat3 %>%
+  filter(Year >= 2014) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
+
+dat3_long <- gather(dat3a, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
 dat3_long %>% # doesn't work with dat2 data because there are no 0's for missing data
   group_by(mod_recruit) %>%
@@ -170,9 +171,8 @@ write.csv(short_term_results, './results/nj_stp/NJ_shortterm.csv')
 dat3_long %>%
   filter(mod_recruit %in% recruit_used) ->st_dat3_long
 ggplot(st_dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() 
-###
+
 ##### Long term trends ---------------------
-###
 #compare 2016 CPUE distribution to the long term mean
 dat3 %>%
   filter(Year == 2016) ->dat3_2016
