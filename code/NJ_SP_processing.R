@@ -101,19 +101,18 @@ data.NJ.all %>%
 ##### By Pot ----------------------------------------------------
 #### Keep sub_area in the data frame!!!!!!!!!!!
 #Now summarize by pot - only one area - NJ
-#Need Number of Specimens by recruit class
+
 Tdat1 %>%
-  group_by(Year, sub_area, Pot.No, mod_recruit) %>% # use area here instead of location due to multiple location names for one survey area
+  group_by(Year, area, sub_area, Pot.No, mod_recruit) %>% # use area here instead of location due to multiple location names for one survey area
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
-dat3 <- dcast(dat2, Year + sub_area + Pot.No ~ mod_recruit, sum, drop=TRUE)
+dat3 <- dcast(dat2, Year + area + sub_area + Pot.No ~ mod_recruit, sum, drop=TRUE)
+head(dat3)# check to make sure things worked.
 write.csv(dat3, './results/nj_stp/dat3.csv')
-#head(dat3)# check to make sure things worked.
 
 # No weighting by strata here for RKCS data due to it being designed for RKC.
-####
+
 ##### CPUE historic -----------------------------------
-####
 #This version is ready to calculate CPUE for each recruit class
 #Calculates a  mean CPUE and SE for each recruit class # not weighted due to lack of tanner specific strata on red crab survey
 dat3 %>%
