@@ -230,15 +230,18 @@ LgF_Tdat1 %>%
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
-LgF_Tdat1[is.na(LgF_Tdat1$Egg.Percent),]
-# need to change these to 0. 
+ 
 LgF_Tdat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_Tdat1
+  mutate(Egg.Percent =ifelse(is.na(Egg.Percent) & Egg.Development.Code > 0,
+                             0, Egg.Percent)) -> LgF_Tdat1
+LgF_Tdat1 %>% 
+  filter(is.na(Egg.Percent))
 
 LgF_Tdat1 %>%
   mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_Tdat1 # where 1 is yes and 2 is no
 
 LgF_Tdat1 %>%
+  filter(!is.na(Less25)) %>% 
   group_by(Year, sub_area, Pot.No, Less25) %>%
   summarise(no_sum = sum(Number.Of.Specimens)) -> poorclutch
 
@@ -248,34 +251,35 @@ poorclutch1 %>%
   mutate(var1 = y / (y+n)) -> poorclutch1
 poorclutch1 %>%
   group_by(Year)%>%
-  summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
+  summarise(Pclutch = mean(var1)*100 , 
+            Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
 write.csv(percent_low_clutch, './results/nj_stp/NJ_precent_low_clutch.csv')
 
 ##### Long term females -------------------------
-####
 glimpse(poorclutch1)
-#compare 2016 CPUE distribution to the long term mean
+#compare current year's CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2016) ->poorclutch1_2016
-#make sure you have a file with only 2016 data
+  filter(Year == 2017) ->poorclutch1_current
+#make sure you have a file with only current year's data
 #calculate the t.test
-t.test(poorclutch1_2016$var1, mu = 0.10)
+t.test(poorclutch1_current$var1, mu = 0.10)
+
 ##### Short term females ------------------------
 
 #look at trend for the last 4 years.  Need a file with last four years in it 
 head(poorclutch1) # should have the last 4 years from OceanAK
 
 poorclutch1 %>%
-  filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
-#output this file as .csv to add to next year
-write.csv(LgF_short, './results/nj_stp/NJ_poorclutchfemales_16.csv')
+  filter(Year >= 2014) -> LgF_short # short term file has last 4 years in it
 
 # need to run the regression for each area.
 LgF_short %>% 
   mutate(Location = 'North Juneau')%>%
   group_by(Location) %>%
   do(fit = lm(var1 ~ Year, data =.)) %>%
-  tidy(fit) %>% select(Location, estimate) -> one
+  tidy(fit) %>% 
+  filter(term == "Year") %>% 
+  select(Location, estimate) -> one
 LgF_short %>% 
   mutate(Location = 'North Juneau')%>%
   group_by(Location) %>%
@@ -292,42 +296,48 @@ F_short_term_results %>%
 # final results with score - save here
 write.csv(F_short_term_results, './results/nj_stp/NJ_Fem_shortterm.csv')
 ggplot(poorclutch1, aes(Year, var1))+geom_point() 
-###
+
 ##### egg percentage overall -----------------------------------
-####
 LgF_Tdat1 %>%
+  filter(!is.na(Egg.Percent)) %>% 
   group_by(Year, sub_area, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
 
 clutch_by_pot %>%
   group_by(Year)%>%
-  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
+  summarise(mean = mean(egg_mean), 
+            egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
 write.csv(percent_clutch, './results/nj_stp/NJ_percent_clutch.csv')
+
 #### Stephens Passage  ----------------------
 ###  All these are Juneau so no sub_area (location code 13, 23) 
 ## add tanner density strata to dat.SP from seperate file
 # in seperate 'classes' is the Tanner.Density.Strata, simplify seperate
 seperate %>%
-  select(Year, PotNo, Classes) %>%
-  rename(Tanner.Density.Strata.Code = Classes, Pot.No = PotNo) %>%
+  select(Year, Pot_No, Classes) %>%
+  rename(Tanner.Density.Strata.Code = Classes, Pot.No = Pot_No) %>%
   mutate(Density.Strata = ifelse(Tanner.Density.Strata.Code ==1, 'Low/Zero', 
                                  ifelse(Tanner.Density.Strata.Code ==2, 'Medium Low', 
                                   ifelse(Tanner.Density.Strata.Code ==3, 'Medium', 
                                    ifelse(Tanner.Density.Strata.Code ==4, 'Medium High', 
-                                          'High'))))) -> strata_codes_16
+                                          'High'))))) -> strata_codes_SP
 dat.SP %>%
   select(-Density.Strata.Code, -Density.Strata) %>%
-  right_join(strata_codes_16) -> dat.SP
+  right_join(strata_codes_SP) -> dat.SP
 
 ##### Historic file ---------------------------------------
-###
+
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
-histdat <- read.csv("./data/nj_stp/sp_RKCS ONLY_97to15_redo.csv")
+histdat <- read.csv("./data/nj_stp/SP_rawdata_all.csv")
 glimpse(histdat) # make sure the column names here match those in dat.NJ
+histdat %>% 
+  select( - X) -> histdat
+dat.SP %>% 
+  select( -Latitude.Decimal.Degrees, -Longitude.Decimal.Degrees) -> dat.SP
 data.SP.all <- rbind(histdat, dat.SP)
-write.csv(data.SP.all, './results/nj_stp/SP_rawdata_all.csv')
+write.csv(data.SP.all, './results/nj_stp/SP_rawdata_all.csv', row.names = FALSE)
 
 ### data manipulations ----------------------
 # easier area since there are NO strata
@@ -347,9 +357,7 @@ data.SP.all %>%
 write.csv(Tdat1, './results/nj_stp/Tdat1_SP.csv')
 # add in area and weighting by strata
 
-###
 ##### By Pot ----------------------------------------------------
-###
 #Now summarize by pot - only one area - Juneau(also known as SP)
 #Need Number of Specimens by recruit class
 Tdat1 %>%
@@ -367,8 +375,6 @@ tab %>%
   group_by(Year, area, Tanner.Density.Strata.Code) %>%
   summarise(npots  = length(Pot.No)) -> pots_per_strata
 
-#head(dat3)# check to make sure things worked.
-##
 ##### Weighted CPUE current year -----------------------------------
 ##
 #the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
@@ -384,9 +390,8 @@ dat4 %>%
 dat5 %>%
   filter(No_crab > 0)
 
-####
+
 ##### CPUE historic -----------------------------------
-####
 #Calculates a weighted mean CPUE and SE for each recruit class
 dat5 %>%
   group_by(area, Year) %>%
