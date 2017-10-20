@@ -43,3 +43,50 @@ short_t_tanner <- function(bypot_st, year) {
     mutate(score = 0.25*significant) -> short_term_results
   write_csv(short_term_results, paste0('results/TCS/shortterm.csv'))
 }
+
+
+### Long term function -------------------
+# need current years data and file with long term means
+
+long_ttest <- function(area, year, baseline, bypot){
+  baseline %>% 
+    filter(Location == area) -> baseline_values
+  baseline_values_long <- gather(baseline_values, recruit.status, lt_mean, Large.Female:Post_Recruit, factor_key = TRUE)
+  bypot %>% 
+    filter(Location == area & Year == year) ->data.use
+  lfem <- wtd.t.test(data.use$Large.Females, y = baseline_values$Large.Female, weight = data.use$weighting, samedata=FALSE)
+  prer <- wtd.t.test(data.use$Pre_Recruit, y = baseline_values$Pre_Recruit, weight = data.use$weighting, samedata=FALSE)
+  rec <- wtd.t.test(data.use$Recruit, y = baseline_values$Recruit, weight = data.use$weighting, samedata=FALSE)
+  postr <- wtd.t.test(data.use$Post_Recruit, y = baseline_values$Post_Recruit, weight = data.use$weighting, samedata=FALSE)
+  
+  long_term <- matrix(nrow = 4, ncol = 3)
+  rownames(long_term) <- c("large.female", "pre.recruit", "recruit", "post.recruit")
+  colnames(long_term) <- c("mean", "p.value", "lt.mean")
+  
+  long_term[1,1] <-lfem$additional["Mean"]
+  long_term[1,2] <- lfem$coefficients["p.value"]
+  long_term[2,1] <-prer$additional["Mean"]
+  long_term[2,2] <- prer$coefficients["p.value"]
+  long_term[3,1] <-rec$additional["Mean"]
+  long_term[3,2] <- rec$coefficients["p.value"]
+  long_term[4,1] <-postr$additional["Mean"]
+  long_term[4,2] <- postr$coefficients["p.value"]
+ 
+  long_term[1:4, 3] <- baseline_values_long$lt_mean
+  long_term_results <- as.data.frame(long_term)
+  
+  long_term_results %>%
+    mutate(significant = ifelse(p.value < 0.05 & mean > lt.mean, 1,
+                                ifelse(p.value <0.05 & mean < lt.mean, -1, 0))) %>% 
+    mutate(recruit.status = c("large.female", "pre.recruit", "recruit", "post.recruit")) %>% 
+    mutate( Location = area) -> long_term_results #estimate is slope from regression
+  
+  # final results with score - save here
+  #write_csv(long_term_results, paste0('results/redcrab/', area, '/longterm.csv'))
+  long_term_results 
+}
+
+### function to loop long term function above ------------
+long_loop_17 <- function(x){
+  long_ttest(x, 2017, baseline = baseline, bypot = dat5)
+}
