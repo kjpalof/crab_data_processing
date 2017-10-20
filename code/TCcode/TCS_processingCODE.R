@@ -135,11 +135,10 @@ dat3 %>%
 
 short_t_tanner(dat3, 2017)
 
-dat3_long %>%
-  filter(mod_recruit %in% recruit_used) ->st_dat3_long
-  
-ggplot(st_dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~Location)
-###
+dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE)
+
+ggplot(dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~Location)
+
 ### just thomas bay Large.Females
 dat3_long %>%
   filter(Location == 'Thomas Bay', mod_recruit == 'Large.Females') -> graph1
@@ -149,9 +148,7 @@ dat3_long %>%
   filter(Location == 'Holkham Bay', mod_recruit == 'Recruit') -> graph1
 ggplot(graph1, aes(Year, crab, color = mod_recruit)) + geom_point() +geom_smooth(method ='lm')
 
-###
 ##### Long term trends ---------------------
-###
 #compare 2016 CPUE distribution to the long term mean, keep Location seperate
 # need to use dat5 because the weighting column is needed.
 dat5 %>%
