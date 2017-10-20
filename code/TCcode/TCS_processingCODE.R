@@ -30,6 +30,7 @@ theme_set(theme_bw(base_size=12,base_family='Times New Roman')+
 dat <- read.csv("./data/TCS/TCS data_13_17.csv")
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/TCS/TCSstrata_area.csv") 
+baseline <- read.csv("./data/TCS/longterm_means_TC.csv")
 # brought in all data since 2013 - this was after survey was stratified.  Older data needs to be imported
 # from data file and NOT OceanAK since it won't have survey strata designations in OceanAK
 head(dat)
@@ -149,45 +150,19 @@ dat3_long %>%
 ggplot(graph1, aes(Year, crab, color = mod_recruit)) + geom_point() +geom_smooth(method ='lm')
 
 ##### Long term trends ---------------------
-#compare 2016 CPUE distribution to the long term mean, keep Location seperate
+# compare current year's data to long term mean - for each Location
 # need to use dat5 because the weighting column is needed.
-dat5 %>%
-  filter(Year == 2016) ->dat5_2016
-#make sure you have a file with only 2016 data
-# long term baseline values are different for each area, I guess make a file for each area?
-#
-# the y = has to be changed for each area but once they are set they are the same from year to year
-# THIS NEEDS TO BE A WEIGHTED MEAN - see processingCODE.R
-dat5_2016 %>%
-  filter(Location == "Glacier Bay") ->long_term_16
-wtd.t.test(long_term_16$Large.Females, y = 5.77, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Pre_Recruit, y = 5.62, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Recruit, y = 1.37, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Post_Recruit, y = 1.13, weight = long_term_16$weighting, samedata=FALSE)
-#
-dat5_2016 %>%
-  filter(Location == "Icy Strait") ->long_term_16
-wtd.t.test(long_term_16$Large.Females, y = 12.21, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Pre_Recruit, y = 13.67, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Recruit, y = 16.08, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Post_Recruit, y = 3.27, weight = long_term_16$weighting, samedata=FALSE)
 
-#
-dat5_2016 %>%
-  filter(Location == "Thomas Bay") ->long_term_16
-wtd.t.test(long_term_16$Large.Females, y = 29.10, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Pre_Recruit, y = 10.85, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Recruit, y = 6.37, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Post_Recruit, y = 3.33, weight = long_term_16$weighting, samedata=FALSE)
-#
-dat5_2016 %>%
-  filter(Location == "Holkham Bay") ->long_term_16
-wtd.t.test(long_term_16$Large.Females, y = 3.86, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Pre_Recruit, y = 3.29, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Recruit, y = 2.08, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Post_Recruit, y = 1.24, weight = long_term_16$weighting, samedata=FALSE)
+long_ttest('Thomas Bay', 2017, baseline, dat5)
 
-#
+areas <- c('Icy Strait', 'Glacier Bay', 'Holkham Bay', 'Thomas Bay')
+areas <- c('Holkham Bay', 'Thomas Bay')
+
+
+long_term <- lapply(areas, long_loop_17)
+write.csv(long_term, './results/TCS/long_term.csv')
+
+
 ##### Weights from length - weight relatinship--------------------
 #
 # Linear model is changed for each area
