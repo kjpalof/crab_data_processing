@@ -401,14 +401,12 @@ dat5 %>%
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females))))),
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/
-                (sqrt(sum(!is.na(Large.Females)))))) -> CPUE_wt_13_16
+                (sqrt(sum(!is.na(Large.Females)))))) -> CPUE_wt_all
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder here.
-write.csv(CPUE_wt_13_16, './results/nj_stp/SP_CPUE_ALL.csv')
+write.csv(CPUE_wt_all, './results/nj_stp/SP_CPUE_ALL.csv')
 
-###
 ##### Short term trends -------------------------------------
-###
 #look at trend for the last 4 years.  Need a file with last four years
 # attempt to use broom for short term trends 
 #tidy(Lfem_fit) # want to save $estimate here
@@ -416,7 +414,8 @@ write.csv(CPUE_wt_13_16, './results/nj_stp/SP_CPUE_ALL.csv')
 
 head(dat3)
 dat3 %>%
-  filter(Year >=2013) -> dat3 # confirm that is only contains the last 4 years.  This year needs to be changed every year
+  filter(Year >= 2014) -> dat3 
+# confirm that is only contains the last 4 years.  This year needs to be changed every year
 
 dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
@@ -448,70 +447,58 @@ write.csv(short_term_results, './results/nj_stp/SP_shortterm.csv')
 
 dat3_long %>%
   filter(mod_recruit %in% recruit_used) ->st_dat3_long
-ggplot(st_dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() 
-###
+ggplot(st_dat3_long, aes(Year, crab))+geom_point() +facet_wrap (~ mod_recruit)
+
 ##### Long term trends ---------------------
-###
-#compare 2016 CPUE distribution to the long term mean
+#compare current year CPUE distribution to the long term mean
 dat5 %>%
-  filter(Year == 2016) ->dat5_2016
+  filter(Year == 2017) ->dat5_current
 #make sure you have a file with only 2016 data
 # long term baseline values are different for each area, I guess make a file for each area?
 #
 # the y = has to be changed for each area but once they are set they are the same from year to year
 # THIS NEEDS TO BE A WEIGHTED MEAN - see processingCODE.R
-dat5_2016 %>%
-  filter(area == "Juneau") ->long_term_16
-wtd.t.test(long_term_16$Large.Females, y = 5.32, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Pre_Recruit, y = 4.24, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Recruit, y = 4.64, weight = long_term_16$weighting, samedata=FALSE)
-wtd.t.test(long_term_16$Post_Recruit, y = 2.64, weight = long_term_16$weighting, samedata=FALSE)
+dat5_current %>%
+  filter(area == "Juneau") ->long_term_current
+wtd.t.test(long_term_current$Large.Females, y = 5.32, 
+           weight = long_term_current$weighting, samedata=FALSE)
+wtd.t.test(long_term_current$Pre_Recruit, y = 4.24, 
+           weight = long_term_current$weighting, samedata=FALSE)
+wtd.t.test(long_term_current$Recruit, y = 4.64, 
+           weight = long_term_current$weighting, samedata=FALSE)
+wtd.t.test(long_term_current$Post_Recruit, y = 2.64, weight = long_term_current$weighting, samedata=FALSE)
 
-#
+
 ##### Weights from length - weight relatinship--------------------
-#
 # Linear model is changed for each area
 # stephens passage linear model: exp(3.38*log(length in mm)-9.99)*2.2/1000
 glimpse(Tdat1) # raw data for all years
 Tdat1 %>%
-  filter(Year > 2012)%>%
   mutate(weight_lb = (exp((3.38*log(Width.Millimeters)) - 9.99 ))*(2.2/1000))-> datWL
 
 Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
 Legal =c("Recruit", "Post_Recruit")
 
-datWL %>%
-  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
-  group_by (Year, mod_recruit) %>%
-  summarise(mean_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_all
-weight_all %>%
-  filter(mod_recruit == "Pre_Recruit") %>%
-  group_by(Year) -> weight_pre
-datWL %>%
-  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
-  group_by (Year) %>%
-  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_mature
 
-datWL %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
-  group_by( Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_legal
-#summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens), legal_lb)
+datWL %>% 
+  group_by(Year) %>% 
+  filter(Sex.Code == 1) %>% 
+  summarise(mature_lbs = wt.mean(weight_lb[Recruit.Status %in% Mature], 
+                                 Number.Of.Specimens[Recruit.Status %in% Mature]), 
+            legal_lbs = wt.mean(weight_lb[Recruit.Status %in% Legal], 
+                                Number.Of.Specimens[Recruit.Status %in% Legal]), 
+            prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
+                               Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
+# final results with score - save here
 
-weight_mature %>%
-  right_join(weight_legal) %>%
-  right_join(weight_pre)  %>%
-  select( -mod_recruit) %>%
-  rename(pre_recruit_lb = mean_lbs) -> weights_summary
-write.csv(weights_summary, './results/nj_stp/SP_weights.csv')
+write.csv(male_weights, './results/nj_stp/SP_weights.csv')
 
 ##### survey mid-date --------------------
 Tdat1 %>%
-  filter(Year ==2016) %>%
+  filter(Year == 2017) %>%
   distinct(Time.Hauled)
 
 ##### Females - large or mature females --------------------------
-####
 # large or mature females
 Tdat1 %>%
   filter(Sex.Code == 2, mod_recruit == 'Large.Females') -> LgF_Tdat1
@@ -527,12 +514,14 @@ LgF_Tdat1 %>%
 LgF_Tdat1[is.na(LgF_Tdat1$Egg.Percent),]
 # need to change these to 0. 
 LgF_Tdat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_Tdat1
+  mutate(Egg.Percent =ifelse(is.na(Egg.Percent) & Egg.Development.Code > 0,
+                             0, Egg.Percent)) -> LgF_Tdat1
 
 LgF_Tdat1 %>%
   mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_Tdat1 # where 1 is yes and 2 is no
 
 LgF_Tdat1 %>%
+  filter(!is.na(Less25)) %>% 
   group_by(Year, area, Pot.No, Less25) %>%
   summarise(no_sum = sum(Number.Of.Specimens)) -> poorclutch
 
@@ -542,33 +531,33 @@ poorclutch1 %>%
   mutate(var1 = y / (y+n)) -> poorclutch1
 poorclutch1 %>%
   group_by(area, Year)%>%
-  summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
+  summarise(Pclutch = mean(var1)*100 , 
+            Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
 write.csv(percent_low_clutch, './results/nj_stp/SP_precent_low_clutch.csv')
 
 ##### Long term females -------------------------
-####
 glimpse(poorclutch1)
 #compare 2016 CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2016) ->poorclutch1_2016
+  filter(Year == 2017) ->poorclutch1_current
 #make sure you have a file with only 2016 data
 #calculate the t.test
-t.test(poorclutch1_2016$var1, mu = 0.10)
+t.test(poorclutch1_current$var1, mu = 0.10)
 ##### Short term females ------------------------
 
 #look at trend for the last 4 years.  Need a file with last four years in it 
 head(poorclutch1) # should have the last 4 years from OceanAK
 
 poorclutch1 %>%
-  filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
-#output this file as .csv to add to next year
-write.csv(LgF_short, './results/nj_stp/SP_poorclutchfemales_16.csv')
+  filter(Year >= 2014) -> LgF_short # short term file has last 4 years in it
 
 # need to run the regression for each area.
 LgF_short %>% 
   group_by(area) %>%
   do(fit = lm(var1 ~ Year, data =.)) %>%
-  tidy(fit) %>% select(area, estimate) -> one
+  tidy(fit) %>% 
+  filter(term == "Year") %>%
+  select(area, estimate) -> one
 LgF_short %>% 
   group_by(area) %>%
   do(fit = lm(var1 ~ Year, data =.)) %>%
@@ -584,9 +573,8 @@ F_short_term_results %>%
 # final results with score - save here
 write.csv(F_short_term_results, './results/nj_stp/SP_Fem_shortterm.csv')
 ggplot(poorclutch1, aes(Year, var1))+geom_point() 
-###
+
 ##### egg percentage overall -----------------------------------
-####
 LgF_Tdat1 %>%
   group_by(Year, Location, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
