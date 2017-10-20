@@ -15,36 +15,42 @@ library(plotrix)
 library(SDMTools)
 library(weights)
 library(broom)
+library(grid)
+library(gridExtra)
+loadfonts(device="win")
+windowsFonts(Times=windowsFont("TT Times New Roman"))
+
+theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
+            theme(panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()))
+
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/TCS/tanner_survey_13_16.csv")
+dat <- read.csv("./data/TCS/TCS data_13_17.csv")
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/TCS/TCSstrata_area.csv") 
-# avoid this by bringing in last four year in original OceanAK data pull.  
-#histdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2015_area formula.csv")
-## !!!!  In future years this file will be 'JNU_CPUE_ALL' and just get updated with current years data.
-#females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
+# brought in all data since 2013 - this was after survey was stratified.  Older data needs to be imported
+# from data file and NOT OceanAK since it won't have survey strata designations in OceanAK
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
 ##### Initial review of new data ---------------------------------
-
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
-  filter(Pot.Condition == "Normal") -> dat1
+  filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> dat1
 
 dat1 %>%
-  filter(Recruit.Status == "", Width.Millimeters >= 1) -> test1 # this SHOULD produce NO rows.  If it does you have data problems go back and correct
+  filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - tanner soak time should be between 16-20??? double check this
 
 ##### Tanner specific manipulations -----------------------------
-###Survey areas ONLY 
-# confirm that only the four surveys areas are present.
+###     Survey areas ONLY 
+#             confirm that only the four surveys areas are present.
 levels(dat1$Location) # 2015 presence of one port camden pot.  remove this.
 
 dat1 %>%
@@ -52,18 +58,20 @@ dat1 %>%
 ### add columns used later 
 dat1 %>%
   #filter(!is.na(Width.Millimeters)) %>%  # lots of hoops to jump through so that NA come out as missing and not NA
-  mutate(mod_recruit = ifelse(Number.Of.Specimens ==0, 'No_crab', ifelse(Sex.Code ==1 & Width.Millimeters <110 & 
-                                                                           !is.na(Width.Millimeters), 'Juvenile', 
-                                                                         ifelse(Sex.Code ==1 & Width.Millimeters>109 & Width.Millimeters < 138 &
-                                                                                  !is.na(Width.Millimeters),'Pre_Recruit', 
-                                                                                ifelse(Sex.Code ==1 & Width.Millimeters > 137 & Width.Millimeters <170 &
-                                                                                         !is.na(Width.Millimeters)& Shell.Condition.Code <4, 'Recruit',
-                                                                                       ifelse((Sex.Code ==1 & !is.na(Width.Millimeters)) &
-                                                                                                Width.Millimeters >169|(Shell.Condition.Code >3 & Width.Millimeters >137 & !is.na(Width.Millimeters)), 'Post_Recruit', 
-                                                                                              ifelse(Sex.Code ==2 & Egg.Development.Code==4 & !is.na(Egg.Development.Code), 'Small.Females', 
-                                                                                                     ifelse(Sex.Code ==2 & Width.Millimeters>0 & !is.na(Width.Millimeters), 'Large.Females', 
-                                                                                                            ifelse(is.na(Width.Millimeters), 'Missing', 'Missing'))))))))) -> Tdat1
-#
+  mutate(mod_recruit = ifelse(Number.Of.Specimens ==0, 'No_crab', 
+                              ifelse(Sex.Code ==1 & Width.Millimeters <110 & 
+                               !is.na(Width.Millimeters), 'Juvenile', 
+                                ifelse(Sex.Code ==1 & Width.Millimeters>109 & Width.Millimeters < 138 &
+                                 !is.na(Width.Millimeters),'Pre_Recruit', 
+                                  ifelse(Sex.Code ==1 & Width.Millimeters > 137 & Width.Millimeters <170 &
+                                   !is.na(Width.Millimeters)& Shell.Condition.Code <4, 'Recruit',
+                                    ifelse((Sex.Code ==1 & !is.na(Width.Millimeters)) &
+                                     Width.Millimeters >169|(Shell.Condition.Code >3 & 
+                                      Width.Millimeters >137 & !is.na(Width.Millimeters)), 'Post_Recruit', 
+                                       ifelse(Sex.Code ==2 & Egg.Development.Code==4 & !is.na(Egg.Development.Code), 'Small.Females', 
+                                        ifelse(Sex.Code ==2 & Width.Millimeters>0 & !is.na(Width.Millimeters), 'Large.Females', 
+                                         ifelse(is.na(Width.Millimeters), 'Missing', 'Missing'))))))))) -> Tdat1
+
 ##### By Pot ----------------------------------------------------
 #Now summarize by pot - remember to keep areas seperate.
 #Need Number of Specimens by recruit class USE mod_recruit here.
