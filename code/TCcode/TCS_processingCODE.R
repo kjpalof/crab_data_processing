@@ -55,6 +55,8 @@ levels(dat1$Location) # 2015 presence of one port camden pot.  remove this.
 
 dat1 %>%
   filter(Location != "Port Camden") -> dat1
+# remove SP from here also.  These are in their own file since they now use RKC only data.
+
 ### add columns used later 
 dat1 %>%
   #filter(!is.na(Width.Millimeters)) %>%  # lots of hoops to jump through so that NA come out as missing and not NA
@@ -76,7 +78,7 @@ dat1 %>%
 #Now summarize by pot - remember to keep areas seperate.
 #Need Number of Specimens by recruit class USE mod_recruit here.
 Tdat1 %>%
-  group_by(Year, Location, Pot.No, Density.Strata.Code,mod_recruit) %>% # use AREA here instead of location due to multiple location names for one survey area
+  group_by(Year, Location, Pot.No, Density.Strata.Code,mod_recruit) %>% 
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
 dat3 <- dcast(dat2, Year + Location + Pot.No + Density.Strata.Code ~ mod_recruit, sum, drop=TRUE)
@@ -84,15 +86,14 @@ dat3 <- dcast(dat2, Year + Location + Pot.No + Density.Strata.Code ~ mod_recruit
 # Join area input file with dat3 - which is the data summarized by pot.  Each sampling area has it's own area file or area per
 #     strata.  This is used to calculating the weighting for weighted CPUE.
 dat3 %>%
+  select( -`NA`) %>% #remove NA column.  This is due to some data errors that need to be fixed in the entry
   right_join(area) -> tab
 #Calculates the number of pots per strata.  
 tab %>%
   group_by(Year, Location, Density.Strata.Code) %>%
   summarise(npots  = length(Pot.No)) -> pots_per_strata
 
-##
 ##### Weighted CPUE current year -----------------------------------
-##
 #the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
 # need to combine data sets to accomplish this.
 
@@ -115,22 +116,24 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females))))),
-            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females)))))) -> CPUE_wt_16
-# check to confirm last years CPUEs match - that's why we use two years.
-# change name and folder for each area
-write.csv(CPUE_wt_16, './results/TCS/CPUE_16.csv') # contains last four years of survey data 
+            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females)))))) -> CPUE_wt_all
+# check to confirm previous years CPUEs match
+write.csv(CPUE_wt_all, './results/TCS/CPUE_all.csv') # contains last four years of survey data 
 
-###
+### historic file ---------
+# eventually need to import data from 1997 to 2013 that has post-strata assignments.
+# need this data for biomass and CPUE trend figures to be in R - need to get them out of Sigma Plot
+
 ##### Short term trends -------------------------------------
-###
 #look at trend for the last 4 years.  Need a file with last four years
-# attempt to use broom for short term trends 
-#tidy(Lfem_fit) # want to save $estimate here
-#glance(Lfem_fit) # want to save r.squared and p.value
 
+# function 
 head(dat3) # make sure this is the file with each recruit class as a column by year, location and pot no
 dat3 %>%
+  select (- `NA`) %>% 
   filter(Year >=2013) -> dat3 # confirm that is only contains the last 4 years.  This year needs to be changed every year
+
+short_t_tanner(dat3, 2017)
 
 dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
