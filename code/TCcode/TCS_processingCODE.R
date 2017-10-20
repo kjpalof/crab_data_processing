@@ -265,19 +265,20 @@ poorclutch1_current %>%
 head(poorclutch1) # has data since 2013
 
 poorclutch1 %>%
-  filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
-#output this file as .csv to add to next year
-write.csv(LgF_short, './results/TCS/poorclutchfemales_16.csv')
+  filter(Year >= 2014) -> LgF_short # short term file has last 4 years in it
 
 # need to run the regression for each area.
 LgF_short %>% 
   group_by(Location) %>%
   do(fit = lm(var1 ~ Year, data =.)) %>%
-  tidy(fit) %>% select(Location, estimate) -> one
+  tidy(fit) %>% 
+  filter(term == 'Year') %>% 
+  select(Location, estimate) -> one
 LgF_short %>% 
   group_by(Location) %>%
   do(fit = lm(var1 ~ Year, data =.)) %>%
-  glance(fit) %>% select(Location, r.squared, p.value) ->two
+  glance(fit) %>% 
+  select(Location, r.squared, p.value) ->two
 one %>%
   right_join(two) -> F_short_term_results # estimate here is slope from regression
 
@@ -289,11 +290,11 @@ F_short_term_results %>%
 # final results with score - save here
 write.csv(F_short_term_results, './results/TCS/TCS_Fem_shortterm.csv')
 ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~Location)
-###
+
 
 ##### egg percentage overall -----------------------------------
-####
 LgF_Tdat1 %>%
+  filter(!is.na(Egg.Percent)) %>% 
   group_by(Year, Location, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
 
