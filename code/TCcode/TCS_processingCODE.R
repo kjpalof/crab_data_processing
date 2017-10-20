@@ -161,7 +161,7 @@ areas <- c('Holkham Bay', 'Thomas Bay')
 
 long_term <- lapply(areas, long_loop_17)
 write.csv(long_term, './results/TCS/long_term.csv')
-
+# **FLAG** need to save these results in a better format
 
 ##### Weights from length - weight relatinship--------------------
 #
@@ -184,30 +184,17 @@ Tdat1 %>%
 Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
 Legal =c("Recruit", "Post_Recruit")
 
-datWL %>%
-  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
-  group_by (Location, mod_recruit, Year) %>%
-  summarise(mean_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_all
-weight_all %>%
-  filter(mod_recruit == "Pre_Recruit") %>%
-  group_by(Location, Year) -> weight_pre
-datWL %>%
-  filter(Sex.Code ==1, mod_recruit %in% Mature ) %>%
-  group_by (Location, Year) %>%
-  summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_mature
-
-datWL %>%
-  filter(Sex.Code ==1, Recruit.Status %in% Legal)%>%
-  group_by(Location, Year) %>%
-  summarise(legal_lbs = wt.mean(weight_lb, Number.Of.Specimens)) -> weight_legal
-#summarise(mature_lbs = wt.mean(weight_lb, Number.Of.Specimens), legal_lb)
-
-weight_mature %>%
-  right_join(weight_legal) %>%
-  right_join(weight_pre)  %>%
-  select( -mod_recruit) %>%
-  rename(pre_recruit_lb = mean_lbs) -> weights_summary
-write.csv(weights_summary, './results/TCS/TCS_weights.csv')
+datWL %>% 
+  group_by(Location, Year) %>% 
+  filter(Sex.Code == 1) %>% 
+  summarise(mature_lbs = wt.mean(weight_lb[Recruit.Status %in% Mature], 
+                                 Number.Of.Specimens[Recruit.Status %in% Mature]), 
+            legal_lbs = wt.mean(weight_lb[Recruit.Status %in% Legal], 
+                                Number.Of.Specimens[Recruit.Status %in% Legal]), 
+            prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
+                               Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
+# final results with score - save here
+write.csv(male_weights, './results/TCS/TCS_weights.csv')
 
 ####
 ##### Females - large or mature females --------------------------
