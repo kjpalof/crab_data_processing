@@ -196,17 +196,16 @@ datWL %>%
 # final results with score - save here
 write.csv(male_weights, './results/TCS/TCS_weights.csv')
 
-####
+
 ##### Females - large or mature females --------------------------
-####
 # large or mature females
 Tdat1 %>%
   filter(Sex.Code == 2, mod_recruit == 'Large.Females') -> LgF_Tdat1
 
 #make sure this does NOT include immature females
-# this is egg_condition_code == 4
+# this is egg_development_code == 4
 LgF_Tdat1 %>%
-  filter(Egg.Condition.Code == 4)
+  filter(Egg.Development.Code == 4)
 ##### % poor (<10 %) clutch -----------------------------------
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
@@ -214,12 +213,13 @@ LgF_Tdat1 %>%
 LgF_Tdat1[is.na(LgF_Tdat1$Egg.Percent),]
 # need to change these to 0. 
 LgF_Tdat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_Tdat1
-
+  mutate(Egg.Percent =ifelse(is.na(Egg.Percent) & Egg.Development.Code > 0,
+                             0, Egg.Percent)) -> LgF_Tdat1
 LgF_Tdat1 %>%
   mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_Tdat1 # where 1 is yes and 2 is no
 
 LgF_Tdat1 %>%
+  filter(!is.na(Less25)) %>% 
   group_by(Year, Location, Pot.No, Less25) %>%
   summarise(no_sum = sum(Number.Of.Specimens)) -> poorclutch
 
@@ -231,51 +231,38 @@ poorclutch1 %>%
   group_by(Location, Year)%>%
   summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
 write.csv(percent_low_clutch, './results/TCS/TCS_precent_low_clutch.csv')
-# check to see if these match JMP file
 
-####
 ##### Long term females -------------------------
-####
+
 glimpse(poorclutch1)
-#compare 2016 CPUE distribution to the long term mean
+#compare current year's CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2016) ->poorclutch1_2016
+  filter(Year == 2017) ->poorclutch1_current
 #make sure you have a file with only 2016 data
 #calculate the t.test
-poorclutch1_2016 %>%
+poorclutch1_current %>%
   filter(Location == "Glacier Bay") -> LT_poor
 t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_2016 %>%
+poorclutch1_current %>%
   filter(Location == "Thomas Bay") -> LT_poor
 t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_2016 %>%
+poorclutch1_current %>%
   filter(Location == "Icy Strait") -> LT_poor
 t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_2016 %>%
+poorclutch1_current %>%
   filter(Location == "Holkham Bay") -> LT_poor
 t.test(LT_poor$var1, mu = 0.10)
 
-# attemps to do this all at once
-poorclutch1_2016 %>%
-  summarise_each(funs(t.test(.[Location == 'Glacier Bay'], .[Location == "Thomas Bay"], 
-                             .[Location == "Icy Strait"], .[Location == "Holkham Bay"])$p.value), 
-                             vars = var1, mu = 0.10)
-                             
-                        #  (test = t.test(var1, mu = 0.10)) -> clutch_LT
-poorclutch1_2016 %>%
-  group_by(Location) %>%
-  do(tidy(t.test(var1, mu=0.10, data=.))) ->lt_clutch
-  
-  #filter(Location == 'Glacier Bay')%>%
-  #do(t.test(vars1, mu = 0.10))
+# attemps to do this all at once ***FLAG *** not working.  need to fix this.
 
-####
+poorclutch1_current %>%
+  group_by(Location) %>%
+  do(tidy(t.test(poorclutch1_current$var1, mu=0.10, data=.))) ->lt_clutch
+  
 ##### Short term females ------------------------
-####
-#look at trend for the last 4 years.  Need a file with last four years in it - females from above
-# input data the first time (2016) and then add to it.
-#After that this should create a file to use in the future
-head(poorclutch1) # should have the last 4 years from OceanAK
+
+#look at trend for the last 4 years. 
+head(poorclutch1) # has data since 2013
 
 poorclutch1 %>%
   filter(Year >=2013) -> LgF_short # short term file has last 4 years in it
