@@ -156,8 +156,7 @@ ggplot(graph1, aes(Year, crab, color = mod_recruit)) + geom_point() +geom_smooth
 long_ttest('Thomas Bay', 2017, baseline, dat5)
 
 areas <- c('Icy Strait', 'Glacier Bay', 'Holkham Bay', 'Thomas Bay')
-areas <- c('Holkham Bay', 'Thomas Bay')
-
+#areas <- c('Holkham Bay', 'Thomas Bay')
 
 long_term <- lapply(areas, long_loop_17)
 write.csv(long_term, './results/TCS/long_term.csv')
