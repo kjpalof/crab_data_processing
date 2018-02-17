@@ -191,3 +191,29 @@ ls_allocation %>%
   filter(Year > 2014) %>% 
   group_by(Strata.Code) %>% 
   summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
+
+# juneau ---
+dat <- read.csv("./results/redcrab/Juneau/JNU_perpot_all_17.csv") # output from CSA assessment summary by pot for all years 
+
+# total crab cpue and sd by strata 
+dat %>% 
+  mutate(mature.male = Pre_Recruit + Recruit + Post_Recruit) %>% 
+  mutate(total.c = (Missing + Juvenile + Large.Females + Post_Recruit + Pre_Recruit + Recruit + Small.Females)) -> dat
+
+dat %>%
+  filter(Year >= 2012) %>% 
+  group_by(Year, Density.Strata.Code) %>%
+  summarise(total.c_u = mean(total.c), total.c_sd = sd(total.c), male.c_u = mean(mature.male), 
+            male.c_sd = sd(mature.male)) -> jnu_allocation
+
+# 2012-2014
+jnu_allocation %>% 
+  filter(Year <= 2014) %>% 
+  group_by(Density.Strata.Code) %>% 
+  summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
+
+#2015-2017
+jnu_allocation %>% 
+  filter(Year > 2014) %>% 
+  group_by(Density.Strata.Code) %>% 
+  summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
