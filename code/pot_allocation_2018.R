@@ -28,6 +28,7 @@ theme_set(theme_bw(base_size=12,base_family='Times New Roman')+
 
 source('./code/functions.R')
 
+
 # excursion -----
 # data 
 dat <- read.csv("./results/redcrab/Excursion/EI_perpot_all_17.csv") # output from CSA assessment summary by pot for all years 
@@ -124,17 +125,69 @@ dat %>%
   filter(Year >= 2012) %>% 
   group_by(Year, Strata.Code) %>%
   summarise(total.c_u = mean(total.c), total.c_sd = sd(total.c), male.c_u = mean(mature.male), 
-            male.c_sd = sd(mature.male)) -> gb_allocation
+            male.c_sd = sd(mature.male)) -> sc_allocation
 
 # 2012-2014
-gb_allocation %>% 
+sc_allocation %>% 
   filter(Year <= 2014) %>% 
   group_by(Strata.Code) %>% 
   summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
 
 #2015-2017
-gb_allocation %>% 
+sc_allocation %>% 
   filter(Year > 2014) %>% 
   group_by(Strata.Code) %>% 
   summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
 
+# peril -----
+# data 
+dat <- read.csv("./results/redcrab/Peril/PS_perpot_all_17.csv") # output from CSA assessment summary by pot for all years 
+
+# total crab cpue and sd by strata 
+dat %>% 
+  mutate(mature.male = Pre_Recruit + Recruit + Post_Recruit) %>% 
+  mutate(total.c = (Missing + Juvenile + Large.Females + Post_Recruit + Pre_Recruit + Recruit + Small.Females)) -> dat
+
+dat %>%
+  filter(Year >= 2012) %>% 
+  group_by(Year, Strata.Code) %>%
+  summarise(total.c_u = mean(total.c), total.c_sd = sd(total.c), male.c_u = mean(mature.male), 
+            male.c_sd = sd(mature.male)) -> ps_allocation
+
+# 2012-2014
+ps_allocation %>% 
+  filter(Year <= 2014) %>% 
+  group_by(Strata.Code) %>% 
+  summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
+
+#2015-2017
+ps_allocation %>% 
+  filter(Year > 2014) %>% 
+  group_by(Strata.Code) %>% 
+  summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
+
+# lynn canal ------
+dat <- read.csv("./results/redcrab/LynnSisters/LS_perpot_all_17.csv") # output from CSA assessment summary by pot for all years 
+
+# total crab cpue and sd by strata 
+dat %>% 
+  mutate(mature.male = Pre_Recruit + Recruit + Post_Recruit) %>% 
+  mutate(total.c = (Missing + Juvenile + Large.Females + Post_Recruit + Pre_Recruit + Recruit + Small.Females)) -> dat
+
+dat %>%
+  filter(Year >= 2012) %>% 
+  group_by(Year, Strata.Code) %>%
+  summarise(total.c_u = mean(total.c), total.c_sd = sd(total.c), male.c_u = mean(mature.male), 
+            male.c_sd = sd(mature.male)) -> ls_allocation
+
+# 2012-2014
+ls_allocation %>% 
+  filter(Year <= 2014) %>% 
+  group_by(Strata.Code) %>% 
+  summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
+
+#2015-2017
+ls_allocation %>% 
+  filter(Year > 2014) %>% 
+  group_by(Strata.Code) %>% 
+  summarise(mean = mean(total.c_u), sd = mean(total.c_sd), mature_u = mean(male.c_u), mature_sd = sd(male.c_sd))
