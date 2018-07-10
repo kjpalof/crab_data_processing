@@ -19,8 +19,10 @@ library(broom)
 #####Load Data --------------------------------------
 dat <- read.csv("./data/redcrab/Juneau/jnu_16_17_oceanAK_out_RAW.csv")
 area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv") #same every year
-histdat <- read.csv("./data/redcrab/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
-females <- read.csv("./data/redcrab/Juneau/RKC_11_16_large females_by_pot.csv")
+# use JNU_79_XX_bypot.csv created from previous year ** need to change year **
+histdat <- read.csv("./results/redcrab/Juneau/2017/JNU_79_17_bypot.csv")
+#females <- read.csv("./data/redcrab/Juneau/RKC_11_16_large females_by_pot.csv")
+
 
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
