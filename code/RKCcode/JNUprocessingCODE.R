@@ -23,7 +23,6 @@ area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv") #same ev
 histdat <- read.csv("./results/redcrab/Juneau/2017/JNU_79_17_bypot.csv")
 #females <- read.csv("./data/redcrab/Juneau/RKC_11_16_large females_by_pot.csv")
 
-
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
@@ -43,15 +42,15 @@ dat1 %>%
 ##### By Pot -------------------------------
 #Now summarize by pot - remember to keep areas seperate.
 dat1 %>%
-  group_by(Year, Location, Pot.No, Density.Strata.Code) %>%
+  group_by(Year, Location, Trip.No, Pot.No, Density.Strata.Code) %>%
   summarise (total_crab = sum(Number.Of.Specimens)) #gets you total crab per pot.
 
 # need Number of Specimens by recruit class
 dat1 %>%
-  group_by(Year, Location, Pot.No, Density.Strata.Code, Recruit.Status) %>%
+  group_by(Year, Location, Trip.No, Pot.No, Density.Strata.Code, Recruit.Status) %>%
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
-dat3 <- dcast(dat2, Year + Location + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
+dat3 <- dcast(dat2, Year + Location + Trip.No + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
 
 head(dat3)
 
@@ -74,7 +73,7 @@ tab %>%
 dat4 %>%
   mutate(inverse_n = 1 / npots, weighting = inverse_n * Area) ->dat5
 dat5 %>%
-  rename(Missing = Var.5, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
+  rename(Missing = Var.6, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
  
 #This version is ready to calculate CPUE for each recruit class
 #Calculates a weighted mean CPUE and SE for each recruit class
@@ -85,7 +84,8 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_17
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/
+                            (sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_17
 
 write.csv(CPUE_wt_JNU_17, './results/redcrab/Juneau/JNU_CPUE_17.csv', row.names = FALSE)
 
@@ -99,19 +99,21 @@ dat[5843,7] # 6-27
 # so mid-date would be 24th.
 
 ##### Historic file ---------------------------------------
-#need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
+# need to add current years pot summary to the historic pot summary file.  
+# For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
+head(histdat)
 
-#histdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2016_area formula.csv")
-#hisdat_15 <- read.csv("./data/redcrab/Juneau/2Juneau Stratified CPUE 2015_area formula.csv")
-#hisdat_15 <- hisdat_15[,1:15]
-historicdata <- histdat[,1:15] # has all data from 2001 to 2016
-
-# need to add 2017 to historicdata file
-# Locations in historic file are numbers.  Here I have names, should I change this?
-# only 2017 data 
+histdat %>%  # historic data needs to only have Strata.Code in it - need to remove the other
+  # strata columns before combining. In the future this should be fixed before this file is saved.
+  select(-Density.Strata.Code, -Strata) %>% 
+  select(-Strata.Code, Strata.Code) -> historicdata
+  
+# need to add current years data to historicdata file
 dat5 %>%
+  mutate(Strata.Code = Density.Strata.Code) %>% 
+  select(-Density.Strata.Code) %>% 
   filter(Year == 2017) -> dat5_2017
 JNU_CPUE_ALL <- rbind(historicdata, dat5_2017)
 
@@ -123,12 +125,12 @@ write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_17.csv', row.na
 # tidy( ### fit) # want to save $estimate here
 # glance (## fit) # want to save r.squared and p.value
 JNU_CPUE_ALL %>%
-  filter(Year >=2014) -> JNU_ST_17 # short term file has last 4 years in it
+  filter(Year >=2015) -> JNU_ST_18 # short term file has last 4 years in it
 # short term all ----
 # long version for this 
-JNU_ST_17_long <- gather(JNU_ST_17, recruit.status, crab, Juvenile:Small.Females, factor_key = TRUE) 
+JNU_ST_18_long <- gather(JNU_ST_18, recruit.status, crab, Juvenile:Small.Females, factor_key = TRUE) 
 
-JNU_ST_17_long %>% 
+JNU_ST_18_long %>% 
   group_by(recruit.status) %>% 
   do(fit = lm(crab ~ Year, data = ., weights = weighting)) ->short_term
 
@@ -154,38 +156,8 @@ short_term_results %>%
 # final results with score - save here
 write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv', row.names = FALSE)
 
-ggplot(JNU_ST_17_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
+ggplot(JNU_ST_18_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
-# short term plots ----
-plot(JNU_ST_16$Year, JNU_ST_16$Juvenile)
-Juv_fit <-lm(Juvenile ~ Year, data = JNU_ST_16, weights = weighting)
-abline(Juv_fit, col= 'red')
-summary(Juv_fit)
-
-plot(JNU_ST_16$Year, JNU_ST_16$Large.Females)
-Lfem_fit <-lm(Large.Females ~ Year, data = JNU_ST_16, weights = weighting)
-abline(Lfem_fit, col= 'red')
-summary(Lfem_fit)
-
-plot(JNU_ST_16$Year, JNU_ST_16$Post_Recruit)
-PR_fit <-lm(Post_Recruit ~ Year, data = JNU_ST_16, weights = weighting)
-abline(PR_fit, col= 'red')
-summary(PR_fit)
-
-plot(JNU_ST_16$Year, JNU_ST_16$Pre_Recruit)
-PreR_fit <-lm(Pre_Recruit ~ Year, data = JNU_ST_16, weights = weighting)
-abline(PreR_fit, col= 'red')
-summary(PreR_fit)
-
-plot(JNU_ST_16$Year, JNU_ST_16$Recruit)
-R_fit <-lm(Recruit ~ Year, data = JNU_ST_16, weights = weighting)
-abline(R_fit, col= 'red')
-summary(R_fit)
-
-plot(JNU_ST_16$Year, JNU_ST_16$Small.Females)
-smF_fit <-lm(Small.Females ~ Year, data = JNU_ST_16, weights = weighting)
-abline(smF_fit, col= 'red')
-summary(smF_fit)
 
 ##### Long term trends ------
 #compare current years CPUE distribution to the long term mean
