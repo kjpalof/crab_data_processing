@@ -11,14 +11,16 @@ library(xlsx)
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-harvest <- read.csv("./data/harvest_17.csv")
+harvest <- read.csv("./data/redcrab/RKC_fish_tickets.csv")
 glimpse(harvest)
 survey.area <- read.xlsx('data/redcrab/rkc_biomass_2017_model.xlsx', sheetName = "Sheet2") #stat area to survey area conversion
 
-unique(harvest$Stat.Area)
-# need to create column that does what 'Survey area 3' does in Excel sheet
-# refer to '2014-2015 fish tickets.xlsx'
 
+### clean up data -----
+unique(harvest$Species.Code.and.Name)
+harvest %>% 
+  select(Species.Class, Season, CFEC, ADFG.Number, Date.of.Landing, Stat.Area, 
+         Species.Code.and.Name, Number.Of.Animals, Whole.Weight..sum., Pot.Lifts) %>%  
 
 # by stat area, not needed for this analysis
 harvest %>%
