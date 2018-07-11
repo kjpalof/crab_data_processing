@@ -14,8 +14,8 @@ library(xlsx)
 harvest <- read.csv("./data/redcrab/RKC_fish_tickets.csv")
 glimpse(harvest)
 survey.area <- read.xlsx('data/redcrab/rkc_biomass_2017_model.xlsx', sheetName = "Sheet2") #stat area to survey area conversion
-
-
+personal_use <- read.csv("./data/redcrab/personal_use_RKC_11A_2017.csv")
+  
 ### clean up  ------
 unique(harvest$Species.Code.and.Name)
 harvest %>% 
@@ -60,3 +60,6 @@ harvest2 %>%
   mutate(avg.wt = pounds/numbers, cpue = numbers/pots) -> annual_catch
 
 write.csv(annual_catch, './results/redcrab/rkc_annual_catch_17.csv')
+
+
+### personal use -------------------
