@@ -163,14 +163,14 @@ ggplot(JNU_ST_18_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status
 #compare current years CPUE distribution to the long term mean
 # use dat5_current year
 head(dat5_2017)
-#make sure you have a file with only 2016 data
+#make sure you have a file with only current years data
 #Uses a weighted mean to help calculate the t.test - part of package weights
-juv <- wtd.t.test(dat5_2017$Juvenile, y = 2.53, weight = dat5_2017$weighting, samedata=FALSE)
-lfem <- wtd.t.test(dat5_2017$Large.Females, y = 4.48, weight = dat5_2017$weighting, samedata=FALSE)
-postr <- wtd.t.test(dat5_2017$Post_Recruit, y = 2.32, weight = dat5_2017$weighting, samedata=FALSE)
-prer <- wtd.t.test(dat5_2017$Pre_Recruit, y = 2.45, weight = dat5_2017$weighting, samedata=FALSE)
-rec <- wtd.t.test(dat5_2017$Recruit, y = 1.85, weight = dat5_2017$weighting, samedata=FALSE)
-sfem <- wtd.t.test(dat5_2017$Small.Females, y = 1.65, weight = dat5_2017$weighting, samedata=FALSE)
+juv <- wtd.t.test(dat5_2018$Juvenile, y = 2.53, weight = dat5_2018$weighting, samedata=FALSE)
+lfem <- wtd.t.test(dat5_2018$Large.Females, y = 4.48, weight = dat5_2018$weighting, samedata=FALSE)
+postr <- wtd.t.test(dat5_2018$Post_Recruit, y = 2.32, weight = dat5_2018$weighting, samedata=FALSE)
+prer <- wtd.t.test(dat5_2018$Pre_Recruit, y = 2.45, weight = dat5_2018$weighting, samedata=FALSE)
+rec <- wtd.t.test(dat5_2018$Recruit, y = 1.85, weight = dat5_2018$weighting, samedata=FALSE)
+sfem <- wtd.t.test(dat5_2018$Small.Females, y = 1.65, weight = dat5_2018$weighting, samedata=FALSE)
 
 long_term <- matrix(nrow = 6, ncol = 2)
 rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
