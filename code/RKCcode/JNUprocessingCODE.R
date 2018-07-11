@@ -17,7 +17,7 @@ library(weights)
 library(broom)
 
 #####Load Data --------------------------------------
-dat <- read.csv("./data/redcrab/Juneau/jnu_16_17_oceanAK_out_RAW.csv")
+dat <- read.csv("./data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
 area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv") #same every year
 # use JNU_79_XX_bypot.csv created from previous year ** need to change year **
 histdat <- read.csv("./results/redcrab/Juneau/2017/JNU_79_17_bypot.csv")
@@ -85,11 +85,11 @@ dat5 %>%
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/
-                            (sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_17
+                            (sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_18
 
 write.csv(CPUE_wt_JNU_17, './results/redcrab/Juneau/JNU_CPUE_17.csv', row.names = FALSE)
 
-# raw CPUE legals 2016 3.66
+# raw CPUE of legals 6.09
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
@@ -97,6 +97,7 @@ unique(dat$Time.Hauled)
 dat[1,7] # 6-20
 dat[5843,7] # 6-27
 # so mid-date would be 24th.
+### ***fix *** this needs to be calculated better
 
 ##### Historic file ---------------------------------------
 # need to add current years pot summary to the historic pot summary file.  
@@ -114,7 +115,8 @@ histdat %>%  # historic data needs to only have Strata.Code in it - need to remo
 dat5 %>%
   mutate(Strata.Code = Density.Strata.Code) %>% 
   select(-Density.Strata.Code) %>% 
-  filter(Year == 2017) -> dat5_2017
+  filter(Year == 2017) -> dat5_2018
+
 JNU_CPUE_ALL <- rbind(historicdata, dat5_2017)
 
 write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_17.csv', row.names = FALSE)
