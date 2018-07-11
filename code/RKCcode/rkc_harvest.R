@@ -45,9 +45,6 @@ harvest2 %>%
 write.csv(catch_by_stat, './results/redcrab/comm_catch_by_statarea.csv')
 write.csv(catch_by_survey, './results/redcrab/comm_catch_by_surveyarea.csv')
 
-
-# lynn sister and north juneau need to be manually split up in area 115-10
-write.csv(comm.catch.sum, './results/redcrab/tanner_comm_catch.csv')
 ### mid-catch date ------------------
 harvest3 %>%
   group_by(survey.area, Date.of.Landing) %>%
