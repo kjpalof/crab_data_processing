@@ -16,30 +16,33 @@ glimpse(harvest)
 survey.area <- read.xlsx('data/redcrab/rkc_biomass_2017_model.xlsx', sheetName = "Sheet2") #stat area to survey area conversion
 
 
-### # by stat area ------
+### clean up  ------
 unique(harvest$Species.Code.and.Name)
 harvest %>% 
   select(Species.Class, Season, CFEC, ADFG.Number, Date.of.Landing, Stat.Area, 
          Species.Code.and.Name, Number.Of.Animals, Whole.Weight..sum., Pot.Lifts) %>%  
-  group_by(Season, Stat.Area) %>% 
+  rename(stat.area = Stat.Area) %>% 
+  left_join(survey.area) -> harvest2
+
+# by stat area ----
+harvest2 %>% 
+  group_by(Season, stat.area) %>% 
+  summarise(permits = length(unique(CFEC)), 
+            numbers = sum(Number.Of.Animals), 
+            pounds = sum(Whole.Weight..sum.), 
+            pots = sum(Pot.Lifts, na.rm = TRUE)) -> catch_by_stat
+  
+# by survey area ----
+harvest2 %>% 
+  group_by(Season, survey.area) %>% 
   summarise(permits = length(unique(CFEC)), 
             numbers = sum(Number.Of.Animals), 
             pounds = sum(Whole.Weight..sum.), 
             pots = sum(Pot.Lifts, na.rm = TRUE)) %>% 
-  rename(stat.area = Stat.Area) -> harvest2
-
-# add survey area ---
-harvest2 %>% 
-  left_join(survey.area) -> harvest3
-harvest3 %>% 
-  group_by(Season, survey.area) %>% 
-  summarise(permits = sum(permits), 
-            numbers = sum(numbers), 
-            pounds = sum(pounds), 
-            pots = sum(pots)) -> catch_by_survey
+  mutate(avg_wt = pounds/numbers) -> catch_by_survey
 
 
-write.csv(harvest3, './results/redcrab/comm_catch_by_statarea.csv')
+write.csv(catch_by_stat, './results/redcrab/comm_catch_by_statarea.csv')
 write.csv(catch_by_survey, './results/redcrab/comm_catch_by_surveyarea.csv')
 
 
