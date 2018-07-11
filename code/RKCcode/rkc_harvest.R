@@ -46,8 +46,7 @@ write.csv(catch_by_survey, './results/redcrab/comm_catch_by_surveyarea.csv')
 # lynn sister and north juneau need to be manually split up in area 115-10
 write.csv(comm.catch.sum, './results/redcrab/tanner_comm_catch.csv')
 ### mid-catch date ------------------
-harvest %>%
-  filter (Season == "Sep2016 - Aug17") %>% 
+harvest3 %>%
   group_by(survey.area, Date.of.Landing) %>%
   summarise(numbers = sum(Number.Of.Animals)) ->mid.catch
 write.csv(mid.catch, './results/redcrab/tanner_mid_catch_date.csv')
