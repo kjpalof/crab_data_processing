@@ -16,29 +16,32 @@ glimpse(harvest)
 survey.area <- read.xlsx('data/redcrab/rkc_biomass_2017_model.xlsx', sheetName = "Sheet2") #stat area to survey area conversion
 
 
-### clean up data -----
+### # by stat area ------
 unique(harvest$Species.Code.and.Name)
 harvest %>% 
   select(Species.Class, Season, CFEC, ADFG.Number, Date.of.Landing, Stat.Area, 
          Species.Code.and.Name, Number.Of.Animals, Whole.Weight..sum., Pot.Lifts) %>%  
-
-# by stat area, not needed for this analysis
-harvest %>%
-  group_by(Season, Stat.Area, survey.area) %>%
+  group_by(Season, Stat.Area) %>% 
   summarise(permits = length(unique(CFEC)), 
             numbers = sum(Number.Of.Animals), 
-            pounds = sum(Whole.Weight..sum.)) -> harvest2
+            pounds = sum(Whole.Weight..sum.), 
+            pots = sum(Pot.Lifts, na.rm = TRUE)) %>% 
+  rename(stat.area = Stat.Area) -> harvest2
 
-write.csv(harvest2, './results/tanner/comm_catch_by_statarea.csv')
-#dat %>%
-#  filter(Stat.Area == 11510, Season == 'Sep2015 - Aug16') %>%
-#  select(Season, CFEC, Stat.Area, )
+# add survey area ---
+harvest2 %>% 
+  left_join(survey.area) -> harvest3
+harvest3 %>% 
+  group_by(Season, survey.area) %>% 
+  summarise(permits = sum(permits), 
+            numbers = sum(numbers), 
+            pounds = sum(pounds), 
+            pots = sum(pots)) -> catch_by_survey
 
-### by survey area --------------------------
-harvest %>%
-  group_by(Season, survey.area)%>%
-  summarise(permits = length(unique(CFEC)), numbers = sum(Number.Of.Animals), 
-            pounds = sum(Whole.Weight..sum.)) -> comm.catch.sum
+
+write.csv(harvest3, './results/redcrab/comm_catch_by_statarea.csv')
+write.csv(catch_by_survey, './results/redcrab/comm_catch_by_surveyarea.csv')
+
 
 # lynn sister and north juneau need to be manually split up in area 115-10
 write.csv(comm.catch.sum, './results/redcrab/tanner_comm_catch.csv')
