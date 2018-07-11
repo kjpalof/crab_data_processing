@@ -46,14 +46,17 @@ write.csv(catch_by_stat, './results/redcrab/comm_catch_by_statarea.csv')
 write.csv(catch_by_survey, './results/redcrab/comm_catch_by_surveyarea.csv')
 
 ### mid-catch date ------------------
-harvest3 %>%
+harvest2 %>%
   group_by(survey.area, Date.of.Landing) %>%
   summarise(numbers = sum(Number.Of.Animals)) ->mid.catch
-write.csv(mid.catch, './results/redcrab/tanner_mid_catch_date.csv')
+write.csv(mid.catch, './results/redcrab/rkc_mid_catch_date.csv')
 
 ### total annual harvest  ---------------------
-comm.catch.sum %>%
+harvest2 %>%
   group_by(Season)%>%
-  summarise(numbers = sum(numbers), pounds = sum(pounds)) -> annual_catch
+  summarise(numbers = sum(Number.Of.Animals), 
+            pounds = sum(Whole.Weight..sum.), 
+            pots = sum(Pot.Lifts, na.rm = TRUE)) %>% 
+  mutate(avg.wt = pounds/numbers, cpue = numbers/pots) -> annual_catch
 
-write.csv(annual_catch, './results/tanner/tanner_annual_catch_17.csv')
+write.csv(annual_catch, './results/redcrab/rkc_annual_catch_17.csv')
