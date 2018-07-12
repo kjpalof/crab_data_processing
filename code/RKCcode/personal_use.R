@@ -50,8 +50,14 @@ by_status_2017 %>%
          pnr = (`0`) / (`1` + `2` +`0`), 
          total_permits = sum(`1` + `2` +`0`), 
          adjustment = (total_permits / (total_permits - 0.762*(`0`))), 
-         catch.not.reported = adjustment*as.numeric(total_c[2])) -> summary_17
+         est.total.catch.numbers = adjustment*as.numeric(total_c[2])) -> summary_17
 write.csv(summary_17, './results/redcrab/Juneau/personal_use_estimate_total.csv', row.names = FALSE)
+
+## can use legal weight from 2017 to extrapolate this into pounds
+## only works IF the male_weights is loaded from the processing code - if not need to bring it in from
+###     results folder
+summary_17 %>% 
+  mutate(est.catch.lbs = est.total.catch.numbers*male_weights$legal_lbs[1]) -> summary_17
 
 by_status_2017 %>% 
   group_by(Year, status) %>% 
