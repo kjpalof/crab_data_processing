@@ -26,6 +26,10 @@ by_status %>%
                                        ifelse(Permit.Returned.Status == "Permit returned - did not fish", 2, 
                                               0))))) %>% 
   mutate(cpue = number/pots, cpue_permits = number/n) -> by_status_2017
+write.csv(by_status_2017, './results/redcrab/Juneau/personal_use_raw_summary.csv', row.names = FALSE)
+
+by_status_2017 %>% 
+  summarise(sum(number)) -> total_c
 # 0 = permit not returned
 # 1 = permit returned and fished
 # 2 = permit returned but NOT fished
@@ -45,7 +49,9 @@ by_status_2017 %>%
   mutate(pct.r.that.fished = (`1`) / (`1` + `2`), 
          pnr = (`0`) / (`1` + `2` +`0`), 
          total_permits = sum(`1` + `2` +`0`), 
-         adjustment = (total_permits / (total_permits - 0.762*(`0`)))) -> summary_17
+         adjustment = (total_permits / (total_permits - 0.762*(`0`))), 
+         catch.not.reported = adjustment*as.numeric(total_c[2])) -> summary_17
+write.csv(summary_17, './results/redcrab/Juneau/personal_use_estimate_total.csv', row.names = FALSE)
 
 by_status_2017 %>% 
   group_by(Year, status) %>% 
@@ -56,4 +62,6 @@ by_status_2017 %>%
          total_returned = sum(n[status !=0]), 
          cpue.pots = number/pots, 
          cpue.permits = number/n) 
-  
+
+
+
