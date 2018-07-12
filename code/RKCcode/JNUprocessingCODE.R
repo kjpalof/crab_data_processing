@@ -87,7 +87,7 @@ dat5 %>%
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/
                             (sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_18
 
-write.csv(CPUE_wt_JNU_17, './results/redcrab/Juneau/JNU_CPUE_17.csv', row.names = FALSE)
+write.csv(CPUE_wt_JNU_18, './results/redcrab/Juneau/JNU_CPUE_18.csv', row.names = FALSE)
 
 # raw CPUE of legals 6.09
 #### survey mid date -----
@@ -115,11 +115,11 @@ histdat %>%  # historic data needs to only have Strata.Code in it - need to remo
 dat5 %>%
   mutate(Strata.Code = Density.Strata.Code) %>% 
   select(-Density.Strata.Code) %>% 
-  filter(Year == 2017) -> dat5_2018
+  filter(Year == 2018) -> dat5_2018
 
-JNU_CPUE_ALL <- rbind(historicdata, dat5_2017)
+JNU_CPUE_ALL <- rbind(historicdata, dat5_2018)
 
-write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_17.csv', row.names = FALSE)
+write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_18.csv', row.names = FALSE)
 
 ##### Short term trends -------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
@@ -164,7 +164,7 @@ ggplot(JNU_ST_18_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status
 ##### Long term trends ------
 #compare current years CPUE distribution to the long term mean
 # use dat5_current year
-head(dat5_2017)
+head(dat5_2018)
 #make sure you have a file with only current years data
 #Uses a weighted mean to help calculate the t.test - part of package weights
 juv <- wtd.t.test(dat5_2018$Juvenile, y = 2.53, weight = dat5_2018$weighting, samedata=FALSE)
