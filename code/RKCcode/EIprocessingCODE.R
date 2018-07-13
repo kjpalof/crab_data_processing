@@ -3,28 +3,9 @@
 # code to process data from Ocean AK to use in crab CSA models.  
 #  Currently this is done in excel then JMP, prior to 2016
 # Current year: 2017
+
 rm(list = ls())# clear workspace from previous area 
-#####Load Packages ---------------------------------
-library(tidyverse)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
-library(grid)
-library(gridExtra)
-#font_import()
-loadfonts(device="win")
-windowsFonts(Times=windowsFont("TT Times New Roman"))
-
-theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
-            theme(panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank()))
-
-
+##Load Packages/functions ---------------------------------
 source('./code/functions.R')
 
 #####Load Data ---------------------------------------------------
