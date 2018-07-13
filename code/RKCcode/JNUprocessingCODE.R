@@ -1,32 +1,34 @@
-#K.Palof 
-# ADF&G 7-9-18/ updated
+# K.Palof 
+# ADF&G 7-9-18/ updated for JUNEAU area
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP.  
 # This code is for -2018, refer to code for processing after this year.
 
 rm(list = ls())# clear workspace from previous area 
-#####Load Packages ---------------------------------
-library(tidyverse)
-#library(plyr)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
+## packages and functions ---------------------------------
+source('./code/functions.R')
 
 #####Load Data --------------------------------------
 dat <- read.csv("./data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
-area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv") #same every year
+          # this is input from OceanAK - set up as red crab survey data for CSA
+          #   survey area should match that in the name of this script file
+          #   Juneau area includes Juneau and Barlow
+area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv") 
+          # same every year
 # use JNU_79_XX_bypot.csv created from previous year ** need to change year **
+          # set up to read from annual folder.  If all files from last year
+          #     are in one folder this should work with just a change in final year
 histdat <- read.csv("./results/redcrab/Juneau/2017/JNU_79_17_bypot.csv")
 females <- read.csv("./results/redcrab/Juneau/2017/females_all.csv")
 
+baseline <- read.csv("./data/redcrab/longterm_means.csv")
+biomass <- read.csv("./data/redcrab/biomass.csv")
+          # file for all locations. Has biomass estimates from CSA,
+          #   must be updated after CSA model is run for current year
+
+##### Initial review of new data -------------------------------------
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
-##### Initial review of new data -------------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
