@@ -89,6 +89,18 @@ dat5 %>%
 
 write.csv(CPUE_wt_JNU_18, './results/redcrab/Juneau/JNU_CPUE_18.csv', row.names = FALSE)
 
+# weighted cpue by strata --- just for comparison
+dat5 %>%
+  group_by(Year, Density.Strata.Code) %>%
+  summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
+            Recruit_wt = wt.mean(Recruit, weighting), Rec_SE = (wt.sd(Recruit, weighting)/(sqrt(sum(!is.na(Recruit))))), 
+            Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
+            Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
+            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/
+                                                                          (sqrt(sum(!is.na(Small.Females)))))) 
+
+
 # raw CPUE of legals 6.09
 #### survey mid date -----
 head(dat)
