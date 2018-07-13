@@ -8,6 +8,13 @@ library(tidyverse)
 library(weights)
 library(broom)
 
+library(stringr)
+library(reshape2)
+library(extrafont)
+library(ggthemes)
+library(plotrix)
+library(SDMTools)
+
 ### short term function ----------------
 #input is file with last four years of data summarized by pot
       # area
