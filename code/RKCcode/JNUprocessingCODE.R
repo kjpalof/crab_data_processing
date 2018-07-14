@@ -42,17 +42,14 @@ dat1 %>%
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
 
 ##### By Pot -------------------------------
-#Now summarize by pot - remember to keep areas seperate.
-dat1 %>%
-  group_by(Year, Location, Trip.No, Pot.No, Density.Strata.Code) %>%
-  summarise (total_crab = sum(Number.Of.Specimens)) #gets you total crab per pot.
-
+# Now summarize by pot - remember to keep areas seperate.
 # need Number of Specimens by recruit class
+# keep trip no. to merge wwith historic data 
 dat1 %>%
   group_by(Year, Location, Trip.No, Pot.No, Density.Strata.Code, Recruit.Status) %>%
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
-dat3 <- dcast(dat2, Year + Location + Trip.No + Pot.No +Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
+dat3 <- dcast(dat2, Year + Location + Trip.No + Pot.No + Density.Strata.Code ~ Recruit.Status, sum, drop=TRUE)
 
 head(dat3)
 
