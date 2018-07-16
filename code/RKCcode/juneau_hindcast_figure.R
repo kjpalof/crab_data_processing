@@ -8,6 +8,7 @@ library(readxl)
 library(extrafont)
 library(grid)
 library(gridExtra)
+library(scales)
 #font_import()
 loadfonts(device="win")
 windowsFonts(Times=windowsFont("TT Times New Roman"))
@@ -29,8 +30,9 @@ ggplot(hindcast_long, aes(year, pounds, group = type))+
   scale_colour_manual(name = "", values = c("black", "grey1", "grey1"))+
   scale_shape_manual(name = "", values = c(32,32,8))+
   scale_linetype_manual(name = "", values = c("solid", "dashed", "blank")) +
-  
-  ggtitle("Juneau 2018 model with annual forecast") + ylab("Biomass (lbs)")+ xlab("Year")+
+  scale_y_continuous(labels = comma) +
+  #ylim(0,700000) +
+  ggtitle("Juneau 2018 model with annual forecast") + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) +
-  scale_x_continuous(breaks = seq(min(1978),max(2020), by = 4))
+  scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5))
 #  theme(legend.position = c(0.8,0.7)) + 
