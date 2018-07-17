@@ -33,7 +33,7 @@ hindcast %>%
   mutate(label = c("Legal (1993-2007)", "Mature (1993-2007)", "Legal (1993-2007)", "Mature (1993-2007)"), 
          start_yr = c(1975, 1975, 1975, 1975)) -> baseline_mean
 baseline_mean_18 <- as.data.frame(baseline_mean[1:2,])
-  
+baseline_mean_forecast <- as.data.frame(baseline_mean[3:4,])  
 
 # Figure 1 redo ---------
     # should have 2018 model with longterm baselines (1993-2007) and closure status. 
