@@ -2,19 +2,21 @@
 title: "juneau area 2017 survey results"
 author: "Katie Palof"
 date: "June 14, 2017"
-output: html_document
+output:
+  word_document: default
+  html_document: default
 ---
 
 ```{r setup, include = FALSE}
 library(knitr)
 library(tidyverse)
-dat <- read.csv("../data/redcrab/Juneau/jnu_16_17_oceanAK_out_RAW.csv")
+dat <- read.csv("../data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
 
 ```
 
 ## CPUE from survey / data for CSA
 ```{r CPUE, echo = FALSE }
-cpue_2017 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_17.csv")
+cpue_2017 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_18.csv")
 kable(cpue_2017, digits = 6)
 
 
@@ -45,7 +47,7 @@ kable(long_term_results, digits = 3)
 
 ## Female health
 ```{r female health,echo = FALSE  }
-poorclutch_17 <- read.csv("../results/redcrab/Juneau/poorclutch_17.csv")
+poorclutch_17 <- read.csv("../results/redcrab/Juneau/poorclutch_18.csv")
 kable(poorclutch_17, digits = 3)
 ```
 
@@ -79,4 +81,6 @@ kable(stock_health, digits = 3)
 
 
 
+![](../figures/juneau_fig1_2018.png)
 
+![](../figures/juneau_figA1_2018.png)
