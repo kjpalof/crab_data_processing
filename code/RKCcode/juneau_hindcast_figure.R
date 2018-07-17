@@ -56,22 +56,22 @@ jnu_rkc_fig1 <- hindcast %>%
   scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5)) +
   geom_hline(yintercept = 298838, color = "grey1")+
   geom_hline(yintercept = 410878, color = "grey44", linetype = "dashed") +
-  theme(legend.position = c(0.065,0.80))
-
-jnu_rkc_fig1 +
+  theme(legend.position = c(0.065,0.825)) +
   geom_text(data = baseline_mean_18, aes(x = start_yr, y = baseline, label = label), 
             hjust = 0.25, vjust = -1, nudge_y = 0.05) 
 
+
+
 # Figure A1 ---old Figure 1 - move to Appendix --------
 # forecast for each year 
-hindcast %>% 
+jnu_rkc_annual_fore <- hindcast %>% 
   select(-legal_2018, -mature_2018) %>% 
   gather(type, pounds, legal_forecast:mature_forecast, factor_key = TRUE) %>% 
   ggplot(aes(year, pounds, group = type)) +
   geom_point(aes(color = type, shape = status), size =3) +
   geom_line(aes(color = type, group = type, linetype = type))+
   scale_colour_manual(name = "", values = c("black", "grey44"))+
-  scale_shape_manual(name = "", values = c(0, 8, 2, 4))+
+  scale_shape_manual(name = "Fishery Status", values = c(0, 8, 2, 4))+
   scale_linetype_manual(name = "", values = c("solid", "dashed")) +
   scale_y_continuous(labels = comma, limits = c(0,700000),
                      breaks= seq(min(0), max(700000), by = 100000)) +
@@ -81,8 +81,9 @@ hindcast %>%
   scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5)) +
   geom_hline(yintercept = 317238, color = "grey1")+
   geom_hline(yintercept = 456142, color = "grey44", linetype = "dashed") +
-  theme(legend.position = c(0.15,0.80))
-
+  theme(legend.position = c(0.065,0.835)) +
+  geom_text(data = baseline_mean_forecast, aes(x = start_yr, y = baseline, label = label), 
+            hjust = 0.25, vjust = -1, nudge_y = 0.05) 
 
 #  select(year, legal_2018)figure of 2018 model with forecast in each year -----
 ggplot(hindcast_long, aes(year, pounds, group = type))+ 
