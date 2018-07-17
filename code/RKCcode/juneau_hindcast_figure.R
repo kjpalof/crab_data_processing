@@ -60,7 +60,10 @@ jnu_rkc_fig1 <- hindcast %>%
   geom_text(data = baseline_mean_18, aes(x = start_yr, y = baseline, label = label), 
             hjust = 0.25, vjust = -1, nudge_y = 0.05) 
 
-
+# save plot for text document
+png('./figures/juneau_fig1_2018.png', res= 300, width = 7.5, height = 3.5, units = "in")
+jnu_rkc_fig1
+dev.off()
 
 # Figure A1 ---old Figure 1 - move to Appendix --------
 # forecast for each year 
@@ -84,6 +87,11 @@ jnu_rkc_annual_fore <- hindcast %>%
   theme(legend.position = c(0.065,0.835)) +
   geom_text(data = baseline_mean_forecast, aes(x = start_yr, y = baseline, label = label), 
             hjust = 0.25, vjust = -1, nudge_y = 0.05) 
+
+# save plot for text document
+png('./figures/juneau_figA1_2018.png', res= 300, width = 7.5, height = 3.5, units = "in")
+jnu_rkc_annual_fore
+dev.off()
 
 #  select(year, legal_2018)figure of 2018 model with forecast in each year -----
 ggplot(hindcast_long, aes(year, pounds, group = type))+ 
