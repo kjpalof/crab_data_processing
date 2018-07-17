@@ -46,7 +46,7 @@ jnu_rkc_fig1 <- hindcast %>%
   geom_point(aes(color = type, shape = status), size =3) +
   geom_line(aes(color = type, group = type, linetype = type))+
   scale_colour_manual(name = "", values = c("black", "grey44"))+
-  scale_shape_manual(name = "", values = c(0, 16, 2, 8))+
+  scale_shape_manual(name = "Fishery Status", values = c(0, 16, 2, 8))+
   scale_linetype_manual(name = "", values = c("solid", "dashed")) +
   scale_y_continuous(labels = comma, limits = c(0,700000),
                      breaks= seq(min(0), max(700000), by = 100000)) +
@@ -60,7 +60,7 @@ jnu_rkc_fig1 <- hindcast %>%
 
 jnu_rkc_fig1 +
   geom_text(data = baseline_mean_18, aes(x = start_yr, y = baseline, label = label), 
-            hjust = 0.25, vjust = -1, nudge_y = 0.05)
+            hjust = 0.25, vjust = -1, nudge_y = 0.05) 
   
 
 
