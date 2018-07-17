@@ -31,7 +31,7 @@ hindcast %>%
   group_by(type) %>% 
   summarise(baseline = mean(pounds)) %>% 
   mutate(label = c("Legal (1993-2007)", "Mature (1993-2007)", "Legal (1993-2007)", "Mature (1993-2007)"), 
-         start_yr = c(1975, 1975, 1975, 1975)) -> baseline_mean
+         start_yr = c(1979, 1979, 1979, 1979)) -> baseline_mean
 baseline_mean_18 <- as.data.frame(baseline_mean[1:2,])
 baseline_mean_forecast <- as.data.frame(baseline_mean[3:4,])  
 
@@ -56,13 +56,11 @@ jnu_rkc_fig1 <- hindcast %>%
   scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5)) +
   geom_hline(yintercept = 298838, color = "grey1")+
   geom_hline(yintercept = 410878, color = "grey44", linetype = "dashed") +
-  theme(legend.position = c(0.15,0.80))
+  theme(legend.position = c(0.065,0.80))
 
 jnu_rkc_fig1 +
   geom_text(data = baseline_mean_18, aes(x = start_yr, y = baseline, label = label), 
             hjust = 0.25, vjust = -1, nudge_y = 0.05) 
-  
-
 
 # Figure A1 ---old Figure 1 - move to Appendix --------
 # forecast for each year 
