@@ -30,7 +30,7 @@ hindcast %>%
   gather(type, pounds, legal_2018:mature_forecast, factor_key = TRUE) %>%
   group_by(type) %>% 
   summarise(baseline = mean(pounds)) %>% 
-  mutate(label = c("Legal", "Mature", "Legal", "Mature"), 
+  mutate(label = c("Legal (1993-2007)", "Mature (1993-2007)", "Legal (1993-2007)", "Mature (1993-2007)"), 
          start_yr = c(1975, 1975, 1975, 1975)) -> baseline_mean
 baseline_mean_18 <- as.data.frame(baseline_mean[1:2,])
   
@@ -60,7 +60,7 @@ jnu_rkc_fig1 <- hindcast %>%
 
 jnu_rkc_fig1 +
   geom_text(data = baseline_mean_18, aes(x = start_yr, y = baseline, label = label), 
-            hjust = 0.5, vjust = -1, nudge_y = 0.05)
+            hjust = 0.25, vjust = -1, nudge_y = 0.05)
   
 
 
