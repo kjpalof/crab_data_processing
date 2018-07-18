@@ -1,0 +1,86 @@
+---
+title: "juneau area 2018 survey results"
+author: "Katie Palof"
+date: "June 14, 2017"
+output:
+  word_document: default
+  html_document: default
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+library(tidyverse)
+dat <- read.csv("../data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
+
+```
+
+## CPUE from survey / data for CSA
+```{r CPUE, echo = FALSE }
+cpue_2017 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_18.csv")
+kable(cpue_2017, digits = 6)
+
+
+# need to seperate time hauled to just have data hauled look for mid-date 
+dat[1,7] # 6-22
+dat[5097,7] # 6-29
+# so mid-date would be 26th.
+```
+
+### Male weights from survey 
+```{r weights, echo = FALSE }
+male_weights <- read.csv("../results/redcrab/Juneau/jnu_maleweights.csv")
+kable(male_weights, digits = 3)
+```
+
+## Short term trends in CPUE
+```{r short term, echo = FALSE }
+short_term_results <- read.csv("../results/redcrab/Juneau/jnu_shortterm.csv")
+kable(short_term_results, digits = 3)
+```
+
+
+## Long term trends in CPUE
+```{r long term,echo = FALSE  }
+long_term_results <- read.csv("../results/redcrab/Juneau/jnu_longterm.csv")
+kable(long_term_results, digits = 3)
+```
+
+## Female health
+```{r female health,echo = FALSE  }
+poorclutch_17 <- read.csv("../results/redcrab/Juneau/poorclutch_18.csv")
+kable(poorclutch_17, digits = 3)
+```
+
+
+####long term mean comparison
+```{r long term female, echo = FALSE}
+lt_female <- read.csv("../results/redcrab/Juneau/lt_female.csv")
+kable(lt_female, digits = 3)
+```
+
+####short term females
+```{r short term female, echo = FALSE}
+short_female <- read.csv("../results/redcrab/Juneau/short_female.csv")
+kable(short_female, digits = 3)
+```
+
+
+####Mean egg percentage for mature females
+```{r egg per female, echo = FALSE}
+egg_per_mean <- read.csv("../results/redcrab/Juneau/egg_percent_mean.csv")
+kable(egg_per_mean, digits = 3)
+```
+
+
+
+## Stock health
+```{r stock health, echo = FALSE}
+stock_health <- read.csv("../results/redcrab/Juneau/stock_health.csv")
+kable(stock_health, digits = 3)
+```
+
+
+
+![](../figures/juneau_fig1_2018.png)
+
+![](../figures/juneau_figA1_2018.png)
