@@ -56,10 +56,11 @@ jnu_rkc_fig1 <- hindcast %>%
   scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5)) +
   geom_hline(yintercept = 298838, color = "grey1")+
   geom_hline(yintercept = 410878, color = "grey44", linetype = "dashed") +
-  theme(legend.position = c(0.085,0.733), legend.title = element_text(size = 9), 
+  theme(legend.position = c(0.125,0.793), legend.title = element_text(size = 9), 
         legend.text = element_text(size = 8)) +
   geom_text(data = baseline_mean_18, aes(x = start_yr, y = baseline, label = label), 
-            hjust = -0.65, vjust = -1, nudge_y = 0.05, size = 3.5) +
+            hjust = -0.45, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
+  guides(shape = guide_legend(ncol=2), group = guide_legend((ncol =2))) +
   ggsave('./figures/juneau_fig1_2018.png', dpi = 800, width = 7.5, height = 5.5)
 
 
@@ -82,10 +83,11 @@ jnu_rkc_annual_fore <- hindcast %>%
   scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5)) +
   geom_hline(yintercept = 317238, color = "grey1")+
   geom_hline(yintercept = 456142, color = "grey44", linetype = "dashed") +
-  theme(legend.position = c(0.095,0.738), legend.title = element_text(size = 9), 
+  theme(legend.position = c(0.125,0.798), legend.title = element_text(size = 9), 
         legend.text = element_text(size = 8)) +
   geom_text(data = baseline_mean_forecast, aes(x = start_yr, y = baseline, label = label), 
-            hjust = -0.80, vjust = -1, nudge_y = 0.05, size = 3.5) +
+            hjust = -0.85, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
+  guides(shape = guide_legend(ncol=2), group = guide_legend((ncol =2))) +
   ggsave('./figures/juneau_figA1_2018.png', dpi = 800, width = 7.5, height = 5.5)
 
 
