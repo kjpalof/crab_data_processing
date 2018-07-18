@@ -1,6 +1,7 @@
 # K.Palof
 # 7-13-18
-# Juneau area RKC forecast / hindcast figure 
+# Juneau area RKC forecast / hindcast figures
+# Current figures used for stock health memo 
 
 # Load packages -------------
 library(tidyverse)
