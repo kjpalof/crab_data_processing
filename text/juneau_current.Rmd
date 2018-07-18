@@ -1,7 +1,7 @@
 ---
 title: "juneau area 2018 survey results"
 author: "Katie Palof"
-date: "June 14, 2017"
+date: "July 19, 2018"
 output:
   word_document: default
   html_document: default
@@ -10,19 +10,19 @@ output:
 ```{r setup, include = FALSE}
 library(knitr)
 library(tidyverse)
-dat <- read.csv("../data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
+#dat <- read.csv("../data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
 
 ```
 
 ## CPUE from survey / data for CSA
 ```{r CPUE, echo = FALSE }
-cpue_2017 <- read.csv("../results/redcrab/Juneau/JNU_CPUE_18.csv")
-kable(cpue_2017, digits = 6)
+cpue <- read.csv("../results/redcrab/Juneau/JNU_CPUE_18.csv")
+kable(cpue, digits = 6)
 
 
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat[1,7] # 6-22
-dat[5097,7] # 6-29
+#dat[1,7] # 6-22
+#dat[5097,7] # 6-29
 # so mid-date would be 26th.
 ```
 
