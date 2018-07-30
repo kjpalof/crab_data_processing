@@ -21,7 +21,7 @@ area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv")
                   #this file is the same every year.  Unless the survey methods change
 histdat <- read.csv(paste0('./results/redcrab/Excursion/', pr_yr, '/EI_perpot_all.csv'))
  ## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv(paste0('./results/redcrab/Excursion/', pr_yr, '/poorclutch_all.csv'))
+females <- read.csv(paste0('./results/redcrab/Excursion/', pr_yr, '/largef_all.csv'))
 #raw_data <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")
         ## use this for raw historic female data in 2017, create input file for future
 
@@ -139,7 +139,7 @@ CPUE_ALL_YEARS %>%
   filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
 
 #function creates output file in folder /results/redcrab/'area'
-short_t(bypot_st, 2017, "Excursion")
+short_t(bypot_st, cur_yr, "Excursion")
 # output is saved as shortterm.csv
 bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
@@ -176,12 +176,11 @@ abline(smF_fit, col= 'red')
 summary(smF_fit)
 
 ##### Long term trends ---------------------
-#compare 2016 CPUE distribution to the long term mean
-dat6 %>%
- filter(Year == 2017) ->dat5_current
+#compare current year CPUE distribution to the long term mean
+dat5_cur_yr
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'Excursion', 'Excursion')
+long_t(dat5_cur_yr, baseline, cur_yr, 'Excursion', 'Excursion')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
@@ -191,7 +190,7 @@ glimpse(dat1) # raw data for both 2016 and 2017
     # slope = 3.12
     # intercept = 7.67
     # use function found in functions.R code file
-weights(dat1, 3.12, 7.67, "Excursion")
+weights(dat1, 3.12, 7.67, "Excursion", cur_yr)
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
@@ -207,17 +206,17 @@ LgF_dat1 %>%
   mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
 
 
-raw_data %>%
-  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> largef
-largef %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-                  Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-                  Egg.Development.Code, Egg.Condition.Code) -> largef
+#raw_data %>%
+#  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> largef
+#largef %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+#                  Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+#                  Egg.Development.Code, Egg.Condition.Code) -> largef
 
-LgF_dat1 %>% filter(Year == 2017) %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-                                             Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-                                             Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_2017
+#LgF_dat1 %>% filter(Year == 2017) %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+#                                             Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+#                                             Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_2017
 
-largef_all <- rbind(largef, LgF_dat1_2017) # raw female data for all years.
+#largef_all <- rbind(largef, LgF_dat1_2017) # raw female data for all years.
 
 ##### % poor (<10 %) clutch -----------------------------------
 
