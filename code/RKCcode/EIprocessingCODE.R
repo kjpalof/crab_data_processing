@@ -136,7 +136,7 @@ write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/Excursion/', cur_yr, '/EI_pe
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
 CPUE_ALL_YEARS %>%
-  filter(Year >=2014) -> bypot_st # short term file has last 4 years in it
+  filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
 
 #function creates output file in folder /results/redcrab/'area'
 short_t(bypot_st, 2017, "Excursion")
