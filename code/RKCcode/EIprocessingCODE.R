@@ -46,7 +46,7 @@ dat1 %>%
 dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
-#come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
+# come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
 
 ##### By Pot ----------------------------------------------------
 #Now summarize by pot - remember to keep areas seperate.
