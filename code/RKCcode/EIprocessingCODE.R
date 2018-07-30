@@ -92,17 +92,17 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_17
-CPUE_wt_17
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt
+CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Excursion/EI_CPUE_17.csv')
+write.csv(CPUE_wt, paste0('./results/redcrab/Excursion/', cur_yr, '/EI_CPUE_',cur_yr, '.csv'))
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-15
+dat %>% filter(Year == cur_yr)  # 7-15
 dat[2001,7] # 7-16
 # so mid-date would be 16th.
 
@@ -127,11 +127,11 @@ dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
 # Locations in historic file are numbers.  Here I have names, should I change this?
 # only 2017 data 
 dat6 %>%
-  filter(Year == 2017) -> dat5_2017
-CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
+  filter(Year == cur_yr) -> dat5_cur_yr
+CPUE_ALL_YEARS <- rbind(historicdata, dat5_cur_yr)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Excursion/EI_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/Excursion/', cur_yr, '/EI_perpot_all_', cur_yr,'.csv'))
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
