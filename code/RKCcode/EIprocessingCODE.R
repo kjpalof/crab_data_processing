@@ -1,8 +1,8 @@
 #K.Palof 
-# ADF&G 8-1-16 updated for Excursion Inlet  / updated 8-3-17
+# ADF&G 8-1-16 updated for Excursion Inlet  / updated 8-3-17/7-30-18
 # code to process data from Ocean AK to use in crab CSA models.  
 #  Currently this is done in excel then JMP, prior to 2016
-# Current year: 2017
+# Current year: 2018
 
 rm(list = ls())# clear workspace from previous area 
 ##Load Packages/functions ---------------------------------
@@ -10,18 +10,19 @@ source('./code/functions.R')
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Excursion/RKC survey CSA_EI_16_17.csv")
+dat <- read.csv("./data/redcrab/Excursion/RKC survey CSA_EI_17_18.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv") 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Excursion/EI_79_16_bypot.csv")
-                  ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Excursion/poorclutchfemales_16.csv")
-raw_data <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")
+histdat <- read.csv("./results/redcrab/Excursion/2017/EI_perpot_all_17.csv")
+ ## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
+females <- read.csv("./results/redcrab/Excursion/2017/poorclutch_all.csv")
+#raw_data <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")
         ## use this for raw historic female data in 2017, create input file for future
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
-biomass <- read.csv("./data/redcrab/biomass.csv")
+# update this file after running CSA - 
+biomass <- read.csv("./data/redcrab/biomass.csv") 
 # file for all locations.  Has legal biomass from CSA, harvest
 # mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
 # adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
