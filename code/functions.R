@@ -16,13 +16,15 @@ library(plotrix)
 library(SDMTools)
 library(grid)
 library(gridExtra)
+library(FNGr)
 #font_import()
 loadfonts(device="win")
 windowsFonts(Times=windowsFont("TT Times New Roman"))
 
-theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
-            theme(panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank()))
+theme_set(theme_sleek())
+#theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
+#            theme(panel.grid.major = element_blank(),
+#                  panel.grid.minor = element_blank()))
 
 ### short term function ----------------
 #input is file with last four years of data summarized by pot
