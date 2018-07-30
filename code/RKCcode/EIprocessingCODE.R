@@ -9,8 +9,9 @@ rm(list = ls())# clear workspace from previous area
 source('./code/functions.R')
 
 ## setup year --------
-pr_yr <- 2017
 cur_yr <- 2018
+pr_yr <- cur_yr -1
+
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
