@@ -11,7 +11,7 @@ source('./code/functions.R')
 ## setup year --------
 cur_yr <- 2018
 pr_yr <- cur_yr -1
-
+survey.location <- 'Excursion'
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
@@ -247,6 +247,10 @@ egg_percent(largef_all, 'Excursion', cur_yr)
 total_health('Excursion', cur_yr)
 # works as long as all files are saved in folder with area name
 
+
+#### STOP HERE AND run .Rmd file for this area for summary and to confirm things look ok
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 ### raw sample size -----------
 head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
@@ -267,7 +271,10 @@ CPUE_ALL_YEARS %>%
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_all
 CPUE_wt_all  
-CPUE_wt_all %>% filter(Year >= 1993) -> CPUE_wt_93_17
+CPUE_wt_all %>% filter(Year >= 1993) -> CPUE_wt_from93
+
+write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/', 
+                                 cur_yr, '/cpue_wt_all_yrs.csv'), row.names = FALSE)
 
 ### Mature males-----
 #create data frame that has mature males - just means
