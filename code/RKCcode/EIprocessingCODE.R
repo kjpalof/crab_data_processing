@@ -97,7 +97,19 @@ dat5 %>%
 CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/EI_CPUE_',cur_yr, '.csv'))
+write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/EI_CPUE_',cur_yr, '.csv'), 
+          row.names = FALSE)
+
+# weighted cpue by strata --- just for comparison
+dat5 %>%
+  group_by(Year, Density.Strata.Code) %>%
+  summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
+            Recruit_wt = wt.mean(Recruit, weighting), Rec_SE = (wt.sd(Recruit, weighting)/(sqrt(sum(!is.na(Recruit))))), 
+            Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
+            Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
+            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/
+                                                                          (sqrt(sum(!is.na(Small.Females)))))) 
 
 #### survey mid date -----
 head(dat)
