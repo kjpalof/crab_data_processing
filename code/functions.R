@@ -57,7 +57,7 @@ short_t <- function(bypot_st, year, area) {
     mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
                                 ifelse(p.value <0.05 & slope <0, -1, 0))) %>%
     mutate(score = 0.25*significant) -> short_term_results
-  write_csv(short_term_results, paste0('results/redcrab/', area, '/shortterm.csv'))
+  write_csv(short_term_results, paste0('results/redcrab/', area, '/',year,  '/shortterm.csv'))
 }
 
 
@@ -106,14 +106,14 @@ long_t <- function(dat5_current, baseline, year, area, location) {
     mutate(recruit.status = baseline_values_long$recruit.status) -> long_term_results #estimate is slope from regression
   
   # final results with score - save here
-  write_csv(long_term_results, paste0('results/redcrab/', area, '/longterm.csv'))
+  write_csv(long_term_results, paste0('results/redcrab/', area, '/', year, '/longterm.csv'))
   
 }
 
 
 
 ### weights from weight -length relationship ------------
-weights <- function(dat1, slope, intercept, area){
+weights <- function(dat1, slope, intercept, area, year){
   dat1 %>%
     mutate(weight_lb = (exp((slope*log(Length.Millimeters))-intercept))*(2.2/1000)) -> dat1
   
@@ -130,7 +130,7 @@ weights <- function(dat1, slope, intercept, area){
               prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
                                  Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
   # final results with score - save here
-  write_csv(male_weights, paste0('results/redcrab/', area, '/maleweights.csv'))
+  write_csv(male_weights, paste0('results/redcrab/', area, '/', year, '/maleweights.csv'))
 }
 
 
@@ -155,9 +155,9 @@ poorclutch1 %>%
   summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_summary_all
 
 poorclutch1 %>% filter(Year == year) -> poorclutch1_current
-write_csv(poorclutch1_current, paste0('results/redcrab/', area, '/poorclutch1_current.csv'))
-write_csv(poorclutch1, paste0('results/redcrab/', area, '/poorclutch_all.csv'))
-write_csv(poorclutch_summary_all, paste0('results/redcrab/', area, '/poorclutch_summary_all.csv'))
+write_csv(poorclutch1_current, paste0('results/redcrab/', area, '/', year, '/poorclutch1_current.csv'))
+write_csv(poorclutch1, paste0('results/redcrab/', area, '/', year, '/poorclutch_all.csv'))
+write_csv(poorclutch_summary_all, paste0('results/redcrab/', area, '/', year, '/poorclutch_summary_all.csv'))
 
 }
 
@@ -177,7 +177,7 @@ poor_clutch_long <- function(poorclutch_current, area, year){
                                 ifelse(p.value <0.05 & mean < 0.10, 1, 0))) %>% 
     mutate(recruit.status = c("large.female")) -> longt_female #estimate is slope from regression
   
-  write_csv(longt_female, paste0('results/redcrab/', area,'/lt_female.csv'))
+  write_csv(longt_female, paste0('results/redcrab/', area, '/', year, '/lt_female.csv'))
 }
 
 poor_clutch_short <- function(females_all, area, year){
@@ -204,12 +204,12 @@ poor_clutch_short <- function(females_all, area, year){
   shortt_female <- as.data.frame(shortt_female)
   #Now need to add column for significance and score
   shortt_female %>%
-    mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
-                                ifelse(p.value <0.05 & slope <0, -1, 0))) %>%
+    mutate(significant = ifelse(p.value < 0.05 & slope < 0, 1,
+                                ifelse(p.value < 0.05 & slope <0, -1, 0))) %>%
     mutate(score = 0.25*significant) -> shortt_female #estimate is slope from regression
   # final results with score - save here
   
-  write.csv(shortt_female, paste0('results/redcrab/', area,'/short_female.csv'))
+  write.csv(shortt_female, paste0('results/redcrab/', area, '/', year, '/short_female.csv'))
 }
 
 ### females egg percentage ------------
@@ -221,17 +221,17 @@ egg_percent <-function(LgF_dat1, area, year){
   clutch_by_pot %>%
     group_by(Year) %>% 
     summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) -> egg_per_mean
-  write_csv(egg_per_mean, paste0('results/redcrab/', area,'/egg_percent_mean_all.csv'))
-  write_csv(LgF_dat1, paste0('results/redcrab/', area, '/largef_all.csv'))
+  write_csv(egg_per_mean, paste0('results/redcrab/', area, '/', year,  '/egg_percent_mean_all.csv'))
+  write_csv(LgF_dat1, paste0('results/redcrab/', area, '/', year, '/largef_all.csv'))
 }
 
 
 ### total stock health table --------------
 total_health <- function(area, year){
-  longterm <- read_csv(paste0('results/redcrab/', area, year, '/longterm.csv'))
-  shortterm <- read_csv(paste0('results/redcrab/', area, year, '/shortterm.csv'))
-  lt_female <- read_csv(paste0('results/redcrab/', area, year, '/lt_female.csv'))
-  short_female <- read_csv(paste0('results/redcrab/', area, year, '/short_female.csv'))
+  longterm <- read_csv(paste0('results/redcrab/', area, '/', year, '/longterm.csv'))
+  shortterm <- read_csv(paste0('results/redcrab/', area, '/',  year, '/shortterm.csv'))
+  lt_female <- read_csv(paste0('results/redcrab/', area, '/',  year, '/lt_female.csv'))
+  short_female <- read_csv(paste0('results/redcrab/', area, '/', year, '/short_female.csv'))
 
 total_health <- sum(longterm$significant, shortterm$score, 
                     lt_female$significant, short_female$score) # long term scores CPUE
@@ -256,5 +256,5 @@ stock_health %>%
                                                                          ifelse(health_status == "above average", 0.15,
                                                                                 ifelse(health_status == "healthy", 0.20, "unk")))))) -> stock_health
 #select ( - score_f) -> stock_health
-write_csv(stock_health, paste0('results/redcrab/', area, year, '/stock_health.csv'))
+write_csv(stock_health, paste0('results/redcrab/', area, '/', year, '/stock_health.csv'))
 }
