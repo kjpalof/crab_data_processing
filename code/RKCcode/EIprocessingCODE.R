@@ -1,4 +1,5 @@
-#K.Palof 
+# K.Palof 
+# katie.palof@alaska.gov
 # ADF&G 8-1-16 updated for Excursion Inlet  / updated 8-3-17/7-30-18
 # code to process data from Ocean AK to use in crab CSA models.  
 #  Currently this is done in excel then JMP, prior to 2016
