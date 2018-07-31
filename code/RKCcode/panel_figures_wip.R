@@ -171,29 +171,28 @@ p3 <- ggplot(female_egg_graph, aes(Year, mean)) +
   theme(legend.position = c(0.2,0.5)) 
 
 ### biomass harvest graph --------------
-#p4 <- 
-ggplot(biomass_graph, aes(Year, pounds, group = type))+ 
+p4 <- ggplot(biomass_graph, aes(Year, pounds, group = type))+ 
   geom_point(aes(color = type, shape = type), size =3) +
   geom_line(aes(color = type, group = type, linetype = type))+
   scale_colour_manual(name = "", values = c("grey1", "grey1", "grey48", "grey62"))+
   scale_shape_manual(name = "", values = c(1, 18, 32, 18))+
   scale_linetype_manual(name = "", values = c("blank", "solid", "solid", "dashed")) +
-  ylim(0,200000) +
   ggtitle("") + 
   ylab("Legal biomass (lbs)") + 
   xlab("Year") +
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  scale_y_continuous(labels = comma, limits = c(0,200000),
+                     breaks= seq(min(0), max(200000), by = 50000)) +
   theme(legend.position = c(0.8,0.6)) + 
   geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1")+
   geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
 
 
 ### FINAL plot -------------
-png('./results/redcrab/Excursion/figure1.png', res= 300, width = 8, height =11, units = "in")
+png(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '.png'), res= 600, width = 8, height =11, units = "in")
 grid.arrange(p1, p2, p3, p4, ncol = 1)
 dev.off()
 
 
 
-# panel1---------
