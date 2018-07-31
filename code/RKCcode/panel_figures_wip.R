@@ -17,9 +17,11 @@ survey.location <- 'Excursion'
 
 CPUE_wt_graph <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
                                '/cpue_wt_all_yrs.csv'))
-
-
-
+poorclutch_summary <- read.csv(paste0('./results/redcrab/', survey.location, 
+                                      '/', cur_yr, '/poorclutch_summary_all.csv'))
+egg_mean_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
+                                '/egg_percent_mean_all.csv'))
+# file with year and mean percent poor clutch and se poor clutch from 1993 to current
 
 # prep data ------
 ### Mature males-----
@@ -61,6 +63,31 @@ femjuv_long %>%
                                            "se", "mean"))))-> femjuv_long
 femjuv_long %>% select (-recruit.status) %>% spread(type, value1) -> femjuv_graph
 
+## poor clutch --------
+poorclutch_summary %>% 
+  filter(Year >= 1993) %>% 
+  mutate(Pclutch100 = Pclutch *100, 
+         Pclutch.se100 = Pclutch.se*100) %>% 
+  select(Year, Pclutch100, Pclutch.se100) ->poorclutch_summary93
+## mean egg percent -------
+egg_mean_all %>% 
+  filter(Year >= 1993) -> egg_mean_all_93
+## female egg data -------
+# combine these data sets for graphing.  Create one with means and one with SEs.
+poorclutch_summary93 %>% 
+  left_join(egg_mean_all_93) -> female_egg
+female_egg_long <- gather(female_egg, vname, value1, Pclutch100:egg.se, factor_key = TRUE)
+female_egg_long %>% 
+  mutate(female.egg = ifelse(vname == "Pclutch100",
+                             "% poor clutch", 
+                             ifelse(vname == "mean", 
+                                    "total % clutch", ifelse(vname == "Pclutch.se100", 
+                                                             "% poor clutch", "total % clutch")))) %>% 
+  mutate(type = ifelse(vname == "Pclutch.se100", "se", ifelse(vname == "egg.se", 
+                                                              "se", "mean"))) %>% 
+  select (-vname) %>% 
+  spread(type, value1) -> female_egg_graph
+
 # Figure panel -----
 #### F1a mature male plot -----------
 p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
@@ -96,35 +123,6 @@ p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
   geom_hline(yintercept = baseline [3,4], color = "grey1")+
   theme(legend.position = c(0.8,0.7))
 
-
-### poor clutch egg percent data processing------------
-poorclutch_summary <- read.csv(paste0('./results/redcrab/', survey.location, 
-                                         '/', cur_yr, '/poorclutch_summary_all.csv'))
-poorclutch_summary %>% 
-  filter(Year >= 1993) %>% 
-  mutate(Pclutch100 = Pclutch *100, 
-      Pclutch.se100 = Pclutch.se*100) %>% 
-  select(Year, Pclutch100, Pclutch.se100) ->poorclutch_summary93
-# file with year and mean percent poor clutch and se poor clutch from 1993 to current
-egg_mean_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
-                                  '/egg_percent_mean_all.csv'))
-egg_mean_all %>% 
-  filter(Year >= 1993) -> egg_mean_all_93
-
-# combine these data sets for graphing.  Create one with means and one with SEs.
-poorclutch_summary93 %>% 
-  left_join(egg_mean_all_93) -> female_egg
-female_egg_long <- gather(female_egg, vname, value1, Pclutch100:egg.se, factor_key = TRUE)
-female_egg_long %>% 
-  mutate(female.egg = ifelse(vname == "Pclutch100",
-                             "% poor clutch", 
-                             ifelse(vname == "mean", 
-                            "total % clutch", ifelse(vname == "Pclutch.se100", 
-                            "% poor clutch", "total % clutch")))) %>% 
-  mutate(type = ifelse(vname == "Pclutch.se100", "se", ifelse(vname == "egg.se", 
-                              "se", "mean"))) %>% 
-  select (-vname) %>% 
-  spread(type, value1) -> female_egg_graph
 
 #### F1c Female eggs graph -----------
 p3 <- ggplot(female_egg_graph, aes(Year, mean)) + 
