@@ -71,7 +71,9 @@ kable(short_female, digits = 3)
 
 ####Mean egg percentage for mature females
 ```{r egg per female, echo = FALSE}
-egg_per_mean <- read.csv(paste0('../results/redcrab/Excursion/', cur_yr,'/egg_percent_mean.csv'))
+egg_per_mean <- read.csv(paste0('../results/redcrab/Excursion/', cur_yr,'/egg_percent_mean_all.csv'))
+egg_per_mean %>% 
+  filter(Year >= cur_yr-1) -> egg_per_mean
 
 kable(egg_per_mean, digits = 3)
 ```
