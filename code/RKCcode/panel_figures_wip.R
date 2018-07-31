@@ -22,6 +22,11 @@ poorclutch_summary <- read.csv(paste0('./results/redcrab/', survey.location,
 egg_mean_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
                                 '/egg_percent_mean_all.csv'))
 # file with year and mean percent poor clutch and se poor clutch from 1993 to current
+mr_adjust <- read.csv('./data/redcrab/adj_final_stock_assessment.csv')
+baseline <- read.csv("./data/redcrab/longterm_means.csv")
+biomass <- read.csv("./data/redcrab/biomass.csv") 
+# file for all locations.  Has legal and mature biomass from current year CSA & harvest
+# mr adjustments can be made in the function using mr_adjust file.
 
 # prep data ------
 ### Mature males-----
