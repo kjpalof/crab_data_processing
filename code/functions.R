@@ -205,7 +205,7 @@ poor_clutch_short <- function(females_all, area, year){
   #Now need to add column for significance and score
   shortt_female %>%
     mutate(significant = ifelse(p.value < 0.05 & slope < 0, 1,
-                                ifelse(p.value < 0.05 & slope <0, -1, 0))) %>%
+                                ifelse(p.value < 0.05 & slope > 0, -1, 0))) %>%
     mutate(score = 0.25*significant) -> shortt_female #estimate is slope from regression
   # final results with score - save here
   
