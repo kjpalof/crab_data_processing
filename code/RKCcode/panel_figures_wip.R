@@ -95,28 +95,33 @@ p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
 
 
 ### poor clutch egg percent data processing------------
-poorclutch_summary <- read.csv("./results/redcrab/Excursion/poorclutch_summary_all.csv")
-poorclutch_summary %>% filter(Year >= 1993) -> poorclutch_summary93
-poorclutch_summary93 %>% mutate(Pclutch100 = Pclutch *100, 
-                                Pclutch.se100 = Pclutch.se*100) %>% 
+poorclutch_summary <- read.csv(paste0('./results/redcrab/', survey.location, 
+                                         '/', cur_yr, '/poorclutch_summary_all.csv'))
+poorclutch_summary %>% 
+  filter(Year >= 1993) %>% 
+  mutate(Pclutch100 = Pclutch *100, 
+      Pclutch.se100 = Pclutch.se*100) %>% 
   select(Year, Pclutch100, Pclutch.se100) ->poorclutch_summary93
 # file with year and mean percent poor clutch and se poor clutch from 1993 to current
-egg_mean_all <- read.csv("./results/redcrab/Excursion/egg_percent_mean_all.csv")
-egg_mean_all %>% filter(Year >= 1993) -> egg_mean_all_93
+egg_mean_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
+                                  '/egg_percent_mean_all.csv'))
+egg_mean_all %>% 
+  filter(Year >= 1993) -> egg_mean_all_93
 
 # combine these data sets for graphing.  Create one with means and one with SEs.
-poorclutch_summary93 %>% left_join(egg_mean_all_93) -> female_egg
+poorclutch_summary93 %>% 
+  left_join(egg_mean_all_93) -> female_egg
 female_egg_long <- gather(female_egg, vname, value1, Pclutch100:egg.se, factor_key = TRUE)
-female_egg_long %>% mutate(female.egg = ifelse(vname == "Pclutch100",
-                                               "% poor clutch", 
-                                               ifelse(vname == "mean", 
-                                                      "total % clutch", ifelse(vname == "Pclutch.se100", 
-                                                                               "% poor clutch", "total % clutch")))) %>% 
-  mutate(type = ifelse(vname == "Pclutch.se100",
-                       "se", 
-                       ifelse(vname == "egg.se", 
-                              "se", "mean")))-> female_egg_long
-female_egg_long %>% select (-vname) %>% spread(type, value1) -> female_egg_graph
+female_egg_long %>% 
+  mutate(female.egg = ifelse(vname == "Pclutch100",
+                             "% poor clutch", 
+                             ifelse(vname == "mean", 
+                            "total % clutch", ifelse(vname == "Pclutch.se100", 
+                            "% poor clutch", "total % clutch")))) %>% 
+  mutate(type = ifelse(vname == "Pclutch.se100", "se", ifelse(vname == "egg.se", 
+                              "se", "mean"))) %>% 
+  select (-vname) %>% 
+  spread(type, value1) -> female_egg_graph
 
 #### F1c Female eggs graph -----------
 p3 <- ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+ 
@@ -130,7 +135,8 @@ p3 <- ggplot(female_egg_graph, aes(Year, mean, group = female.egg))+
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
                 width =.4) +
-  theme(legend.position = c(0.2,0.5))
+  theme(legend.position = c(0.2,0.5)) +
+  guides(group = guide_legend(reverse = TRUE))
 
 ### biomass harvest graph --------------
 
