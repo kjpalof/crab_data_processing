@@ -1,11 +1,17 @@
 # K.Palof 
+# katie.palof@alaska.gov
 # ADF&G 7-9-18/ updated for JUNEAU area
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP.  
 # This code is for -2018, refer to code for processing after this year.
 
 rm(list = ls())# clear workspace from previous area 
-## packages and functions ---------------------------------
+##Load Packages/functions ---------------------------------
 source('./code/functions.R')
+
+## setup year --------
+cur_yr <- 2018
+pr_yr <- cur_yr -1
+survey.location <- 'Juneau'
 
 #####Load Data --------------------------------------
 dat <- read.csv("./data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
@@ -17,8 +23,11 @@ area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv")
 # use JNU_79_XX_bypot.csv created from previous year ** need to change year **
           # set up to read from annual folder.  If all files from last year
           #     are in one folder this should work with just a change in final year
-histdat <- read.csv("./results/redcrab/Juneau/2017/JNU_79_17_bypot.csv")
-females <- read.csv("./results/redcrab/Juneau/2017/females_all.csv")
+histdat <- read.csv(paste0('./results/redcrab/', survey.location, 
+                    '/', pr_yr, '/JNU_79_17_bypot.csv'))
+## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
+females <- read.csv(paste0('./results/redcrab/', survey.location, 
+                     '/', pr_yr, '/females_all.csv'))
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 biomass <- read.csv("./data/redcrab/biomass.csv")
