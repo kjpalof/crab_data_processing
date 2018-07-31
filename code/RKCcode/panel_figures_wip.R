@@ -68,6 +68,10 @@ femjuv_long %>%
                                            "se", "mean"))))-> femjuv_long
 femjuv_long %>% select (-recruit.status) %>% spread(type, value1) -> femjuv_graph
 
+### baseline cpue values ----
+baseline %>% 
+  filter(Location == survey.location) ->baseline2
+
 ## poor clutch --------
 poorclutch_summary %>% 
   filter(Year >= 1993) %>% 
@@ -125,14 +129,14 @@ p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   scale_colour_manual(name = "", values = c("grey1", "grey62", "grey34"))+
   scale_shape_manual(name = "", values = c(15, 16, 17))+
   
-  ylim(0,7) +ggtitle("Excursion Inlet") + ylab("CPUE (number/pot)")+ xlab("")+
+  ylim(0,7) +ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
-  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                 width =.4) +
-  geom_hline(yintercept = baseline[3,5], color = "grey62")+
-  geom_hline(yintercept = baseline [3,6], color = "grey34")+
-  geom_hline(yintercept = baseline [3,7], color = "black")+
+  geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey62")+
+  geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
+  geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
   theme(legend.position = c(0.7,0.8))
 
 ### F1b females/juvenile plot ---------------
@@ -147,9 +151,9 @@ p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                 width =.4) +
-  geom_hline(yintercept = baseline[3,2], color = "grey62")+
-  geom_hline(yintercept = baseline [3,3], color = "grey50")+
-  geom_hline(yintercept = baseline [3,4], color = "grey1")+
+  geom_hline(yintercept = baseline2$Juvenile, color = "grey62")+
+  geom_hline(yintercept = baseline2$Small.Female, color = "grey34")+
+  geom_hline(yintercept = baseline2$Large.Female, color = "black")+
   theme(legend.position = c(0.7,0.8))
 
 
