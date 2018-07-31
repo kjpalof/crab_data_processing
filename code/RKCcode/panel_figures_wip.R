@@ -133,7 +133,7 @@ p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   geom_hline(yintercept = baseline[3,5], color = "grey62")+
   geom_hline(yintercept = baseline [3,6], color = "grey34")+
   geom_hline(yintercept = baseline [3,7], color = "black")+
-  theme(legend.position = c(0.8,0.7))
+  theme(legend.position = c(0.7,0.8))
 
 ### F1b females/juvenile plot ---------------
 p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+ 
@@ -150,7 +150,7 @@ p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
   geom_hline(yintercept = baseline[3,2], color = "grey62")+
   geom_hline(yintercept = baseline [3,3], color = "grey50")+
   geom_hline(yintercept = baseline [3,4], color = "grey1")+
-  theme(legend.position = c(0.8,0.7))
+  theme(legend.position = c(0.7,0.8))
 
 
 #### F1c Female eggs graph -----------
@@ -184,14 +184,15 @@ p4 <- ggplot(biomass_graph, aes(Year, pounds, group = type))+
   scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
   scale_y_continuous(labels = comma, limits = c(0,200000),
                      breaks= seq(min(0), max(200000), by = 50000)) +
-  theme(legend.position = c(0.8,0.6)) + 
+  theme(legend.position = c(0.7,0.8)) + 
   geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1")+
   geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
 
 
 ### FINAL plot -------------
 png(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '.png'), res= 600, width = 8, height =11, units = "in")
-grid.arrange(p1, p2, p3, p4, ncol = 1)
+#grid.arrange(p1, p2, p3, p4, ncol = 1)
+plot_grid(p1, p2, p3, p4, ncol = 1, align = 'vh')
 dev.off()
 
 
