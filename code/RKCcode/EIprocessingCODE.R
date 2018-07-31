@@ -35,7 +35,7 @@ biomass <- read.csv("./data/redcrab/biomass.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
-##### Initial review of new data ---------------------------------
+##### Initial review ---------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
@@ -97,7 +97,7 @@ dat5 %>%
 CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt, paste0('./results/redcrab/Excursion/', cur_yr, '/EI_CPUE_',cur_yr, '.csv'))
+write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/EI_CPUE_',cur_yr, '.csv'))
 
 #### survey mid date -----
 head(dat)
