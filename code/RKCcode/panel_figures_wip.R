@@ -93,6 +93,27 @@ female_egg_long %>%
   select (-vname) %>% 
   spread(type, value1) -> female_egg_graph
 
+## biomass manipulations --------
+
+# file for all locations.  Has legal biomass from CSA, harvest
+# mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
+# adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
+mr_adjust %>% 
+  select(-X) %>% 
+  mutate(Location = ifelse(area == "St_James", "Lynn Sisters", as.character(area))) %>% 
+  select(-area) -> mr_adjust2
+
+biomass %>% 
+  left_join(mr_adjust2) %>% 
+  mutate(adj.legal = legal.biomass*weighted_ADJ)
+  
+  
+  filter(Location == "Excursion") %>% 
+  select(Year, legal.biomass, harvest, mr.biomass, adj.biomass) ->ei.biomass
+ei.biomass_long <- gather(ei.biomass, type, pounds, legal.biomass:adj.biomass, factor_key = TRUE)
+ei.biomass %>% filter(Year <= 2007) %>% summarise(mean(legal.biomass))
+ei.biomass %>% filter(Year <= 2007) %>% summarise(mean(adj.biomass))
+
 # Figure panel -----
 #### F1a mature male plot -----------
 p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
@@ -148,13 +169,6 @@ p3 <- ggplot(female_egg_graph, aes(Year, mean)) +
 
 ### biomass harvest graph --------------
 
-# file for all locations.  Has legal biomass from CSA, harvest
-# mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
-# adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
-biomass %>% filter(Location == "Excursion") %>% 
-  select(Year, legal.biomass, harvest, mr.biomass, adj.biomass) ->ei.biomass
-ei.biomass_long <- gather(ei.biomass, type, pounds, legal.biomass:adj.biomass, factor_key = TRUE)
-
 p4 <- ggplot(ei.biomass_long, aes(Year, pounds, group = type))+ 
   geom_point(aes(color = type, shape = type), size =3) +
   geom_line(aes(color = type, group = type))+
@@ -168,8 +182,7 @@ p4 <- ggplot(ei.biomass_long, aes(Year, pounds, group = type))+
   geom_hline(yintercept = 83351, color = "grey1")+
   geom_hline(yintercept = 411756, color = "grey62", linetype = "dashed")
 
-ei.biomass %>% filter(Year <= 2007) %>% summarise(mean(legal.biomass))
-ei.biomass %>% filter(Year <= 2007) %>% summarise(mean(adj.biomass))
+
 ### FINAL plot -------------
 png('./results/redcrab/Excursion/figure1.png', res= 300, width = 8, height =11, units = "in")
 grid.arrange(p1, p2, p3, p4, ncol = 1)
