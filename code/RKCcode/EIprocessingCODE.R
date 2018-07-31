@@ -118,7 +118,7 @@ unique(dat$Time.Hauled)
 dat %>% filter(Year == cur_yr)  # 7-15
 dat[2001,7] # 7-16
 # so mid-date would be 16th.
-
+### ***fix *** this needs to be calculated better
 
 ##### Historic file ---------------------------------------
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
@@ -136,15 +136,15 @@ histdat %>% select(Year, Location, Trip.No, Pot.No, Strata.Code, Missing,
                    weighting) -> historicdata
 dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
 
-# need to add 2017 to historicdata file
-# Locations in historic file are numbers.  Here I have names, should I change this?
-# only 2017 data 
+# need to add current year to historicdata file
+# only current years
 dat6 %>%
   filter(Year == cur_yr) -> dat5_cur_yr
 CPUE_ALL_YEARS <- rbind(historicdata, dat5_cur_yr)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/Excursion/', cur_yr, '/EI_perpot_all_', cur_yr,'.csv'))
+write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/', survey.location, '/', 
+                        cur_yr, '/EI_perpot_all_', cur_yr,'.csv'), row.names = FALSE)
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
