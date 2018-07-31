@@ -148,7 +148,7 @@ p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+
   
   ylim(0,25) +ggtitle("") + ylab("CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
-  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                 width =.4) +
   geom_hline(yintercept = baseline2$Juvenile, color = "grey62")+
@@ -169,7 +169,7 @@ p3 <- ggplot(female_egg_graph, aes(Year, mean)) +
   ylab("Percentage") + 
   xlab("") +
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
-  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
                 width =.4) +
   theme(legend.position = c(0.2,0.5)) 
@@ -185,7 +185,7 @@ p4 <- ggplot(biomass_graph, aes(Year, pounds, group = type))+
   ylab("Legal biomass (lbs)") + 
   xlab("Year") +
   theme(plot.title = element_text(hjust =0.5)) + 
-  scale_x_continuous(breaks = seq(min(1993),max(2017), by =2)) +
+  scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
   scale_y_continuous(labels = comma, limits = c(0,200000),
                      breaks= seq(min(0), max(200000), by = 50000)) +
   theme(legend.position = c(0.7,0.8)) + 
