@@ -201,53 +201,50 @@ dat1 %>%
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
 LgF_dat1[is.na(LgF_dat1$Egg.Percent),]
-# need to change these to 0. 
-LgF_dat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
+# need to change these to 0 if applicable. 
+#LgF_dat1 %>%
+#  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
 
+LgF_dat1 %>% 
+  filter(Year == cur_yr) %>% 
+  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+              Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+              Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_curyr
 
-#raw_data %>%
-#  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> largef
-#largef %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-#                  Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-#                  Egg.Development.Code, Egg.Condition.Code) -> largef
-
-#LgF_dat1 %>% filter(Year == 2017) %>% select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-#                                             Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-#                                             Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_2017
-
-#largef_all <- rbind(largef, LgF_dat1_2017) # raw female data for all years.
+largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
 
 ##### % poor (<10 %) clutch -----------------------------------
 
-poor_clutch(largef_all, 'Excursion', 2017)
+poor_clutch(largef_all, 'Excursion', cur_yr)
 # output is saved as poorclutch1_current.csv - which has all pots for 2017
 # and poorclutch_summary_all.csv which has the percentage and 
 #                                          SD of poor clutches for all years
 
 ##### Long term females -------------------------
-poorclutch_current <- read.csv("./results/redcrab/Excursion/poorclutch1_current.csv")
+poorclutch_current <- read.csv(paste0('./results/redcrab/Excursion/', cur_yr,
+                                           '/poorclutch1_current.csv'))
 # bring in output from function above with the current years pots. 
 glimpse(poorclutch_current)
 # function to compare this to a long term mean of 10% and save for .Rmd output
-poor_clutch_long(poorclutch_current, 'Excursion', 2017)
+poor_clutch_long(poorclutch_current, 'Excursion', cur_yr)
 # output saved as lt_female.csv
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 # save this file here for future years
-poorclutch_all <- read.csv("./results/redcrab/Excursion/poorclutch_all.csv")
+poorclutch_all <- read.csv(paste0('./results/redcrab/Excursion/', cur_yr,
+                              '/poorclutch_all.csv'))
 #function for short term trends and output saving.
-poor_clutch_short(poorclutch_all, 'Excursion', 2017)
+poor_clutch_short(poorclutch_all, 'Excursion', cur_yr)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
-egg_percent(largef_all, 'Excursion', 2017)
+egg_percent(largef_all, 'Excursion', cur_yr)
 # output saved as egg_percent_mean_all.csv, creates mean and SE egg percentage for all years
 
 ### total stock health table -----------------------
-total_health('Excursion', 2017)
+total_health('Excursion', cur_yr)
 # works as long as all files are saved in folder with area name
 
 ### raw sample size -----------
@@ -255,7 +252,7 @@ head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
-write.csv(raw_samp, './results/redcrab/Excursion/raw_sample.csv')
+write.csv(raw_samp, paste0('./results/redcrab/Excursion/', cur_yr, '/raw_sample.csv'))
 dat5 %>% group_by(Year) %>% summarise (n=n())
 
 
