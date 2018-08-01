@@ -16,13 +16,13 @@ survey.location <- 'Excursion'
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Excursion/RKC survey CSA_EI_17_18.csv")
+dat <- read.csv(paste0('./data/redcrab/', survey.location,'/RKC survey CSA_EI_17_18.csv'))
                   # this is input from OceanAK - set up as red crab survey data for CSA
-area <- read.csv("./data/redcrab/Excursion/Excursion_strata_area.csv") 
+area <- read.csv(paste0('./data/redcrab/', survey.location, '/Excursion_strata_area.csv')) 
                   #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv(paste0('./results/redcrab/Excursion/', pr_yr, '/EI_perpot_all.csv'))
+histdat <- read.csv(paste0('./results/redcrab/', survey.location, '/', pr_yr, '/EI_perpot_all.csv'))
  ## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv(paste0('./results/redcrab/Excursion/', pr_yr, '/largef_all.csv'))
+females <- read.csv(paste0('./results/redcrab/', survey.location,'/', pr_yr, '/largef_all.csv'))
 #raw_data <- read.csv("./data/redcrab/Excursion/RKC survey_historicpots_ei.csv")
         ## use this for raw historic female data in 2017, create input file for future
 
