@@ -34,18 +34,19 @@ biomass <- read.csv("./data/redcrab/biomass.csv")
           # file for all locations. Has biomass estimates from CSA,
           #   must be updated after CSA model is run for current year
 
-##### Initial review of new data -------------------------------------
+##### Initial review -------------------------------------
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
-  filter(Pot.Condition == "Normal") -> dat1
+  filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> dat1
 
 dat1 %>%
   filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
-                                                              # before moving forward.
+# before moving forward.
+dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
@@ -93,9 +94,10 @@ dat5 %>%
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/
-                            (sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_JNU_18
+                            (sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt
 
-write.csv(CPUE_wt_JNU_18, './results/redcrab/Juneau/JNU_CPUE_18.csv', row.names = FALSE)
+write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location,'/', 
+                  cur_yr, '/JNU_CPUE_' , cur_yr, '.csv'), row.names = FALSE)
 
 # weighted cpue by strata --- just for comparison
 dat5 %>%
@@ -125,126 +127,88 @@ dat[5843,7] # 6-27
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
 head(histdat)
+head(dat5)
 
-histdat %>%  # historic data needs to only have Strata.Code in it - need to remove the other
-  # strata columns before combining. In the future this should be fixed before this file is saved.
-  select(-Density.Strata.Code, -Strata) %>% 
-  select(-Strata.Code, Strata.Code) -> historicdata
-  
-# need to add current years data to historicdata file
-dat5 %>%
-  mutate(Strata.Code = Density.Strata.Code) %>% 
-  select(-Density.Strata.Code) %>% 
-  filter(Year == 2018) -> dat5_2018
+histdat %>% select(Year, Location, Trip.No, Pot.No, Strata.Code, Missing, 
+                   Juvenile, Large.Females, Post_Recruit, Pre_Recruit, 
+                   Recruit, Small.Females, Area, npots, inverse_n, 
+                   weighting) -> historicdata
+dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
 
-JNU_CPUE_ALL <- rbind(historicdata, dat5_2018)
-
-write.csv(JNU_CPUE_ALL, './results/redcrab/Juneau/JNU_perpot_all_18.csv', row.names = FALSE)
+# need to add current year to historicdata file
+# only current years
+dat6 %>%
+  filter(Year == cur_yr) -> dat5_cur_yr
+CPUE_ALL_YEARS <- rbind(historicdata, dat5_cur_yr)
+# this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
+# change same of folder and file.
+write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/', 
+            survey.location, '/', cur_yr, '/JNU_perpot_all_', cur_yr,'.csv'), 
+          row.names = FALSE)
 
 ##### Short term trends -------------------
+
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
-# How to take weights into account here?###
-# tidy( ### fit) # want to save $estimate here
-# glance (## fit) # want to save r.squared and p.value
-JNU_CPUE_ALL %>%
-  filter(Year >=2015) -> JNU_ST_18 # short term file has last 4 years in it
-# short term all ----
-# long version for this 
-JNU_ST_18_long <- gather(JNU_ST_18, recruit.status, crab, Juvenile:Small.Females, factor_key = TRUE) 
+CPUE_ALL_YEARS %>%
+  filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
 
-JNU_ST_18_long %>% 
-  group_by(recruit.status) %>% 
-  do(fit = lm(crab ~ Year, data = ., weights = weighting)) ->short_term
+#function creates output file in folder /results/redcrab/'area'
+short_t(bypot_st, cur_yr, "Juneau")
+# output is saved as shortterm.csv
+bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, 
+                        factor_key = TRUE) 
+ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
-short_term %>%
-  tidy(fit) -> short_term_slope
+### short term plots----------------
+plot(BYPOT_ST$Year, BYPOT_ST$Juvenile)
+Juv_fit <-lm(Juvenile ~ Year, data = BYPOT_ST, weights = weighting)
+abline(Juv_fit, col= 'red')
+summary(Juv_fit)
 
-short_term %>%
-  glance(fit) ->short_term_out
+plot(BYPOT_ST$Year, BYPOT_ST$Large.Females)
+Lfem_fit <-lm(Large.Females ~ Year, data = BYPOT_ST, weights = weighting)
+abline(Lfem_fit, col= 'red')
+summary(Lfem_fit)
 
-short_term_out %>%
-  select(recruit.status, r.squared, p.value)->short_term_out2
+plot(BYPOT_ST$Year, BYPOT_ST$Post_Recruit)
+PR_fit <-lm(Post_Recruit ~ Year, data = BYPOT_ST, weights = weighting)
+abline(PR_fit, col= 'red')
+summary(PR_fit)
 
-short_term_slope %>%
-  select(recruit.status, term,  estimate) %>%
-  spread(term, estimate) %>% 
-  right_join(short_term_out2)->short_term_results # estimate here is slope from regression
+plot(BYPOT_ST$Year, BYPOT_ST$Pre_Recruit)
+PreR_fit <-lm(Pre_Recruit ~ Year, data = BYPOT_ST, weights = weighting)
+abline(PreR_fit, col= 'red')
+summary(PreR_fit)
 
-#Now need to add column for significance and score
-short_term_results %>%
-  mutate(significant = ifelse(p.value < 0.05 & Year > 0, 1,
-                              ifelse(p.value <0.05 & Year <0, -1, 0))) %>%
-  mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
-# final results with score - save here
-write.csv(short_term_results, './results/redcrab/Juneau/jnu_shortterm.csv', row.names = FALSE)
+plot(BYPOT_ST$Year, BYPOT_ST$Recruit)
+R_fit <-lm(Recruit ~ Year, data = BYPOT_ST, weights = weighting)
+abline(R_fit, col= 'red')
+summary(R_fit)
 
-ggplot(JNU_ST_18_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
+plot(BYPOT_ST$Year, BYPOT_ST$Small.Females)
+smF_fit <-lm(Small.Females ~ Year, data = BYPOT_ST, weights = weighting)
+abline(smF_fit, col= 'red')
+summary(smF_fit)
 
+##### Long term trends ---------------------
+#compare current year CPUE distribution to the long term mean
+dat5_cur_yr
+#make sure you have a file with only current years data - created above
 
-##### Long term trends ------
-#compare current years CPUE distribution to the long term mean
-# use dat5_current year
-head(dat5_2018)
-#make sure you have a file with only current years data
-#Uses a weighted mean to help calculate the t.test - part of package weights
-juv <- wtd.t.test(dat5_2018$Juvenile, y = 2.53, weight = dat5_2018$weighting, samedata=FALSE)
-lfem <- wtd.t.test(dat5_2018$Large.Females, y = 4.48, weight = dat5_2018$weighting, samedata=FALSE)
-postr <- wtd.t.test(dat5_2018$Post_Recruit, y = 2.32, weight = dat5_2018$weighting, samedata=FALSE)
-prer <- wtd.t.test(dat5_2018$Pre_Recruit, y = 2.45, weight = dat5_2018$weighting, samedata=FALSE)
-rec <- wtd.t.test(dat5_2018$Recruit, y = 1.85, weight = dat5_2018$weighting, samedata=FALSE)
-sfem <- wtd.t.test(dat5_2018$Small.Females, y = 1.65, weight = dat5_2018$weighting, samedata=FALSE)
-
-long_term <- matrix(nrow = 6, ncol = 2)
-rownames(long_term) <- c("juv", "large.female", "post.recruit", "pre.recruit", "recruit", "small.female")
-colnames(long_term) <- c("mean", "p.value")
-#long_term[ , 1] <- c('juv', 'large.female', 'post.recruit', 'pre.recruit', 'recruit', 'small.female')
-long_term[1,1] <-juv$additional["Mean"]
-long_term[1,2] <- juv$coefficients["p.value"]
-long_term[2,1] <-lfem$additional["Mean"]
-long_term[2,2] <- lfem$coefficients["p.value"]
-long_term[3,1] <-postr$additional["Mean"]
-long_term[3,2] <- postr$coefficients["p.value"]
-long_term[4,1] <-prer$additional["Mean"]
-long_term[4,2] <- prer$coefficients["p.value"]
-long_term[5,1] <-rec$additional["Mean"]
-long_term[5,2] <- rec$coefficients["p.value"]
-long_term[6,1] <-sfem$additional["Mean"]
-long_term[6,2] <- sfem$coefficients["p.value"]
+long_t(dat5_cur_yr, baseline, cur_yr, 'Juneau', 'Juneau')
+# output is saved as longterm.csv
 
 
-baseline <- c(2.53,4.48,2.32,2.45,1.85,1.65)
-long_term_results <- cbind(long_term, baseline)
-long_term_results <- as.data.frame(long_term_results)
-
-long_term_results %>%
-   mutate(significant = ifelse(p.value < 0.05 & mean > baseline, 1,
-                              ifelse(p.value <0.05 & mean < baseline, -1, 0))) %>% 
-  mutate(recruit.status = c("juv", "large.female", "post.recruit", 
-                            "pre.recruit", "recruit", "small.female")) -> long_term_results #estimate is slope from regression
-
-# final results with score - save here
-write.csv(long_term_results, './results/redcrab/Juneau/jnu_longterm.csv', row.names = FALSE)
-
-##### Weights from length - weight relatinship.---------------------
+##### Weights from length - weight relatinship.-----------------
+# Linear model is changed for each area
 # Juneau linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
-glimpse(dat1) # raw data for both 2015 and 2016 
-dat1 %>%
-  mutate(weight_lb = (exp((3.03*log(Length.Millimeters))-7.23))*(2.2/1000)) -> dat1
+glimpse(dat1) # raw data for last 2 years
+# slope = 3.03
+# intercept = 7.23
+# use function found in functions.R code file
+weights(dat1, 3.03, 7.23, "Juneau", cur_yr)
+# output saved as maleweights.csv
 
-Mature = c("Pre_Recruit", "Recruit", "Post_Recruit")
-Legal =c("Recruit", "Post_Recruit")
-# summary of weights all together - would like these in one calc and one summary table
-dat1 %>% 
-  group_by(Year) %>% 
-  filter(Sex.Code == 1) %>% 
-  summarise(mature_lbs = wt.mean(weight_lb[Recruit.Status %in% Mature], 
-                                 Number.Of.Specimens[Recruit.Status %in% Mature]), 
-            legal_lbs = wt.mean(weight_lb[Recruit.Status %in% Legal], 
-                                Number.Of.Specimens[Recruit.Status %in% Legal]), 
-            prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
-                               Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
-# final results with score - save here
-write.csv(male_weights, './results/redcrab/Juneau/jnu_maleweights.csv', row.names = FALSE)
 ###### Females ----------------------------------------------------------
 # large or mature females
 dat1 %>%
