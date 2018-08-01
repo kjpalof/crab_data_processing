@@ -214,31 +214,23 @@ weights(dat1, 3.03, 7.23, "Juneau", cur_yr)
 dat1 %>%
   filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
 
-##### % poor (<10 %) clutch
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
 LgF_dat1[is.na(LgF_dat1$Egg.Percent),]
-# need to change these to 0. 
-LgF_dat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
+# need to change these to 0 if applicable. 
+#LgF_dat1 %>%
+#  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
 
-LgF_dat1 %>%
-  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_dat1 # where 1 is yes and 2 is no
+LgF_dat1 %>% 
+  filter(Year == cur_yr) %>% 
+  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+         Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+         Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_curyr
 
-LgF_dat1 %>%
-  group_by(Year, Location, Pot.No, Less25) %>%
-  summarise(hat = sum(Number.Of.Specimens)) -> poorclutch
-
-poorclutch1 <- dcast(poorclutch, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
-
-poorclutch1 %>%
-  mutate(var1 = y / (y+n)) -> poorclutch1
-poorclutch1 %>%
-  group_by(Year)%>%
-  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_18
-write.csv(poorclutch_18, './results/redcrab/Juneau/poorclutch_18.csv', row.names = FALSE)
-# check to see if these match JMP file
+#largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
+# historic female file here is summmarized by pot. 
+#     combine this later on
 
 ##### Long term females -------------------------
 glimpse(poorclutch1)
