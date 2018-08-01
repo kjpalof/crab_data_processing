@@ -437,8 +437,10 @@ panel_figure <- function(survey.location, cur_yr, base.location){
     xlab("Year") +
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-    scale_y_continuous(labels = comma, limits = c(0,200000),
-                       breaks= seq(min(0), max(200000), by = 50000)) +
+    scale_y_continuous(labels = comma, limits = c(0,max(biomass_graph$pounds, 
+                                                        na.rm = TRUE)),
+                       breaks= seq(min(0), max(max(biomass_graph$pounds, 
+                                                   na.rm = TRUE)), by = 50000)) +
     theme(legend.position = c(0.7,0.8)) + 
     geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1")+
     geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
