@@ -29,9 +29,8 @@ females <- read.csv(paste0('./results/redcrab/', survey.location,'/', pr_yr, '/l
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 # update this file after running CSA - 
 biomass <- read.csv("./data/redcrab/biomass.csv") 
-# file for all locations.  Has legal biomass from CSA, harvest
-# mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
-# adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
+# file for all locations.  Has legal and mature biomass from CSA, harvest
+
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
