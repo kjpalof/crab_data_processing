@@ -322,9 +322,6 @@ panel_figure('Juneau', 2018, 'Juneau')
 # base.location is the location name in the baseline file, can be different
 
 
-
-
-
 ##### Restrospective Analysis -----------------------------------
 
 CPUE_ALL_YEARS <- read.csv("./results/redcrab/Juneau/JNU_perpot_all_17.csv")
