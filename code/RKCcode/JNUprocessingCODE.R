@@ -26,8 +26,8 @@ area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv")
 histdat <- read.csv(paste0('./results/redcrab/', survey.location, 
                     '/', pr_yr, '/JNU_79_17_bypot.csv'))
 ## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv(paste0('./results/redcrab/', survey.location, 
-                     '/', pr_yr, '/females_all.csv'))
+#females <- read.csv(paste0('./results/redcrab/', survey.location, 
+#                     '/', pr_yr, '/females_all.csv'))
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 biomass <- read.csv("./data/redcrab/biomass.csv")
@@ -228,110 +228,68 @@ LgF_dat1 %>%
          Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
          Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_curyr
 
-#largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
-# historic female file here is summmarized by pot. 
-#     combine this later on
+# develop file for historic data ----
+# In future years just load the largef_all.csv file and add current year
+raw_data <- read.csv("./results/redcrab/Juneau/2017/JNU_raw_pots_79_17.csv")
+levels(raw_data$Pot.Condition)
+raw_data %>%
+  filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> raw_dat1
+raw_dat1 %>%
+  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> all_LgF_dat1
+all_LgF_dat1[is.na(all_LgF_dat1$Egg.Percent),]
+all_LgF_dat1 %>% 
+  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+         Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+         Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_all
+
+# want to add 0's for egg percent if egg development code is 3 or 4
+LgF_dat1_all %>% 
+  mutate(Egg.Percent = ifelse((Egg.Development.Code == 3 & 
+                                 Egg.Condition.Code == 4 |Egg.Condition.Code == 5), 
+                              0, Egg.Percent)) -> LgF_dat1_all
+
+
+largef_all <- rbind(LgF_dat1_all, LgF_dat1_curyr) # raw female data for all years.
+write.csv(largef_all, (paste0('./results/redcrab/', survey.location, '/', cur_yr, '/', 
+                       'largef_all.csv')))
+##### % poor (<10 %) clutch -----------------------------------
+
+poor_clutch(largef_all, 'Juneau', cur_yr)
+# output is saved as poorclutch1_current.csv - which has all pots for 2017
+# and poorclutch_summary_all.csv which has the percentage and 
+#                                          SD of poor clutches for all years
 
 ##### Long term females -------------------------
-glimpse(poorclutch1)
-#compare 2016 CPUE distribution to the long term mean
-poorclutch1 %>%
-  filter(Year == 2018) ->poorclutch1_current
-#make sure you have a file with only 2016 data
-#calculate the t.test - part of package weights
-lt_female <- t.test(poorclutch1_current$var1, mu = 0.10)
-
-longt_female <- matrix(nrow = 1, ncol = 2)
-rownames(longt_female) <- c("large.female")
-colnames(longt_female) <- c("mean", "p.value")
-
-longt_female[1,1] <-mean(poorclutch1_current$var1)
-longt_female[1,2] <- lt_female$p.value
-
-longt_female <- as.data.frame(longt_female)
-longt_female %>%
-  mutate(significant = ifelse(p.value < 0.05 & mean > 0.10, -1,
-                              ifelse(p.value <0.05 & mean < 0.10, 1, 0))) %>% 
-  mutate(recruit.status = c("large.female")) -> longt_female #estimate is slope from regression
-
-write.csv(longt_female, './results/redcrab/Juneau/lt_female.csv', row.names = FALSE)
+poorclutch_current <- read.csv(paste0('./results/redcrab/', survey.location,'/', 
+                                      cur_yr, '/poorclutch1_current.csv'))
+# bring in output from function above with the current years pots. 
+glimpse(poorclutch_current)
+# function to compare this to a long term mean of 10% and save for .Rmd output
+poor_clutch_long(poorclutch_current, 'Juneau', cur_yr)
+# output saved as lt_female.csv
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
-# How to take weights into account here?
-# this should only have to be done the first time.  
-#After that this should create a file to use in the future
-# open female input file (.csv) and delete N.rows and Missing columns also change variables names to n, y, var1
-females_all <- rbind(females, poorclutch1_current)
-# here use females because it already has 2016
-#females_all <- females
-
-females_all %>%
-  filter(Year >=2015) -> LgF_short # short term file has last 4 years in it
-#output this file as .csv to add to next year
-write.csv(females_all, './results/redcrab/Juneau/females_all.csv', row.names = FALSE)
-
-LgF_short %>% 
-  mutate(per_poorclt = var1)  -> LgF_short
-
-plot(LgF_short$Year, LgF_short$per_poorclt)
-LgF_fit <-lm(per_poorclt ~ Year, data = LgF_short)
-abline(LgF_fit, col= 'red')
-summary(LgF_fit)
-
-shortt_female <- matrix(nrow = 1, ncol = 4)
-rownames(shortt_female) <- c("large.female")
-colnames(shortt_female) <- c("intercept", "slope", "p.value", "r_squared")
-
-shortt_female[1,1:2] <- tidy(LgF_fit)$estimate # extract estimate column which is intercept and slope
-shortt_female[1,3] <- glance(LgF_fit)$p.value # extract r.squared, and p.value
-shortt_female[1,4] <- glance(LgF_fit)$r.squared # extract r.squared, and p.value
-shortt_female <- as.data.frame(shortt_female)
-#Now need to add column for significance and score
-shortt_female %>%
-  mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
-                              ifelse(p.value <0.05 & slope <0, -1, 0))) %>%
-  mutate(score = 0.25*significant) -> shortt_female #estimate is slope from regression
-# final results with score - save here
-
-write.csv(shortt_female, './results/redcrab/Juneau/short_female.csv', row.names = FALSE)
+# input data the first time (2016) and then add to it.
+# save this file here for future years
+poorclutch_all <- read.csv(paste0('./results/redcrab/', survey.location, '/',
+                                    cur_yr,'/poorclutch_all.csv'))
+#function for short term trends and output saving.
+poor_clutch_short(poorclutch_all, 'Juneau', cur_yr)
+# output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
-LgF_dat1 %>%
-  group_by(Year, Location, Pot.No) %>%
-  summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
+egg_percent(largef_all, 'Juneau', cur_yr)
+# output saved as egg_percent_mean_all.csv, creates mean and SE egg percentage for all years
 
-clutch_by_pot %>%
-  group_by(Year)%>%
-  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->egg_per_mean
-  
-write.csv(egg_per_mean, './results/redcrab/Juneau/egg_percent_mean.csv', row.names = FALSE)
+### total stock health table -----------------------
+total_health('Juneau', cur_yr)
+# works as long as all files are saved in folder with area name
 
-#### stock health table -----
-total_health <- sum(long_term_results$significant, short_term_results$score, 
-                    longt_female$significant, shortt_female$score) # long term scores CPUE
-# short term scores CPUE
-# need females poorclutch short and long term
-stock_health <- matrix(nrow = 1, ncol = 2)
-rownames(stock_health) <- c("Juneau")
-colnames(stock_health) <- c("location","score_f")
 
-stock_health[1,1] <- "juneau"
-stock_health[1,2] <- total_health
-stock_health <- as.data.frame(stock_health)
-stock_health %>% 
-  mutate(score = as.numeric(levels(score_f))) -> stock_health
-stock_health %>% 
-  mutate(health_status = ifelse(score < -4.25, "poor", ifelse(score > -4.25 & score<= -1.75, "below average", 
-                                                             ifelse(score > -1.75 & score <= 1.5, "moderate", 
-                                                                    ifelse(score > 1.75 & score <= 4.25, "above average", 
-                                                                           ifelse(score > 4.25, "healthy", "unknown")))))) %>% 
-  mutate (harvest_per = ifelse(health_status == "poor", 0, ifelse(health_status == "below average", 0.05, 
-                                                                  ifelse(health_status == "moderate", 0.10, 
-                                                                         ifelse(health_status == "above average", 0.15,
-                                                                                ifelse(health_status == "healthy", 0.20, "unk")))))) -> stock_health
-  #select ( - score_f) -> stock_health
-write.csv(stock_health, './results/redcrab/Juneau/stock_health.csv', row.names = FALSE)
+#### STOP HERE AND run .Rmd file for this area for summary and to confirm things look ok
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 ### raw sample size -----------
 head(dat5)
@@ -362,7 +320,6 @@ CPUE_ALL_YEARS %>%
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_all
 CPUE_wt_all
 write.csv(CPUE_wt_all, './results/redcrab/Juneau/JNU_CPUE_historical.csv')
-
 
 
 ####### explore ------------------
