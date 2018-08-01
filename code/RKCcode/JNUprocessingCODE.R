@@ -26,8 +26,8 @@ area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv")
 histdat <- read.csv(paste0('./results/redcrab/', survey.location, 
                     '/', pr_yr, '/JNU_79_17_bypot.csv'))
 ## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
-#females <- read.csv(paste0('./results/redcrab/', survey.location, 
-#                     '/', pr_yr, '/females_all.csv'))
+females <- read.csv(paste0('./results/redcrab/', survey.location, 
+                 '/', pr_yr, '/largef_all.csv'))
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
 biomass <- read.csv("./data/redcrab/biomass.csv")
@@ -243,10 +243,10 @@ all_LgF_dat1 %>%
          Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_all
 
 # want to add 0's for egg percent if egg development code is 3 or 4
-LgF_dat1_all %>% 
-  mutate(Egg.Percent = ifelse((Egg.Development.Code == 3 & 
-                                 Egg.Condition.Code == 4 |Egg.Condition.Code == 5), 
-                              0, Egg.Percent)) -> LgF_dat1_all
+#LgF_dat1_all %>% 
+#  mutate(Egg.Percent = ifelse((Egg.Development.Code == 3 & 
+#                                 Egg.Condition.Code == 4 |Egg.Condition.Code == 5), 
+#                              0, Egg.Percent)) -> LgF_dat1_all
 
 
 largef_all <- rbind(LgF_dat1_all, LgF_dat1_curyr) # raw female data for all years.
