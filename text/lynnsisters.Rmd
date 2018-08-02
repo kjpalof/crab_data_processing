@@ -1,7 +1,7 @@
 ---
-title: "Juneau area survey results"
+title: "Lynn Sisters 2018survey results"
 author: "Katie Palof"
-date: "August 1, 2018"
+date: "August 2, 2018"
 output: html_document
 ---
 
@@ -10,12 +10,12 @@ library(knitr)
 library(tidyverse)
 #dat <- read.csv("../data/redcrab/Juneau/jnu_16_17_oceanAK_out_RAW.csv")
 cur_yr = 2018
-survey.location = 'Juneau'
+survey.location = 'LynnSisters'
 ```
 
 ## CPUE from survey / data for CSA
 ```{r CPUE, echo = FALSE }
-cpue_cur_yr <- read.csv(paste0('../results/redcrab/', survey.location, '/', cur_yr, '/JNU_CPUE_', cur_yr,'.csv'))
+cpue_cur_yr <- read.csv(paste0('../results/redcrab/', survey.location, '/', cur_yr, '/LS_CPUE_', cur_yr,'.csv'))
 kable(cpue_cur_yr, digits = 6)
 
 
