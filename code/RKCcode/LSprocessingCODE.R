@@ -97,7 +97,7 @@ dat5 %>%
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt
 CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
-# change name and folder for each area
+
 write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/LS_CPUE_',cur_yr, '.csv'), 
           row.names = FALSE)
 
@@ -192,7 +192,7 @@ abline(smF_fit, col= 'red')
 summary(smF_fit)
 
 ##### Long term trends ---------------------
-#compare 2016 CPUE distribution to the long term mean
+#compare current year CPUE distribution to the long term mean
 dat5_cur_yr
 #make sure you have a file with only current years data - created above
 
@@ -231,8 +231,8 @@ LgF_dat1 %>%
 largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
 ##### % poor (<10 %) clutch -----------------------------------
 poor_clutch(largef_all, 'LynnSisters', cur_yr)
-# output is saved as poorclutch_current.csv - which has all pots for 2017
-#     and poorclutch_17.csv which has the percentage and SD of poor clutches for 2017 
+# output is saved as poorclutch_current.csv - which has all pots for current year
+#     and poorclutch_17.csv which has the percentage and SD of poor clutches for current year
 
 ##### Long term females -------------------------
 poorclutch_current <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
