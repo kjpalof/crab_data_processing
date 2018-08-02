@@ -20,8 +20,8 @@ area <- read.csv(paste0('./data/redcrab/', survey.location, '/LynnCanal_strata_a
     #this file is the same every year.  Unless the survey methods change
 histdat <- read.csv(paste0('./results/redcrab/', survey.location, '/', pr_yr, '/LS_perpot_all_17.csv'))
      ## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
-#females <- read.csv(paste0('./results/redcrab/', survey.location,'/', pr_yr, '/largef_all.csv'))
-# !!! fix !!! need to get raw female data
+females <- read.csv(paste0('./results/redcrab/', survey.location,'/', pr_yr, '/largef_all.csv'))
+# fixed at bottom of code, should work fine for years in future (past 2018)
 ## use this for raw historic female data in 2017, create input file for future
 raw_data <- read.csv(paste0('./data/redcrab/', survey.location, 
                              '/RKC survey_historicpots_LS.csv'))
@@ -115,7 +115,7 @@ dat5 %>%
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == cur_yr)  # 7-18
+dat %>% filter(Year == cur_yr)  # 7-22
 dat[738,8] # 7-19
 # so mid-date would be 19th.
 
@@ -154,7 +154,7 @@ CPUE_ALL_YEARS %>%
   filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
 
 #function creates output file in folder /results/redcrab/'area'
-short_t(bypot_st, 2017, "LynnSisters")
+short_t(bypot_st, cur_yr, "LynnSisters")
 # output is saved as shortterm.csv
 bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
@@ -195,7 +195,7 @@ summary(smF_fit)
 dat5_cur_yr
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, cur_yr, 'LynnSisters', 'Lynn Sisters')
+long_t(dat5_cur_yr, baseline, cur_yr, 'LynnSisters', 'Lynn Sisters')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
@@ -234,7 +234,8 @@ poor_clutch(largef_all, 'LynnSisters', cur_yr)
 #     and poorclutch_17.csv which has the percentage and SD of poor clutches for 2017 
 
 ##### Long term females -------------------------
-poorclutch_current <- read.csv("./results/redcrab/LynnSisters/poorclutch1_current.csv")
+poorclutch_current <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
+                                      '/poorclutch1_current.csv'))
 # bring in output from function above with the current years pots. 
 glimpse(poorclutch_current)
 # function to compare this to a long term mean of 10% and save for .Rmd output
@@ -293,11 +294,29 @@ panel_figure('Excursion', 2018, 'Excursion')
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
 
+### female file all years -----
+# create females file for all years
+# raw_data has OceanAK output until 2016. 
 
+levels(raw_data$Pot.Condition)
+raw_data %>%
+  filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> raw_dat1
+raw_dat1 %>%
+  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> all_LgF_dat1
+all_LgF_dat1[is.na(all_LgF_dat1$Egg.Percent),]
+all_LgF_dat1 %>% 
+  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+         Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+         Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_all
 
+LgF_dat1 %>% 
+  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+         Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+         Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_last2
   
-  
-
+largef_all <- rbind(LgF_dat1_all, LgF_dat1_last2) # raw female data for all years.
+write.csv(largef_all, (paste0('./results/redcrab/', survey.location, '/', cur_yr, '/', 
+                              'largef_all.csv')))
 
 
 
