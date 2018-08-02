@@ -233,7 +233,7 @@ poor_clutch(largef_all, 'Excursion', cur_yr)
 #                                          SD of poor clutches for all years
 
 ##### Long term females -------------------------
-poorclutch_current <- read.csv(paste0('./results/redcrab/Excursion/', cur_yr,
+poorclutch_current <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
                                            '/poorclutch1_current.csv'))
 # bring in output from function above with the current years pots. 
 glimpse(poorclutch_current)
