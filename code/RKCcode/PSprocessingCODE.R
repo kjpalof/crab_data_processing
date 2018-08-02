@@ -1,37 +1,43 @@
 #K.Palof 
-# ADF&G 8-4-16 updated for Peril Strait  / updated 8-7-17
+# ADF&G 8-4-16 updated for Peril Strait  / updated 8-2-18
 # code to process data from Ocean AK to use in crab CSA models.  
 #  
-# Current year: 2017
-rm(list = ls())# clear workspace from previous area 
-#####Load Packages ---------------------------------
-library(tidyverse)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
 
+rm(list = ls())# clear workspace from previous area 
+##Load Packages/functions ---------------------------------
 source('./code/functions.R')
+
+## setup year --------
+cur_yr <- 2018
+pr_yr <- cur_yr -1
+survey.location <- 'Peril'
+# area is Peril but in data files it's Deadman Reach
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Peril/RKCsurveyCSA_PS_16_17.csv")
-                  # this is input from OceanAK - set up as red crab survey data for CSA
-area <- read.csv("./data/redcrab/Peril/Peril_strata_area.csv") 
-                  #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Peril/PS_79_16_bypot.csv")
-                  ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Peril/PS_11_15_largefemales_bypot.csv")
+dat <- read.csv(paste0('./data/redcrab/', survey.location,'/RKCsurveyCSA_PS_17_18.csv'))
+# this is input from OceanAK - set up as red crab survey data for CSA
+area <- read.csv(paste0('./data/redcrab/', survey.location, '/Peril_strata_area.csv')) 
+#this file is the same every year.  Unless the survey methods change
+histdat <- read.csv(paste0('./results/redcrab/', survey.location, '/', pr_yr, '/PS_perpot_all_17.csv'))
+## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
+#females <- read.csv(paste0('./results/redcrab/', survey.location,'/', pr_yr, '/largef_all.csv'))
+# fixed at bottom of code, should work fine for years in future (past 2018)
+## use this for raw historic female data in 2017, create input file for future
+raw_data <- read.csv(paste0('./data/redcrab/', survey.location, 
+                            '/RKC survey_historicpots_ps.csv'))
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
+# update this file after running CSA - 
+biomass <- read.csv("./data/redcrab/biomass.csv") 
+# file for all locations.  Has legal and mature biomass from CSA, harvest
+
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
+
 ##### Initial review of new data ---------------------------------
+sapply(dat, unique)
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
 dat %>%
@@ -90,18 +96,30 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_17
-CPUE_wt_17
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt
+CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
-# change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Peril/PS_CPUE_17.csv')
+
+write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/LS_CPUE_',cur_yr, '.csv'), 
+          row.names = FALSE)
+
+# weighted cpue by strata --- just for comparison
+dat5 %>%
+  group_by(Year, Density.Strata.Code) %>%
+  summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
+            Recruit_wt = wt.mean(Recruit, weighting), Rec_SE = (wt.sd(Recruit, weighting)/(sqrt(sum(!is.na(Recruit))))), 
+            Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
+            Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
+            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/
+                                                                          (sqrt(sum(!is.na(Small.Females)))))) 
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-12
-dat[661,8] # 7-14
+dat %>% filter(Year == cur_yr)  # 7-12
+#dat[661,8] # 7-14
 # so mid-date would be 16th.
 
 
@@ -121,23 +139,26 @@ histdat %>% select(Year, Location, Trip.No, Pot.No, Strata.Code, Missing,
                    weighting) -> historicdata
 dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
 
-# need to add 2017 to historicdata file
-# Locations in historic file are numbers.  Here I have names, should I change this?
-# only 2017 data 
+# need to add current year to historicdata file
+# only current years
 dat6 %>%
-  filter(Year == 2017) -> dat5_2017
-CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
+  filter(Year == cur_yr) -> dat5_cur_yr
+CPUE_ALL_YEARS <- rbind(historicdata, dat5_cur_yr)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Peril/PS_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/', survey.location, '/', 
+                                 cur_yr, '/PS_perpot_all_', cur_yr,'.csv'), 
+          row.names = FALSE)
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
+
 CPUE_ALL_YEARS %>%
-  filter(Year >=2014) -> bypot_st # short term file has last 4 years in it
+  filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
 
 #function creates output file in folder /results/redcrab/'area'
-short_t(bypot_st, 2017, "Peril")
+short_t(bypot_st, cur_yr, "Peril")
+
 # output is saved as shortterm.csv
 bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
