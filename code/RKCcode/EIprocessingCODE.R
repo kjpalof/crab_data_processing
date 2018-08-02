@@ -245,7 +245,7 @@ poor_clutch_long(poorclutch_current, 'Excursion', cur_yr)
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 # save this file here for future years
-poorclutch_all <- read.csv(paste0('./results/redcrab/Excursion/', cur_yr,
+poorclutch_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
                               '/poorclutch_all.csv'))
 #function for short term trends and output saving.
 poor_clutch_short(poorclutch_all, 'Excursion', cur_yr)
@@ -268,7 +268,7 @@ head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
-write.csv(raw_samp, paste0('./results/redcrab/Excursion/', cur_yr, '/raw_sample.csv'))
+write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
 dat5 %>% group_by(Year) %>% summarise (n=n())
 
 
