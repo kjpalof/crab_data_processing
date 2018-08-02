@@ -33,6 +33,7 @@ biomass <- read.csv("./data/redcrab/biomass.csv")
 
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
+sapply(dat, unique)
 
 ##### Initial review of new data ---------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
