@@ -100,7 +100,7 @@ dat5 %>%
 CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
 
-write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/LS_CPUE_',cur_yr, '.csv'), 
+write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/PS_CPUE_',cur_yr, '.csv'), 
           row.names = FALSE)
 
 # weighted cpue by strata --- just for comparison
@@ -203,10 +203,10 @@ long_t(dat5_cur_yr, baseline, cur_yr, 'Peril', 'Deadman Reach')
 
 ##### Weights from length - weight relatinship.-----------------
     # Linear model is changed for each area
-    # Peril linear model: exp(3.03*log(length in mm)-7.23)*2.2/1000
+    # Peril linear model: exp(3.02*log(length in mm)-7.18)*2.2/1000
 glimpse(dat1) # raw data for both 2016 and 2017
-    # slope = 3.12
-    # intercept = 7.67
+    # slope = 3.02
+    # intercept = 7.18
     # use function found in functions.R code file
 weights(dat1, 3.02, 7.18, "Peril", cur_yr)
 # output saved as maleweights.csv
@@ -230,7 +230,8 @@ LgF_dat1 %>%
          Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
          Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_curyr
 
-largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
+#largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
+# use this next year, 2018 file created below to bring in historic years
 
 ##### % poor (<10 %) clutch -----------------------------------
 poor_clutch(largef_all, 'Peril', cur_yr)
