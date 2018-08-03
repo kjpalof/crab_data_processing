@@ -52,7 +52,7 @@ harvest2 %>%
 
 write.csv(catch_by_stat, './results/redcrab/comm_catch_by_statarea.csv')
 write.csv(catch_by_survey, './results/redcrab/comm_catch_by_surveyarea.csv')
-
+write.csv(catch_by_stat_survey, './results/redcrab/comm_catch_by_stat_and_surveyarea.csv')
 ### mid-catch date ------------------
 harvest2 %>%
   group_by(survey.area, Date.of.Landing) %>%
