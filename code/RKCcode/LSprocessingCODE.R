@@ -196,7 +196,7 @@ summary(smF_fit)
 dat5_cur_yr
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_cur_yr, baseline, cur_yr, 'LynnSisters', 'Lynn Sisters')
+long_t(dat5_cur_yr, baseline, cur_yr, 'LynnSisters', 'LynnSisters')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
