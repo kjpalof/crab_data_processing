@@ -13,7 +13,7 @@ source('./code/functions.R')
 # data -----
 cur_yr <- 2018
 mr_adjust <- read.csv('./data/redcrab/adj_final_stock_assessment.csv')
-fishery.status <- read.csv(.'/data/redcrab/Juneau/hind_fore_cast_2018.csv') # has fishery status
+fishery.status <- read.csv('./data/redcrab/Juneau/hind_fore_cast_2018.csv') # has fishery status
 #                     may want to save this information somewhere else in the future
 biomass <- read.csv("./data/redcrab/biomass.csv") 
 # file for all locations.  Has legal and mature biomass from current year CSA & harvest
@@ -25,18 +25,28 @@ biomass %>%
   group_by(Year) %>% 
   summarise(legal = sum(legal.biomass), mature = sum(mature.biomass)) %>% 
   as.data.frame() -> regional.b
+fishery.status %>% 
+  select(Year = year, status) %>% 
+  mutate(status = ifelse(status == "PU only", "closed", as.character(status))) -> fishery.status
+
+regional.b %>% 
+  left_join(fishery.status) -> regional.b
+
+# for graphing
+regional.b %>% 
+  gather(type, pounds, legal:mature, factor_key = TRUE) -> regional.
 
 
 # Figure 2 regional biomass ---------
 # should have 2018 model with longterm baselines (1993-2007) and closure status. 
 #   also show 2018 forecast as distinct from model output
-
-
-ggplot(biomass, aes(year, pounds, group = type)) +
+regional.b %>% 
+  gather(type, pounds, legal:mature, factor_key = TRUE) %>% 
+  ggplot(aes(Year, pounds, group = type)) +
   geom_point(aes(color = type, shape = status), size =3) +
   geom_line(aes(color = type, group = type, linetype = type))+
   scale_colour_manual(name = "", values = c("black", "grey44"))+
-  scale_shape_manual(name = "Fishery Status", values = c(0, 16, 2, 8))+
+  scale_shape_manual(name = "Fishery Status", values = c(16, 2, 8))+
   scale_linetype_manual(name = "", values = c("solid", "dashed")) +
   scale_y_continuous(labels = comma, limits = c(0,700000),
                      breaks= seq(min(0), max(700000), by = 100000)) +
