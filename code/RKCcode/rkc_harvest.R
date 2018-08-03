@@ -31,7 +31,15 @@ harvest2 %>%
             numbers = sum(Number.Of.Animals), 
             pounds = sum(Whole.Weight..sum.), 
             pots = sum(Pot.Lifts, na.rm = TRUE)) -> catch_by_stat
-  
+
+# by stat area and survey area ----
+harvest2 %>% 
+  group_by(Season, stat.area, survey.area) %>% 
+  summarise(permits = length(unique(CFEC)), 
+            numbers = sum(Number.Of.Animals), 
+            pounds = sum(Whole.Weight..sum.), 
+            pots = sum(Pot.Lifts, na.rm = TRUE)) -> catch_by_stat_survey
+
 # by survey area ----
 harvest2 %>% 
   group_by(Season, survey.area) %>% 
