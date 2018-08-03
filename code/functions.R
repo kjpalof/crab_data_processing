@@ -240,10 +240,10 @@ total_health <- sum(longterm$significant, shortterm$score,
 # short term scores CPUE
 # need females poorclutch short and long term
 stock_health <- matrix(nrow = 1, ncol = 2)
-rownames(stock_health) <- c("area")
+rownames(stock_health) <- c(area)
 colnames(stock_health) <- c("location","score_f")
 
-stock_health[1,1] <- "area"
+stock_health[1,1] <- area
 stock_health[1,2] <- total_health
 stock_health <- as.data.frame(stock_health)
 stock_health %>% 
