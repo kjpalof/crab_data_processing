@@ -361,7 +361,8 @@ panel_figure <- function(survey.location, cur_yr, base.location){
   biomass %>% 
     select(-weighted_ADJ) %>% 
     gather(type, pounds, harvest:adj.legal, factor_key = TRUE) %>% 
-    filter(Location == survey.location) -> biomass_graph
+    filter(Location == survey.location) %>% 
+    filter(Year >= 1993) -> biomass_graph
   
   biomass_graph %>% 
     filter(Year <= 2007) %>% 
