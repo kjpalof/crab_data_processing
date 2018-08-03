@@ -259,7 +259,7 @@ poor_clutch_short(poorclutch_all, 'Peril', cur_yr)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
-egg_percent(LgF_dat1, 'Peril', cur_yr)
+egg_percent(largef_all, 'Peril', cur_yr)
 # output saved as egg_percent_mean.csv
 
 ### total stock health table -----------------------
@@ -294,7 +294,7 @@ write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/',
                                  cur_yr, '/cpue_wt_all_yrs.csv'), row.names = FALSE)
 
 
-panel_figure('LynnSisters', 2018, 'LynnSisters')
+panel_figure('Peril', 2018, 'Deadman Reach')
 
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
