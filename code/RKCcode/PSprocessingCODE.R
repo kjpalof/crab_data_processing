@@ -47,7 +47,7 @@ dat1 %>%
   filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
 dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1)
-# some females here that don't have recruit status due to no lengths
+# pot 35 crab 1-8 have no sex.code - send adam e-mail 8-3-18 **fix**
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
@@ -118,9 +118,8 @@ dat5 %>%
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == cur_yr)  # 7-12
-#dat[661,8] # 7-14
-# so mid-date would be 16th.
+dat %>% filter(Year == cur_yr) # 7-17
+
 
 
 ##### Historic file ---------------------------------------
