@@ -452,7 +452,7 @@ panel_figure <- function(survey.location, cur_yr, base.location){
   #grid.arrange(p1, p2, p3, p4, ncol = 1)
   panel <- plot_grid(p1, p2, p3, p4, ncol = 1, align = 'vh')
   ggsave(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '.png'), panel,  
-         dpi = 800, width = 8, height = 11)
+         dpi = 800, width = 8, height = 9.5)
   #dev.off()
   
 }
