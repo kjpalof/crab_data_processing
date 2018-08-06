@@ -373,17 +373,20 @@ panel_figure <- function(survey.location, cur_yr, base.location){
   # Figure panel -----
   #### F1a mature male plot -----------
   p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
-    geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
-    geom_line(aes(color = recruit.class, group = recruit.class))+
-    scale_colour_manual(name = "", values = c("grey1", "grey62", "grey34"))+
-    scale_shape_manual(name = "", values = c(15, 16, 17))+
+    geom_point(aes(colour = recruit.class, shape = recruit.class, 
+                   fill = recruit.class), size =3) +
+    geom_line(aes(group = recruit.class))+
+    scale_colour_manual(name = "", values = c("grey1", "grey75", "grey34"))+
+    scale_fill_manual(name = "", values = c("grey1", "grey75", "grey34")) +
+    scale_shape_manual(name = "", values = c(22, 21, 24))+
     
-    ylim(0,7) + ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab("")+
+    ylim(0,(max(males_graph$mean) + max(males_graph$se))) + 
+    ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab("")+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                   width =.4) +
-    geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey62")+
+    geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey75")+
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
     theme(legend.position = c(0.7,0.8))
