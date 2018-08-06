@@ -375,7 +375,7 @@ panel_figure <- function(survey.location, cur_yr, base.location){
   p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
     geom_point(aes(colour = recruit.class, shape = recruit.class, 
                    fill = recruit.class), size =3) +
-    geom_line(aes(group = recruit.class))+
+    geom_line(aes(group = recruit.class, colour = recruit.class))+
     scale_colour_manual(name = "", values = c("grey1", "grey75", "grey34"))+
     scale_fill_manual(name = "", values = c("grey1", "grey75", "grey34")) +
     scale_shape_manual(name = "", values = c(22, 21, 24))+
