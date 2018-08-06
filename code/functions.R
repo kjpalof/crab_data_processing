@@ -376,8 +376,8 @@ panel_figure <- function(survey.location, cur_yr, base.location){
     geom_point(aes(colour = recruit.class, shape = recruit.class, 
                    fill = recruit.class), size =3) +
     geom_line(aes(group = recruit.class, colour = recruit.class))+
-    scale_colour_manual(name = "", values = c("grey1", "grey75", "grey34"))+
-    scale_fill_manual(name = "", values = c("grey1", "grey75", "grey34")) +
+    scale_colour_manual(name = "", values = c("grey1", "grey65", "grey34"))+
+    scale_fill_manual(name = "", values = c("grey1", "grey65", "grey34")) +
     scale_shape_manual(name = "", values = c(15, 16, 17))+
     
     ylim(0,(max(males_graph$mean) + max(males_graph$se))) + 
@@ -386,7 +386,7 @@ panel_figure <- function(survey.location, cur_yr, base.location){
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                   width =.4) +
-    geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey75")+
+    geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey65")+
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
     theme(legend.position = c(0.7,0.8))
@@ -420,7 +420,7 @@ panel_figure <- function(survey.location, cur_yr, base.location){
     
     scale_fill_manual(name = "", values = c("black", "gray100")) +
     scale_colour_manual(name = "", values = c("grey1", "black")) +
-    scale_shape_manual(name = "", values = c(16, 21)) +
+    scale_shape_manual(name = "", values = c(21, 21)) +
     #scale_fill_discrete(breaks = c("total % clutch", "% poor clutch")) +
     ylim(0,100) + 
     ggtitle("") + 
