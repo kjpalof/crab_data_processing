@@ -288,9 +288,9 @@ CPUE_wt_all %>% filter(Year >= 1993) -> CPUE_wt_from93
 write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/', 
                                  cur_yr, '/cpue_wt_all_yrs.csv'), row.names = FALSE)
 
-
-panel_figure('Excursion', 2018, 'Excursion')
-
+panel_figure('Excursion', 2018, 'Excursion', 1)
+panel_figure('Excursion', 2018, 'Excursion', 2)
+panel_figure('Excursion', 2018, 'Excursion', 3)
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
 
