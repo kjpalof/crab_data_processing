@@ -32,9 +32,15 @@ fishery.status %>%
 regional.b %>% 
   left_join(fishery.status) -> regional.b
 
-# for graphing
+# baseline
+# 1993 - 2007 
 regional.b %>% 
-  gather(type, pounds, legal:mature, factor_key = TRUE) -> regional.
+  filter(Year >= 1993 & Year <= 2007) %>% 
+  summarise(legal_baseline = mean(legal), mature_baseline = mean(mature)) %>% 
+  as.data.frame()
+# for graphing
+#regional.b %>% 
+#  gather(type, pounds, legal:mature, factor_key = TRUE) -> regional.
 
 
 # Figure 2 regional biomass ---------
@@ -43,11 +49,12 @@ regional.b %>%
 regional.b %>% 
   gather(type, pounds, legal:mature, factor_key = TRUE) %>% 
   ggplot(aes(Year, pounds, group = type)) +
-  geom_point(aes(color = type, shape = status), size =3) +
+  geom_point(aes(color = type, shape = status, fill = type), size =3) +
   geom_line(aes(color = type, group = type, linetype = type))+
   scale_colour_manual(name = "", values = c("black", "grey44"))+
   scale_shape_manual(name = "Fishery Status", values = c(25, 21, 8))+
   scale_linetype_manual(name = "", values = c("solid", "dashed")) +
+  scale_fill_manual(name = "", values = c("black", "grey44")) +
   scale_y_continuous(labels = comma, limits = c(0,max(regional.b$mature,
                                                 na.rm = TRUE)),
                      breaks= seq(min(0), max(max(regional.b$mature, na.rm = TRUE)), 
@@ -55,11 +62,11 @@ regional.b %>%
   scale_x_continuous(breaks = seq(min(1975),max(max(regional.b$Year) + 1), by = 2)) +
   ggtitle("Biomass of surveyed areas for Southeast Alaska red king crab") + 
   ylab("Biomass (lb)") + 
-  theme(plot.title = element_text(hjust =0.5)) 
+  theme(plot.title = element_text(hjust =0.5)) +
+  theme(legend.position = c(0.825,0.793), legend.title = element_text(size = 9), 
+      legend.text = element_text(size = 8)) 
   
   #ggtitle("Juneau 2018 model") + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
-  theme(plot.title = element_text(hjust =0.5)) +
-  scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5)) +
   geom_hline(yintercept = 298838, color = "grey1")+
   geom_hline(yintercept = 410878, color = "grey44", linetype = "dashed") +
   theme(legend.position = c(0.125,0.793), legend.title = element_text(size = 9), 
