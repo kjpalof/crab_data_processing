@@ -458,11 +458,20 @@ panel_figure <- function(survey.location, cur_yr, base.location){
   #png(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '.png'), res= 600, 
   #    width = 8, height =11, units = "in")
   #grid.arrange(p1, p2, p3, p4, ncol = 1)
-  panel <- plot_grid(p1, p2, p3, p4, ncol = 1, align = 'vh')
-  ggsave(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '.png'), panel,  
-         dpi = 800, width = 8, height = 9.5)
+  #panel <- plot_grid(p1, p2, p3, p4, ncol = 1, align = 'vh')
+  #ggsave(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '.png'), panel,  
+  #       dpi = 800, width = 8, height = 9.5)
   #dev.off()
   
+  ifelse(option == 1 , 
+         panel <- plot_grid(p1, p2, p3, p4, ncol = 1, align = 'vh'),
+         ifelse(option == 2, 
+                panel <- plot_grid(p1, p4, ncol = 1, align = 'vh'), 
+                ifelse(option = 3, 
+                       panel <- plot_grid(p2, p3, ncol = 1, aligm = 'vh'), 0)))
+  ggsave(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '_', 
+                            option, '.png'), panel,  
+         dpi = 800, width = 8, height = 9.5)
 }
   
   
