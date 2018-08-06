@@ -46,12 +46,18 @@ regional.b %>%
   geom_point(aes(color = type, shape = status), size =3) +
   geom_line(aes(color = type, group = type, linetype = type))+
   scale_colour_manual(name = "", values = c("black", "grey44"))+
-  scale_shape_manual(name = "Fishery Status", values = c(16, 2, 8))+
+  scale_shape_manual(name = "Fishery Status", values = c(25, 21, 8))+
   scale_linetype_manual(name = "", values = c("solid", "dashed")) +
-  scale_y_continuous(labels = comma, limits = c(0,700000),
-                     breaks= seq(min(0), max(700000), by = 100000)) +
+  scale_y_continuous(labels = comma, limits = c(0,max(regional.b$mature,
+                                                na.rm = TRUE)),
+                     breaks= seq(min(0), max(max(regional.b$mature, na.rm = TRUE)), 
+                                 by = 100000)) +
+  scale_x_continuous(breaks = seq(min(1975),max(max(regional.b$Year) + 1), by = 2)) +
+  ggtitle("Biomass of surveyed areas for Southeast Alaska red king crab") + 
+  ylab("Biomass (lb)") + 
+  theme(plot.title = element_text(hjust =0.5)) 
   
-  ggtitle("Juneau 2018 model") + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
+  #ggtitle("Juneau 2018 model") + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) +
   scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5)) +
   geom_hline(yintercept = 298838, color = "grey1")+
