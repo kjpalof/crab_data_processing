@@ -413,10 +413,14 @@ panel_figure <- function(survey.location, cur_yr, base.location){
 
   #### F1c Female eggs graph -----------
   p3 <- ggplot(female_egg_graph, aes(Year, mean)) + 
-    geom_point(aes(color = female.egg, shape = female.egg), size =3) +
+    geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
+                  width =.4) +
     geom_line(aes(color = female.egg)) +
+    geom_point(aes(fill = female.egg, shape = female.egg), size =3) +
+    
+    scale_fill_manual(name = "", values = c("black", "gray100")) +
     scale_colour_manual(name = "", values = c("grey1", "black")) +
-    scale_shape_manual(name = "", values = c(16, 1)) +
+    scale_shape_manual(name = "", values = c(16, 21)) +
     #scale_fill_discrete(breaks = c("total % clutch", "% poor clutch")) +
     ylim(0,100) + 
     ggtitle("") + 
@@ -424,8 +428,8 @@ panel_figure <- function(survey.location, cur_yr, base.location){
     xlab("") +
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-    geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
-                  width =.4) +
+    #geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
+    #              width =.4) +
     theme(legend.position = c(0.2,0.5)) 
   
 
