@@ -263,7 +263,12 @@ write_csv(stock_health, paste0('results/redcrab/', area, '/', year, '/stock_heal
 
 
 ## panel figure ---------------
-panel_figure <- function(survey.location, cur_yr, base.location){
+panel_figure <- function(survey.location, cur_yr, base.location, option){
+  # survey.location and baseline.location are the same is most areas.  Check
+  # baseline file to see if they differ
+  # cur_yr is the current year
+  # option refers to output from this function. 
+  # Option 1 - all 4 on one file, Option 2 - just p1, p4 (males), Option 3 - p2,p3 (females)
   CPUE_wt_graph <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
                                    '/cpue_wt_all_yrs.csv'))
   poorclutch_summary <- read.csv(paste0('./results/redcrab/', survey.location, 
