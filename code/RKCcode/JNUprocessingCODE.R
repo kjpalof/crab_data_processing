@@ -318,6 +318,10 @@ write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/',
 
 panel_figure('Juneau', 2018, 'Juneau')
 
+panel_figure('Juneau', 2018, 'Juneau', 1) # panel with all 3 figures
+panel_figure('Juneau', 2018, 'Juneau', 2) # male panel
+panel_figure('Juneau', 2018, 'Juneau', 3) # female panel
+
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
 
