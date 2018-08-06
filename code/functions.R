@@ -378,7 +378,7 @@ panel_figure <- function(survey.location, cur_yr, base.location){
     geom_line(aes(group = recruit.class, colour = recruit.class))+
     scale_colour_manual(name = "", values = c("grey1", "grey75", "grey34"))+
     scale_fill_manual(name = "", values = c("grey1", "grey75", "grey34")) +
-    scale_shape_manual(name = "", values = c(22, 21, 24))+
+    scale_shape_manual(name = "", values = c(15, 16, 17))+
     
     ylim(0,(max(males_graph$mean) + max(males_graph$se))) + 
     ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab("")+
