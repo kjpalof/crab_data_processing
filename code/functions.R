@@ -414,6 +414,9 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     geom_hline(yintercept = baseline2$Large.Female, color = "black")+
     theme(legend.position = c(0.7,0.8))
   
+  if(option == 3){
+    p2 = p2 + ggtitle(survey.location)
+  }
 
 
   #### F1c Female eggs graph -----------
@@ -430,14 +433,18 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     ylim(0,100) + 
     ggtitle("") + 
     ylab("Percentage") + 
-    xlab("") +
-    theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
+    xlab(ifelse(option == 1, "", "Year")) +
+    theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     #geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
     #              width =.4) +
     theme(legend.position = c(0.2,0.5)) 
   
-
+  if(option ==1){
+    p3 = p3 + theme(axis.text.x = element_blank())
+  }
+    
+  
   ### biomass harvest graph --------------
   p4 <- ggplot(biomass_graph, aes(Year, pounds, group = type))+ 
     geom_point(aes(color = type, shape = type), size =3) +
