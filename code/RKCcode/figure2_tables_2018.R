@@ -131,21 +131,22 @@ biomass %>%
   gather(Location, pounds, surveyed:total) %>% 
   cast(Year+Location~type) -> regional_totals
 
-
+# data frame with biomass, adjusted biomass, er possiblities
 biomass %>% 
   filter(Year == cur_yr) %>% 
   dplyr::select(-harvest) %>% 
-  bind_rows(regional_totals) %>% 
-  #left_join(equ_rate) %>% 
+  
   left_join(mr_adjust2) %>%
   replace_na(list(legal.biomass = 0, mature.biomass = 0, weighted_ADJ = 1)) %>% 
   mutate(legal.adj = legal.biomass*weighted_ADJ, 
-         mature.adj = mature.biomass*weighted_ADJ) -> biomass_rate
-
-
-  
-
+         mature.adj = mature.biomass*weighted_ADJ) %>% 
+  select(-weighted_ADJ) %>% 
+  bind_rows(regional_totals) %>% 
+  left_join(equ_rate) %>% 
+  write.csv(paste0('./results/redcrab/regional_', cur_yr, '.csv'), row.names = FALSE) -> biomass_rate
 
 # Table 3 - bioamss, adj, Equ.er.adj -----------
-
+biomass_rate %>% 
+  mutate(total.GHL = mature.adj*equ.er.adj)
+  
 
