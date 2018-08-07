@@ -85,6 +85,7 @@ regional.b %>%
 
 
 # clean up tables --------
+# equlibrium exploitation rate -----
 exploit_rate %>% 
   dplyr::select(area, equ.er.adj, avg.inc.hr, alt.equ.hr) %>% 
   mutate(Location = case_when(area == 'pybus' ~ 'Pybus', 
@@ -96,31 +97,42 @@ exploit_rate %>%
                               area == 'juneau' ~ 'Juneau')) %>% 
   dplyr::select(-area) -> equ_rate
 
+
+
+
 mr_adjust %>% 
   select(-X) %>% 
   mutate(Location = ifelse(area == "St_James", "LynnSisters", as.character(area))) %>% 
   select(-area) -> mr_adjust2
-  
+
+# setup blue king crab and other areas 
+bkc <- 0.0106
+expasion <- 0.628
 biomass %>% 
   filter(Year == cur_yr) %>% 
   dplyr::select(-harvest) %>% 
+  group_by(Year) %>% 
+  summarise(legal.biomass = sum(legal.biomass, na.rm = TRUE), 
+            mature.biomass = sum(mature.biomass, na.rm = TRUE)) %>% 
+  gather(type, surveyed, legal.biomass:mature.biomass, factor_key = TRUE) %>% 
+  mutate(other.areas = surveyed/expasion - surveyed, 
+         bkc = surveyed*bkc, 
+         total = surveyed + other.areas + bkc) %>% 
+  gather(Location, pounds, surveyed:total) %>% 
+  cast(Year+Location~type) -> regional_totals
+
+
+biomass %>% 
+  filter(Year == cur_yr) %>% 
+  dplyr::select(-harvest) %>% 
+  bind_rows(regional_totals) %>% 
   left_join(equ_rate) %>% 
   left_join(mr_adjust2) %>%
   replace_na(list(legal.biomass = 0, mature.biomass = 0, weighted_ADJ = 1)) %>% 
   mutate(legal.adj = legal.biomass*weighted_ADJ, 
          mature.adj = mature.biomass*weighted_ADJ) -> biomass_rate
 
-# setup blue king crab and other areas 
-bkc <- 0.0106
-expasion <- 0.628
-biomass_rate %>% 
-  summarise(legal = sum(legal.biomass), mature = sum(mature.biomass)) %>% 
-  gather(survey.area, surveyed, factor_key = TRUE) %>% 
-  mutate(other.areas = surveyed/expasion - surveyed, 
-         bkc = surveyed*bkc, 
-         total = surveyed + other.areas + bkc) %>% 
-  gather(Location, pounds, surveyed:total) %>% 
-  cast(Location~survey.area)
+
   
 
 
