@@ -404,7 +404,7 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     scale_colour_manual(name = "", values = c("grey34","grey62", "grey1"))+
     scale_shape_manual(name = "", values = c(17, 16, 15))+
     
-    ylim(0,25) +ggtitle("") + ylab("CPUE (number/pot)")+ xlab("")+
+    ylim(0,25) + ylab("CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
@@ -431,9 +431,9 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     scale_shape_manual(name = "", values = c(21, 21)) +
     #scale_fill_discrete(breaks = c("total % clutch", "% poor clutch")) +
     ylim(0,100) + 
-    ggtitle("") + 
+    #ggtitle("") + 
     ylab("Percentage") + 
-    xlab(ifelse(option == 1, "", "Year")) +
+    xlab(ifelse(option == 1, NULL, "Year")) +
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     #geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
