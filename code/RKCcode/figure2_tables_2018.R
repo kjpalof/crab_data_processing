@@ -7,6 +7,7 @@
 # katie.palof@alaska.gov
 # 08/03/2018
 
+rm(list = ls())# clear workspace - helpful when jumping between files 
 # load -----
 source('./code/functions.R')
 
@@ -18,8 +19,9 @@ fishery.status <- read.csv('./data/redcrab/Juneau/hind_fore_cast_2018.csv') # ha
 biomass <- read.csv("./data/redcrab/biomass.csv") 
 # file for all locations.  Has legal and mature biomass from current year CSA & harvest
 # mr adjustments can be made in the function using mr_adjust file.
+exploit_rate <- read.csv("./data/redcrab/table3.csv")
 
-## clean up -------
+## clean up figure 2-------
 # regional biomass
 biomass %>% 
   group_by(Year) %>% 
@@ -78,8 +80,19 @@ regional.b %>%
   ggsave(paste0('./figures/redcrab/regional_biomass', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
 
 
-  #ggtitle("Juneau 2018 model") + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
-  geom_hline(yintercept = 298838, color = "grey1")+
-  geom_hline(yintercept = 410878, color = "grey44", linetype = "dashed") +
-  guides(shape = guide_legend(ncol=2), group = guide_legend((ncol =2))) +
   
+
+
+
+# clean up tables --------
+biomass %>% 
+  filter(Year == 2018) %>% 
+  dplyr::select(-harvest) 
+
+exploit_rate %>% 
+  dplyr::select(area, equ.er.adj, avg.inc.hr, alt.equ.hr) %>% 
+  mutate(Location)
+
+# Table - bioamss, adj, Equ.er.adj -----------
+
+
