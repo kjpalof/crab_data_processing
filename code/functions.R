@@ -386,7 +386,7 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     scale_shape_manual(name = "", values = c(15, 16, 17))+
     
     ylim(0,(max(males_graph$mean) + max(males_graph$se))) + 
-    ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab("")+
+    ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
@@ -431,19 +431,18 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     scale_shape_manual(name = "", values = c(21, 21)) +
     #scale_fill_discrete(breaks = c("total % clutch", "% poor clutch")) +
     ylim(0,100) + 
-    #ggtitle("") + 
     ylab("Percentage") + 
-    xlab(ifelse(option == 1, NULL, "Year")) +
+    xlab(NULL) +
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-    #geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
-    #              width =.4) +
     theme(legend.position = c(0.2,0.5)) 
   
   if(option ==1){
     p3 = p3 + theme(axis.text.x = element_blank())
   }
-    
+  if(option ==3){
+    p3 = p3 + xlab("Year")
+  }
   
   ### biomass harvest graph --------------
   p4 <- ggplot(biomass_graph, aes(Year, pounds, group = type))+ 
@@ -452,7 +451,6 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     scale_colour_manual(name = "", values = c("grey1", "grey1", "grey48", "grey62"))+
     scale_shape_manual(name = "", values = c(1, 18, 32, 18))+
     scale_linetype_manual(name = "", values = c("blank", "solid", "solid", "dashed")) +
-    ggtitle("") + 
     ylab("Legal biomass (lbs)") + 
     xlab("Year") +
     theme(plot.title = element_text(hjust =0.5)) + 
@@ -476,11 +474,11 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
   #dev.off()
   
   ifelse(option == 1 , 
-         panel <- plot_grid(p1, p2, p3, p4, ncol = 1, align = 'vh'),
+         panel <- plot_grid(p1, p2, p3, p4, ncol = 1, align = 'v'),
          ifelse(option == 2, 
-                panel <- plot_grid(p1, p4, ncol = 1, align = 'vh'), 
+                panel <- plot_grid(p1, p4, ncol = 1, align = 'v'), 
                 ifelse(option == 3, 
-                       panel <- plot_grid(p2, p3, ncol = 1, align = 'vh'), 0)))
+                       panel <- plot_grid(p2, p3, ncol = 1, align = 'v'), 0)))
   ggsave(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '_', 
                             option, '.png'), panel,  
          dpi = 800, width = 8, height = 9.5)
