@@ -22,7 +22,23 @@ biomass %>%
 kable(biomass_c, digits = 2)
 ```
 
+## Biomass summary
+```{r biomass2, echo = FALSE }
+regional_b <- read.csv(paste0('../results/redcrab/regional_', cur_yr, '.csv'))
+regional_b %>% 
+  select(Location, legal.biomass, mature.biomass, legal.adj, mature.adj) %>% 
+  kable(digits = 2)
+```
 
+## Table 2 - equilibrium exploitation rates
+```{r biomass2, echo = FALSE }
+#regional_b <- read.csv(paste0('../results/redcrab/regional_', cur_yr, '.csv'))
+regional_b %>% 
+  mutate(total.GHL = mature.adj*equ.er.adj) %>% 
+  select(Location, legal.biomass, mature.biomass, legal.adj, mature.adj, equ.er.adj, 
+         total.GHL) %>% 
+  kable(digits = 3)
+```
 
 # Figures
 
