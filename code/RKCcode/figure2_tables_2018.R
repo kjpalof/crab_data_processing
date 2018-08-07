@@ -85,14 +85,31 @@ regional.b %>%
 
 
 # clean up tables --------
-biomass %>% 
-  filter(Year == 2018) %>% 
-  dplyr::select(-harvest) 
-
 exploit_rate %>% 
   dplyr::select(area, equ.er.adj, avg.inc.hr, alt.equ.hr) %>% 
-  mutate(Location)
+  mutate(Location = case_when(area == 'pybus' ~ 'Pybus', 
+                              area == 'gambier' ~ 'Gambier', 
+                              area == 'seymour' ~ 'Seymour', 
+                              area == 'peril' ~ 'Peril', 
+                              area == 'lynn' ~ 'LynnSisters', 
+                              area == 'excursion' ~ 'Excursion', 
+                              area == 'juneau' ~ 'Juneau')) %>% 
+  dplyr::select(-area) -> equ_rate
 
-# Table - bioamss, adj, Equ.er.adj -----------
+mr_adjust %>% 
+  select(-X) %>% 
+  mutate(Location = ifelse(area == "St_James", "LynnSisters", as.character(area))) %>% 
+  select(-area) -> mr_adjust2
+  
+biomass %>% 
+  filter(Year == 2018) %>% 
+  dplyr::select(-harvest) %>% 
+  left_join(equ_rate) %>% 
+  left_join(mr_adjust2) %>%
+  replace_na(list(legal.biomass = 0, mature.biomass = 0, weighted_ADJ = 1)) %>% 
+  mutate(legal.adj = legal.biomass*weighted_ADJ, 
+         mature.adj = mature.biomass*weighted_ADJ) -> biomass_rate
+
+# Table 3 - bioamss, adj, Equ.er.adj -----------
 
 
