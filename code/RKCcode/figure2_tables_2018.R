@@ -102,13 +102,27 @@ mr_adjust %>%
   select(-area) -> mr_adjust2
   
 biomass %>% 
-  filter(Year == 2018) %>% 
+  filter(Year == cur_yr) %>% 
   dplyr::select(-harvest) %>% 
   left_join(equ_rate) %>% 
   left_join(mr_adjust2) %>%
   replace_na(list(legal.biomass = 0, mature.biomass = 0, weighted_ADJ = 1)) %>% 
   mutate(legal.adj = legal.biomass*weighted_ADJ, 
          mature.adj = mature.biomass*weighted_ADJ) -> biomass_rate
+
+# setup blue king crab and other areas 
+bkc <- 0.0106
+expasion <- 0.628
+biomass_rate %>% 
+  summarise(legal = sum(legal.biomass), mature = sum(mature.biomass)) %>% 
+  gather(survey.area, surveyed, factor_key = TRUE) %>% 
+  mutate(other.areas = surveyed/expasion - surveyed, 
+         bkc = surveyed*bkc, 
+         total = surveyed + other.areas + bkc) %>% 
+  gather(Location, pounds, surveyed:total) %>% 
+  cast(Location~survey.area)
+  
+
 
 # Table 3 - bioamss, adj, Equ.er.adj -----------
 
