@@ -1,0 +1,30 @@
+---
+title: "Regional Summary of red king crab for Southeast Alaska"
+author: "Katie Palof"
+date: "August 7, 2018"
+output: word_document
+---
+
+```{r setup, include = FALSE}
+library(knitr)
+library(tidyverse)
+
+cur_yr = 2018
+```
+
+## Raw output 
+
+```{r biomass, echo = FALSE }
+biomass <- read.csv("../data/redcrab/biomass.csv")
+biomass %>% 
+  filter(Year == cur_yr) %>% 
+  select(-harvest) -> biomass_c
+kable(biomass_c, digits = 2)
+```
+
+
+
+# Figures
+
+
+## Bay by Bay 
