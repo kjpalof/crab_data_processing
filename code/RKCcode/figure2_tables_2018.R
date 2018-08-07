@@ -87,6 +87,12 @@ regional.b %>%
 # clean up tables --------
 # equlibrium exploitation rate -----
 exploit_rate %>% 
+  summarise(equ.er.adj = weighted.mean(equ.er.adj, mature.lb.avg), 
+            avg.inc.hr = weighted.mean(avg.inc.hr, mature.lb.avg), 
+            alt.equ.hr = weighted.mean(alt.equ.hr, mature.lb.avg)) %>% 
+  mutate(Location = "other.areas") -> exploit_other
+
+exploit_rate %>% 
   dplyr::select(area, equ.er.adj, avg.inc.hr, alt.equ.hr) %>% 
   mutate(Location = case_when(area == 'pybus' ~ 'Pybus', 
                               area == 'gambier' ~ 'Gambier', 
@@ -95,9 +101,8 @@ exploit_rate %>%
                               area == 'lynn' ~ 'LynnSisters', 
                               area == 'excursion' ~ 'Excursion', 
                               area == 'juneau' ~ 'Juneau')) %>% 
-  dplyr::select(-area) -> equ_rate
-
-
+  dplyr::select(-area) %>% 
+  bind_rows(exploit_other) -> equ_rate
 
 
 mr_adjust %>% 
