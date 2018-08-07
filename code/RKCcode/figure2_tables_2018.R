@@ -86,7 +86,7 @@ regional.b %>%
 
 # clean up tables --------
 # equlibrium exploitation rate -----
-exploit_rate %>% 
+exploit_rate %>%  # exploitation rats for other areas as weighted means from surveyed areas
   summarise(equ.er.adj = weighted.mean(equ.er.adj, mature.lb.avg), 
             avg.inc.hr = weighted.mean(avg.inc.hr, mature.lb.avg), 
             alt.equ.hr = weighted.mean(alt.equ.hr, mature.lb.avg)) %>% 
