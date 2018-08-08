@@ -2,45 +2,49 @@
 title: "Regional Summary of red king crab for Southeast Alaska"
 author: "Katie Palof"
 date: "August 7, 2018"
-output: word_document
+output:
+  word_document: default
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include = FALSE}
 library(knitr)
 library(tidyverse)
-
+#source('../code/functions.R')
 cur_yr = 2018
 ```
 
 ## Raw output 
 
 ```{r biomass, echo = FALSE }
-biomass <- read.csv("../data/redcrab/biomass.csv")
-biomass %>% 
-  filter(Year == cur_yr) %>% 
-  select(-harvest) -> biomass_c
-kable(biomass_c, digits = 2)
+#cur_yr = 2018
+#biomass <- read.csv("../data/redcrab/biomass.csv")
+#biomass %>% 
+#  filter(Year == cur_yr) %>% 
+#  select(-harvest) -> biomass_c
+#kable(biomass_c, digits = 2)
 ```
 
 ## Biomass summary
 ```{r biomass2, echo = FALSE }
-regional_b <- read.csv(paste0('../results/redcrab/regional_', cur_yr, '.csv'))
-regional_b %>% 
-  select(Location, legal.biomass, mature.biomass, legal.adj, mature.adj) %>% 
-  kable(digits = 2)
+#regional_b <- read.csv(paste0('../results/redcrab/regional_', cur_yr, '.csv'))
+#regional_b %>% 
+#  select(Location, legal.biomass, mature.biomass, legal.adj, mature.adj) %>% 
+#  kable(digits = 2)
 ```
 
 ## Table 2 - equilibrium exploitation rates
-```{r biomass2, echo = FALSE }
+```{r biomass3, echo = FALSE }
 #regional_b <- read.csv(paste0('../results/redcrab/regional_', cur_yr, '.csv'))
-regional_b %>% 
-  mutate(total.GHL = mature.adj*equ.er.adj) %>% 
-  select(Location, legal.biomass, mature.biomass, legal.adj, mature.adj, equ.er.adj, 
-         total.GHL) %>% 
-  kable(digits = 3)
+#regional_b %>% 
+#  mutate(total.GHL = mature.adj*equ.er.adj) %>% 
+#  select(Location, legal.biomass, mature.biomass, legal.adj, mature.adj, equ.er.adj, 
+#         total.GHL) %>% 
+#  kable(digits = 3)
 ```
 
 # Figures
-
+![](../figures/redcrab/regional_biomass2018.png)
 
 ## Bay by Bay 
