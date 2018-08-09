@@ -40,7 +40,7 @@ baseline_mean_forecast <- as.data.frame(baseline_mean[3:4,])
     # should have 2018 model with longterm baselines (1993-2007) and closure status. 
     #   also show 2018 forecast as distinct from model output
 jnu_rkc_fig1 <- hindcast %>% 
-  rename(legal_lb = legal_2018, mature_lb = mature_2018) %>% 
+  dplyr::rename(legal_lb = legal_2018, mature_lb = mature_2018) %>% 
   select(-legal_forecast, -mature_forecast) %>% 
   gather(type, pounds, legal_lb:mature_lb, factor_key = TRUE) %>% 
   ggplot(aes(year, pounds, group = type)) +
