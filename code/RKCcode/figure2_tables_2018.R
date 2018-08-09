@@ -73,7 +73,9 @@ regional.b %>%
   ylab("Biomass (lb)") + 
   theme(plot.title = element_text(hjust =0.5)) +
   theme(legend.position = c(0.825,0.793), legend.title = element_text(size = 9), 
-      legend.text = element_text(size = 8), axis.text.x = element_text(angle = 45)) +
+      legend.text = element_text(size = 8), axis.text.x = element_text(angle = 45), 
+      axis.title = element_text(size = 14, face = "bold"), 
+      axis.text = element_text(size = 12)) +
   theme(axis.text.x = element_text(vjust = 0.50)) +
   geom_text(data = reg_baseline, aes(x = st_yr, y = pounds, label = label), 
           hjust = -0.05, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
