@@ -1,23 +1,36 @@
-#K.Palof 
-# ADF&G 8-3-16 updated for Seymour Canal  / updated 8-8-17
+# K.Palof 
+# katie.palof@alaska.gov
+# ADF&G 8-3-16 updated for Seymour Canal  / updated 8-8-17/8-9-18
 # code to process data from Ocean AK to use in crab CSA models.  
 #  
-# Current year: 2017
-rm(list = ls())# clear workspace from previous area 
-#####Load Packages ---------------------------------
-library(tidyverse)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
+# Current year: 2018
 
+rm(list = ls())# clear workspace from previous area 
+##Load Packages/functions ----------------
 source('./code/functions.R')
 
-#####Load Data ---------------------------------------------------
+## setup year --------
+cur_yr <- 2018
+pr_yr <- cur_yr -1
+survey.location <- 'Seymour'
+
+#####Load Data ---------------------------
+# change input file and input folder for each
+dat <- read.csv(paste0('./data/redcrab/', survey.location,'/RKCsurveyCSA_SC_17_18.csv'))
+             # this is input from OceanAK - set up as red crab survey data for CSA
+area <- read.csv(paste0('./data/redcrab/', survey.location, '/Seymour_strata_area.csv')) 
+             #this file is the same every year.  Unless the survey methods change
+histdat <- read.csv(paste0('./results/redcrab/', survey.location, '/', pr_yr, '/SC_perpot_all_17.csv'))
+           ## !!!!  this file will be 'SC_perpot_all_17' and just get updated with current years data.
+#females <- read.csv(paste0('./results/redcrab/', survey.location,'/', pr_yr, '/largef_all.csv'))
+raw_data <- read.csv("./data/redcrab/Seymour/RKC survey_historicpots_SC.csv")
+## use this for raw historic female data in 2017, create input file for future
+
+baseline <- read.csv("./data/redcrab/longterm_means.csv")
+# update this file after running CSA - 
+biomass <- read.csv("./data/redcrab/biomass.csv") 
+# file for all locations.  Has legal and mature biomass from CSA, harvest
+
 # change input file and input folder for each
 dat <- read.csv("./data/redcrab/Seymour/RKCsurveyCSA_SC_16_17.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA
