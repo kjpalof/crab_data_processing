@@ -146,7 +146,7 @@ write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/', survey.location, '/',
                         cur_yr, '/EI_perpot_all_', cur_yr,'.csv'), row.names = FALSE)
 
 ##### Short term trends -------------------------------------
-#look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
+#look at trend for the last 4 years.  Need a file with last four years 
 CPUE_ALL_YEARS %>%
   filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
 
