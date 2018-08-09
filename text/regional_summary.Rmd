@@ -48,3 +48,4 @@ regional_b %>%
 ![](../figures/redcrab/regional_biomass2018.png)
 
 ## Bay by Bay 
+![](paste0('../figures/redcrab/Juneau_', cur_yr, '_2.png'))

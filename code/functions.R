@@ -395,7 +395,8 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey65")+
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
-    theme(legend.position = c(0.7,0.8))
+    theme(legend.position = c(0.7,0.8), 
+          axis.text = element_text(size = 12))
   
 
   ### F1b females/juvenile plot ---------------
@@ -413,7 +414,8 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     geom_hline(yintercept = baseline2$Juvenile, color = "grey62")+
     geom_hline(yintercept = baseline2$Small.Female, color = "grey34")+
     geom_hline(yintercept = baseline2$Large.Female, color = "black")+
-    theme(legend.position = c(0.7,0.8))
+    theme(legend.position = c(0.7,0.8), 
+          axis.text = element_text(size = 12))
   
   if(option == 3){
     p2 = p2 + ggtitle(paste0('Female cpue and egg health for ', survey.location))
@@ -436,7 +438,8 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     xlab(NULL) +
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-    theme(legend.position = c(0.2,0.5)) 
+    theme(legend.position = c(0.2,0.5), 
+          axis.text = element_text(size = 12)) 
   
   if(option ==1){
     p3 = p3 + theme(axis.text.x = element_blank())
@@ -460,7 +463,8 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
                                                         na.rm = TRUE) + 25000),
                        breaks= seq(min(0), max(max(biomass_graph$pounds, 
                                                    na.rm = TRUE)+25000), by = 50000)) +
-    theme(legend.position = c(0.7,0.8)) + 
+    theme(legend.position = c(0.7,0.8), 
+          axis.text = element_text(size = 12)) + 
     geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1")+
     geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
  
