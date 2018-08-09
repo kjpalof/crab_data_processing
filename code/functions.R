@@ -416,7 +416,7 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     theme(legend.position = c(0.7,0.8))
   
   if(option == 3){
-    p2 = p2 + ggtitle(survey.location)
+    p2 = p2 + ggtitle(paste0('Female cpue and egg health for ', survey.location))
   }
 
 
