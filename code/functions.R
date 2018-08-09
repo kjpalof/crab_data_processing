@@ -396,7 +396,9 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
     theme(legend.position = c(0.7,0.8), 
-          axis.text = element_text(size = 12))
+          axis.text = element_text(size = 12), 
+          axis.title=element_text(size=14,face="bold"), 
+          plot.title = element_text(size = 24))
   
 
   ### F1b females/juvenile plot ---------------
@@ -415,10 +417,12 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     geom_hline(yintercept = baseline2$Small.Female, color = "grey34")+
     geom_hline(yintercept = baseline2$Large.Female, color = "black")+
     theme(legend.position = c(0.7,0.8), 
-          axis.text = element_text(size = 12))
+          axis.text = element_text(size = 12), 
+          axis.title=element_text(size=14,face="bold"))
   
   if(option == 3){
-    p2 = p2 + ggtitle(paste0('Female cpue and egg health for ', survey.location))
+    p2 = p2 + ggtitle(paste0('Female cpue and egg health for ', survey.location)) +
+      theme(plot.title = element_text(size = 24))
   }
 
 
@@ -439,7 +443,8 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     theme(legend.position = c(0.2,0.5), 
-          axis.text = element_text(size = 12)) 
+          axis.text = element_text(size = 12), 
+          axis.title=element_text(size=14,face="bold")) 
   
   if(option ==1){
     p3 = p3 + theme(axis.text.x = element_blank())
@@ -464,7 +469,8 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
                        breaks= seq(min(0), max(max(biomass_graph$pounds, 
                                                    na.rm = TRUE)+25000), by = 50000)) +
     theme(legend.position = c(0.7,0.8), 
-          axis.text = element_text(size = 12)) + 
+          axis.text = element_text(size = 12), 
+          axis.title=element_text(size=14,face="bold")) + 
     geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1")+
     geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
  
