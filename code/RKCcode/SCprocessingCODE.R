@@ -31,16 +31,6 @@ baseline <- read.csv("./data/redcrab/longterm_means.csv")
 biomass <- read.csv("./data/redcrab/biomass.csv") 
 # file for all locations.  Has legal and mature biomass from CSA, harvest
 
-# change input file and input folder for each
-dat <- read.csv("./data/redcrab/Seymour/RKCsurveyCSA_SC_16_17.csv")
-                  # this is input from OceanAK - set up as red crab survey data for CSA
-area <- read.csv("./data/redcrab/Seymour/Seymour_strata_area.csv") 
-                  #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Seymour/SC_79_16_bypot.csv")
-                  ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Seymour/SC_largeF_11_16.csv")
-
-baseline <- read.csv("./data/redcrab/longterm_means.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
@@ -103,17 +93,18 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_17
-CPUE_wt_17
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt
+CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
-# change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Seymour/SC_CPUE_17.csv')
+# global survey.location and year
+write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/SC_CPUE_',cur_yr, '.csv'), 
+          row.names = FALSE)
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-29
+dat %>% filter(Year == cur_yr)  # 7-29
 dat[628,8] # 7-31
 # so mid-date would be 30th.
 
@@ -134,23 +125,24 @@ histdat %>% select(Year, Location, Trip.No, Pot.No, Strata.Code, Missing,
                    weighting) -> historicdata
 dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
 
-# need to add 2017 to historicdata file
+# need to add current year to historicdata file
 # Locations in historic file are numbers.  Here I have names, should I change this?
-# only 2017 data 
+# only current year's data 
 dat6 %>%
-  filter(Year == 2017) -> dat5_2017
-CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
+  filter(Year == cur_yr) -> dat5_cur_yr
+CPUE_ALL_YEARS <- rbind(historicdata, dat5_cur_yr)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Seymour/SC_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/', survey.location, '/', 
+                                 cur_yr, '/SC_perpot_all_', cur_yr,'.csv'), row.names = FALSE)
 
 ##### Short term trends -------------------------------------
-#look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
+#look at trend for the last 4 years.  Need a file with last four years 
 CPUE_ALL_YEARS %>%
-  filter(Year >=2014) -> bypot_st # short term file has last 4 years in it
+  filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
 
 #function creates output file in folder /results/redcrab/'area'
-short_t(bypot_st, 2017, "Seymour")
+short_t(bypot_st, cur_yr, "Seymour")
 # output is saved as shortterm.csv
 bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
@@ -187,12 +179,11 @@ abline(smF_fit, col= 'red')
 summary(smF_fit)
 
 ##### Long term trends ---------------------
-#compare 2016 CPUE distribution to the long term mean
-dat6 %>%
- filter(Year == 2017) ->dat5_current
+#compare current year CPUE distribution to the long term mean
+dat5_cur_yr
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'Seymour', 'Seymour Canal')
+long_t(dat5_cur_yr, baseline, cur_yr, 'Seymour', 'Seymour Canal')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
@@ -202,15 +193,13 @@ glimpse(dat1) # raw data for both 2016 and 2017
     # slope = 2.87
     # intercept = 6.438
     # use function found in functions.R code file
-weights(dat1, 2.87, 6.438, "Seymour")
+weights(dat1, 2.87, 6.438, "Seymour", cur_yr)
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
 # large or mature females
 dat1 %>%
   filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
-
-##### % poor (<10 %) clutch -----------------------------------
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
@@ -223,7 +212,17 @@ LgF_dat1 %>%
  filter(!is.na(Egg.Percent)) -> LgF_dat1
 
 #write.csv(LgF_dat1, './results/Seymour/largefemales_16.csv')
-poor_clutch(LgF_dat1, 'Seymour', 2017)
+
+LgF_dat1 %>% 
+  filter(Year == cur_yr) %>% 
+  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+         Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+         Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_curyr
+
+largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
+
+##### % poor (<10 %) clutch -----------------------------------
+poor_clutch(largef_all, 'Seymour', cur_yr)
 # problem since there are no poor clutches - therefore no y's.  
 LgF_dat1 %>%
   mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_dat1 # where 1 is yes and 2 is no
@@ -251,39 +250,44 @@ write.csv(poorclutch_17, ('./results/redcrab/Seymour/poorclutch_17.csv'), row.na
 #     and poorclutch_17.csv which has the percentage and SD of poor clutches for 2017 
 
 ##### Long term females -------------------------
-poorclutch_current <- read.csv("./results/redcrab/Seymour/poorclutch1_current.csv")
+poorclutch_current <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
+                                      '/poorclutch1_current.csv'))
 # bring in output from function above with the current years pots. 
 glimpse(poorclutch_current)
 # function to compare this to a long term mean of 10% and save for .Rmd output
-poor_clutch_long(poorclutch_current, 'Seymour', 2017)
+poor_clutch_long(poorclutch_current, 'Seymour', cur_yr)
 # output saved as lt_female.csv
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 # save this file here for future years
-
-females_all <- rbind(females, poorclutch_current)
-
+poorclutch_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
+                                  '/poorclutch_all.csv'))
 #function for short term trends and output saving.
-poor_clutch_short(females_all, 'Seymour', 2017)
+poor_clutch_short(females_all, 'Seymour', cur_yr)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
-egg_percent(LgF_dat1, 'Seymour', 2017)
+egg_percent(largef_all, 'Seymour', cur_yr)
 # output saved as egg_percent_mean.csv
 
 ### total stock health table -----------------------
-total_health('Seymour', 2017)
+total_health('Seymour', cur_yr)
 # works as long as all files are saved in folder with area name
+
+
+#### STOP HERE AND run .Rmd file for this area for summary and to confirm things look ok
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ### raw sample size -----------
 head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
-write.csv(raw_samp, './results/redcrab/Seymour/raw_sample.csv')
+write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
 dat5 %>% group_by(Year) %>% summarise (n=n())
+
 
 ##### Restrospective Analysis -----------------------------------
 head(CPUE_ALL_YEARS)
