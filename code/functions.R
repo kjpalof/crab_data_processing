@@ -385,8 +385,9 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     scale_colour_manual(name = "", values = c("grey1", "grey65", "grey34"))+
     scale_fill_manual(name = "", values = c("grey1", "grey65", "grey34")) +
     scale_shape_manual(name = "", values = c(15, 16, 17))+
-    
-    ylim(0,(max(males_graph$mean) + max(males_graph$se))) + 
+    scale_y_continuous(limits = c(0,(max(males_graph$mean) + max(males_graph$se))),
+                       oob = rescale_none) +
+    #ylim(0,(max(males_graph$mean) + max(males_graph$se))) + 
     ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
@@ -423,7 +424,7 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
           axis.title=element_text(size=14,face="bold"))
   
   if(option == 3){
-    p2 = p2 + ggtitle(paste0('Female cpue and egg health for ', survey.location)) +
+    p2 = p2 + ggtitle(paste0('Female/juvenile CPUE and egg health for ', survey.location)) +
       theme(plot.title = element_text(size = 24))
   }
 
