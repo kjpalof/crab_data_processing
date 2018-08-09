@@ -408,7 +408,9 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     scale_colour_manual(name = "", values = c("grey34","grey62", "grey1"))+
     scale_shape_manual(name = "", values = c(17, 16, 15))+
     
-    ylim(0,20) + ylab("CPUE (number/pot)")+ xlab(NULL)+
+    #ylim(0,25) + 
+    scale_y_continuous(limits = c(0,25), oob = rescale_none) +
+    ylab("CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
