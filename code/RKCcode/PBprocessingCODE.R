@@ -1,33 +1,37 @@
-#K.Palof 
-# ADF&G 8-3-16 updated for Pybus Bay  / updated 8-8-17
+# K.Palof 
+# ADF&G 8-3-16 updated for Pybus Bay  / updated 8-8-17/8-10-18
 # code to process data from Ocean AK to use in crab CSA models.  
 #  
-# Current year: 2017
-rm(list = ls())# clear workspace from previous area 
-#####Load Packages ---------------------------------
-library(tidyverse)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
+# Current year: 2018
 
+rm(list = ls())# clear workspace from previous area 
+##Load Packages/functions ---------------------------------
 source('./code/functions.R')
+
+## setup year --------
+cur_yr <- 2018
+pr_yr <- cur_yr -1
+survey.location <- 'Pybus'
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Pybus/RKCsurveyCSA_PB_16_17.csv")
-                  # this is input from OceanAK - set up as red crab survey data for CSA
-area <- read.csv("./data/redcrab/Pybus/Pybus_strata_area.csv") 
-                  #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Pybus/PB_79_16_bypot.csv")
-                  ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Pybus/PB_largeF_11_16.csv")
+dat <- read.csv(paste0('./data/redcrab/', survey.location,'/RKCsurveyCSA_PB_17_18.csv'))
+              # this is input from OceanAK - set up as red crab survey data for CSA
+area <- read.csv(paste0('./data/redcrab/', survey.location, '/Pybus_strata_area.csv')) 
+              #this file is the same every year.  Unless the survey methods change
+histdat <- read.csv(paste0('./results/redcrab/', survey.location, '/', pr_yr, '/PB_perpot_all_17.csv'))
+## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
+#females <- read.csv(paste0('./results/redcrab/', survey.location,'/', pr_yr, '/largef_all.csv'))
+# fixed at bottom of code, should work fine for years in future (past 2018)
+## use this for raw historic female data in 2017, create input file for future
+raw_data <- read.csv(paste0('./data/redcrab/', survey.location, 
+                            '/RKC survey_historicpots_PB.csv'))
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
+# update this file after running CSA - 
+biomass <- read.csv("./data/redcrab/biomass.csv") 
+# file for all locations.  Has legal and mature biomass from CSA, harvest
+
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
@@ -69,7 +73,7 @@ tab %>%
 
 
 ##### Weighted CPUE current year -----------------------------------
-#the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
+# the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
 # need to combine data sets to accomplish this.
 
 tab %>%
