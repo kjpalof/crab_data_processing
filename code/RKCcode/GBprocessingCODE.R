@@ -1,33 +1,38 @@
 #K.Palof 
-# ADF&G 8-12-16 updated for Gambier Bay  / updated 8-8-17
+# ADF&G 8-12-16 updated for Gambier Bay  / updated 8-8-17/8-10-18
 # code to process data from Ocean AK to use in crab CSA models.  
 #  
-# Current year: 2017
-rm(list = ls())# clear workspace from previous area 
-#####Load Packages ---------------------------------
-library(tidyverse)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
+# Current year: 2018
 
+rm(list = ls())# clear workspace from previous area 
+##Load Packages/functions ---------------------------------
 source('./code/functions.R')
+
+## setup year --------
+cur_yr <- 2018
+pr_yr <- cur_yr -1
+survey.location <- 'Gambier'
+# area is Peril but in data files it's Deadman Reach
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/redcrab/Gambier/RKCsurveyCSA_GB_16_17.csv")
-                  # this is input from OceanAK - set up as red crab survey data for CSA
-area <- read.csv("./data/redcrab/Gambier/Gambier_strata_area.csv") 
-                  #this file is the same every year.  Unless the survey methods change
-histdat <- read.csv("./data/redcrab/Gambier/GB_79_16_bypot.csv")
-                  ## !!!!  In future years this file will be 'EI_perpot_all_16' and just get updated with current years data.
-females <- read.csv("./data/redcrab/Gambier/GB_largeF_11_16.csv")
+dat <- read.csv(paste0('./data/redcrab/', survey.location,'/RKCsurveyCSA_GB_17_18.csv'))
+            # this is input from OceanAK - set up as red crab survey data for CSA
+area <- read.csv(paste0('./data/redcrab/', survey.location, '/Gambier_strata_area.csv')) 
+            #this file is the same every year.  Unless the survey methods change
+histdat <- read.csv(paste0('./results/redcrab/', survey.location, '/', pr_yr, '/GB_perpot_all_17.csv'))
+        ## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
+#females <- read.csv(paste0('./results/redcrab/', survey.location,'/', pr_yr, '/largef_all.csv'))
+      # fixed at bottom of code, should work fine for years in future (past 2018)
+      ## use this for raw historic female data in 2017, create input file for future
+raw_data <- read.csv(paste0('./data/redcrab/', survey.location, 
+                            '/RKC survey_historicpots_GB.csv'))
 
 baseline <- read.csv("./data/redcrab/longterm_means.csv")
+# update this file after running CSA - 
+biomass <- read.csv("./data/redcrab/biomass.csv") 
+# file for all locations.  Has legal and mature biomass from CSA, harvest
+
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
@@ -90,8 +95,8 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_17
-CPUE_wt_17
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt
+CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
 write.csv(CPUE_wt_17, './results/redcrab/Gambier/GB_CPUE_17.csv')
