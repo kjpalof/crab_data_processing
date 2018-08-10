@@ -223,28 +223,6 @@ largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
 
 ##### % poor (<10 %) clutch -----------------------------------
 poor_clutch(largef_all, 'Seymour', cur_yr)
-# problem since there are no poor clutches - therefore no y's.  
-LgF_dat1 %>%
-  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_dat1 # where 1 is yes and 2 is no
-
-LgF_dat1 %>%
-  group_by(Year, Location, Pot.No, Less25) %>%
-  summarise(hat = sum(Number.Of.Specimens)) -> poorclutch
-
-poorclutch1 <- dcast(poorclutch, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
-
-poorclutch1 %>% mutate(y = 0) -> poorclutch1
-
-poorclutch1 %>%
-  mutate(var1 = y / (y+n)) -> poorclutch1
-poorclutch1 %>%
-  group_by(Year)%>%
-  summarise(Pclutch = mean(var1) , Pclutch.se = (sd(var1))/sqrt(sum(!is.na(var1)))) -> poorclutch_17
-
-poorclutch1 %>% filter(Year == 2017) -> poorclutch1_current
-write.csv(poorclutch1_current, ('./results/redcrab/Seymour/poorclutch1_current.csv'),row.names =FALSE)
-write.csv(poorclutch_17, ('./results/redcrab/Seymour/poorclutch_17.csv'), row.names =FALSE)
-
 
 # output is saved as poorclutch_current.csv - which has all pots for 2017
 #     and poorclutch_17.csv which has the percentage and SD of poor clutches for 2017 
