@@ -94,23 +94,33 @@ dat5 %>%
             Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
             Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
-            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_17
-CPUE_wt_17
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt
+CPUE_wt
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_wt_17, './results/redcrab/Pybus/PB_CPUE_17.csv')
+write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/PB_CPUE_',cur_yr, '.csv'), 
+          row.names = FALSE)
+
+# weighted cpue by strata --- just for comparison
+dat5 %>%
+  group_by(Year, Density.Strata.Code) %>%
+  summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
+            Recruit_wt = wt.mean(Recruit, weighting), Rec_SE = (wt.sd(Recruit, weighting)/(sqrt(sum(!is.na(Recruit))))), 
+            Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
+            Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
+            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/
+                                                                          (sqrt(sum(!is.na(Small.Females)))))) 
 
 #### survey mid date -----
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == 2017)  # 7-25
-dat[1173,8] # 7-27
-# so mid-date would be 16th.
+dat %>% filter(Year == cur_yr)  # 7-25
 
 
 ##### Historic file ---------------------------------------
-#need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
+# need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
 
@@ -125,23 +135,26 @@ histdat %>% select(Year, Location, Trip.No, Pot.No, Strata.Code, Missing,
                    weighting) -> historicdata
 dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
 
-# need to add 2017 to historicdata file
+# need to add current year to historicdata file
 # Locations in historic file are numbers.  Here I have names, should I change this?
-# only 2017 data 
+# only current years
 dat6 %>%
-  filter(Year == 2017) -> dat5_2017
-CPUE_ALL_YEARS <- rbind(historicdata, dat5_2017)
+  filter(Year == cur_yr) -> dat5_cur_yr
+CPUE_ALL_YEARS <- rbind(historicdata, dat5_cur_yr)
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(CPUE_ALL_YEARS, './results/redcrab/Pybus/PB_perpot_all_17.csv')
+write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/', survey.location, '/', 
+                                 cur_yr, '/PB_perpot_all_', cur_yr,'.csv'), 
+          row.names = FALSE)
 
 ##### Short term trends -------------------------------------
-#look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
+#look at trend for the last 4 years.  Need a file with last four years 
+
 CPUE_ALL_YEARS %>%
-  filter(Year >=2014) -> bypot_st # short term file has last 4 years in it
+  filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
 
 #function creates output file in folder /results/redcrab/'area'
-short_t(bypot_st, 2017, "Pybus")
+short_t(bypot_st, cur_yr, "Pybus")
 # output is saved as shortterm.csv
 bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
@@ -178,12 +191,11 @@ abline(smF_fit, col= 'red')
 summary(smF_fit)
 
 ##### Long term trends ---------------------
-#compare 2016 CPUE distribution to the long term mean
-dat6 %>%
- filter(Year == 2017) ->dat5_current
+#compare current year CPUE distribution to the long term mean
+dat5_cur_yr
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, 2017, 'Pybus', 'Pybus')
+long_t(dat5_current, baseline, cur_yr, 'Pybus', 'Pybus')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
@@ -193,7 +205,7 @@ glimpse(dat1) # raw data for both 2016 and 2017
     # slope = 3.06
     # intercept = 7.383
     # use function found in functions.R code file
-weights(dat1, 3.06, 7.383, "Pybus")
+weights(dat1, 3.06, 7.383, "Pybus", cur_yr)
 # output saved as maleweights.csv
 
 ##### Females - large or mature females --------------------------
