@@ -123,7 +123,7 @@ dat %>% filter(Year == cur_yr) # 7-17
 
 
 ##### Historic file ---------------------------------------
-#need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
+# need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
 
@@ -150,7 +150,7 @@ write.csv(CPUE_ALL_YEARS, paste0('./results/redcrab/', survey.location, '/',
           row.names = FALSE)
 
 ##### Short term trends -------------------------------------
-#look at trend for the last 4 years.  Need a file with last four years in to JNU_CPUE_ALL
+#look at trend for the last 4 years.  Need a file with last four years 
 
 CPUE_ALL_YEARS %>%
   filter(Year >= cur_yr - 3) -> bypot_st # short term file has last 4 years in it
