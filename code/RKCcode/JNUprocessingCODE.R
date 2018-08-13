@@ -292,11 +292,10 @@ total_health('Juneau', cur_yr)
 
 ### raw sample size -----------
 head(dat5)
-dat5 %>% group_by(Year) %>%  select(Year, Juvenile, Small.Females, 
+dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
-write.csv(raw_samp, paste0('./results/redcrab/', survey.location,'/', 
-                           cur_yr, '/raw_sample.csv'))
+write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
 dat5 %>% group_by(Year) %>% summarise (n=n())
 
 ### stock assessment figures --------------
