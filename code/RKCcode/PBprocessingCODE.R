@@ -212,52 +212,67 @@ weights(dat1, 3.06, 7.383, "Pybus", cur_yr)
 # large or mature females
 dat1 %>%
   filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> LgF_dat1
-
-##### % poor (<10 %) clutch -----------------------------------
 # This selects those rows that do not have an egg percentage.
 # if these rows have a egg. development code and egg condition code then the egg percentage should be there
 # if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
 LgF_dat1[is.na(LgF_dat1$Egg.Percent),]
-# need to change these to 0. 
-LgF_dat1 %>%
-  mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
+#LgF_dat1 %>%
+# mutate(Egg.Percent =ifelse(is.na(Egg.Percent), 0, Egg.Percent)) -> LgF_dat1
+#need to remove if missing data
+#LgF_dat1 %>%
+#  filter(!is.na(Egg.Percent)) -> LgF_dat1
+LgF_dat1 %>% 
+  filter(Year == cur_yr) %>% 
+  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+         Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+         Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_curyr
 
-#write.csv(LgF_dat1, './results/Pybus/largefemales_16.csv')
-poor_clutch(LgF_dat1, 'Pybus', 2017)
-# output is saved as poorclutch_current.csv - which has all pots for 2017
-#     and poorclutch_17.csv which has the percentage and SD of poor clutches for 2017 
+#largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
+# use this next year, 2018 file created below to bring in historic years
+
+##### % poor (<10 %) clutch -----------------------------------
+
+poor_clutch(LgF_dat1, 'Pybus', cur_yr)
+# output is saved as poorclutch_current.csv - which has all pots for current year
+#     and poorclutch_17.csv which has the percentage and SD of poor clutches for current year 
 
 ##### Long term females -------------------------
-poorclutch_current <- read.csv("./results/redcrab/Pybus/poorclutch1_current.csv")
+poorclutch_current <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
+                                      '/poorclutch1_current.csv'))
 # bring in output from function above with the current years pots. 
 glimpse(poorclutch_current)
-# function to compare this to a long term mean of 10% and save for .Rmd output
-poor_clutch_long(poorclutch_current, 'Pybus', 2017)
+# function to compare this to a long term mean of 10% and save for .Rmd output 
+poor_clutch_long(poorclutch_current, 'Pybus', cur_yr)
 # output saved as lt_female.csv
 
 ##### Short term females ------------------------
 #look at trend for the last 4 years.  Need a file with last four years in it - females from above
 # input data the first time (2016) and then add to it.
 # save this file here for future years
-females_all <- rbind(females, poorclutch_current)
+poorclutch_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
+                                  '/poorclutch_all.csv'))
+
 #function for short term trends and output saving.
-poor_clutch_short(females_all, 'Pybus', 2017)
+poor_clutch_short(poorclutch_all, 'Pybus', cur_yr)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
-egg_percent(LgF_dat1, 'Pybus', 2017)
+egg_percent(largef_all, 'Pybus', cur_yr)
 # output saved as egg_percent_mean.csv
 
 ### total stock health table -----------------------
-total_health('Pybus', 2017)
+total_health('Pybus', cur_yr)
 # works as long as all files are saved in folder with area name
+
+#### STOP HERE AND run .Rmd file for this area for summary and to confirm things look ok
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ### raw sample size -----------
 head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
-write.csv(raw_samp, './results/redcrab/Pybus/raw_sample.csv')
+write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
 dat5 %>% group_by(Year) %>% summarise (n=n())
 
 ##### Restrospective Analysis -----------------------------------
