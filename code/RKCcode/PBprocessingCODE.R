@@ -275,6 +275,29 @@ dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Fe
 write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
 dat5 %>% group_by(Year) %>% summarise (n=n())
 
+### stock assessment figures --------------
+head(CPUE_ALL_YEARS)
+CPUE_ALL_YEARS %>%
+  group_by(Year) %>%
+  summarise(Pre_Recruit_wt = wt.mean(Pre_Recruit, weighting), PreR_SE = (wt.sd(Pre_Recruit, weighting)/(sqrt(sum(!is.na(Pre_Recruit))))), 
+            Recruit_wt = wt.mean(Recruit, weighting), Rec_SE = (wt.sd(Recruit, weighting)/(sqrt(sum(!is.na(Recruit))))), 
+            Post_Recruit_wt = wt.mean(Post_Recruit, weighting), PR_SE = (wt.sd(Post_Recruit, weighting)/(sqrt(sum(!is.na(Post_Recruit))))),
+            Juvenile_wt = wt.mean(Juvenile, weighting), Juv_SE = (wt.sd(Juvenile, weighting)/(sqrt(sum(!is.na(Juvenile))))), 
+            MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females))))),
+            SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_wt_all
+CPUE_wt_all  
+CPUE_wt_all %>% filter(Year >= 1993) -> CPUE_wt_from93
+
+write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/', 
+                                 cur_yr, '/cpue_wt_all_yrs.csv'), row.names = FALSE)
+
+
+panel_figure('Pybus', 2018, 'Pybus', 1) # panel with all 3 figures
+panel_figure('Pybus', 2018, 'Pybus', 2) # male panel
+panel_figure('Pybus', 2018, 'Pybus', 3) # female panel
+
+# panel_figure <- function(survey.location, cur_yr, base.location)
+# base.location is the location name in the baseline file, can be different
 
   
 
