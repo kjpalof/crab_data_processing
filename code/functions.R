@@ -4,11 +4,12 @@
 # need to keep area and year 
 
 ## load packages -----------
+library(reshape)
 library(tidyverse)
 library(weights)
 library(broom)
 
-library(reshape)
+
 library(stringr)
 library(reshape2)
 library(extrafont)
