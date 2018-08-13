@@ -46,7 +46,7 @@ regional_b %>%
 
 
 ## Table 5 raw samples size
-```{r rawsample, echo = FALSE}
+```{r rawsample, echo = FALSE, warning= FALSE}
 file1 <- read.csv(paste0('../results/redcrab/Juneau/', cur_yr, '/raw_sample.csv'))
 file2 <- read.csv(paste0('../results/redcrab/Excursion/', cur_yr, '/raw_sample.csv'))
 file3 <- read.csv(paste0('../results/redcrab/LynnSisters/', cur_yr, '/raw_sample.csv'))
@@ -58,7 +58,7 @@ file7 <- read.csv(paste0('../results/redcrab/Seymour/', cur_yr, '/raw_sample.csv
 file1 %>% 
   select(-X) %>% 
   mutate(Location = 'Juneau') %>% 
-  group_by(Year, Location) %>% 
+  group_by(Year, Location, effective_no_pots) %>% 
   summarise_all(funs(sum)) -> file1
 
 file2 %>% 
@@ -75,7 +75,8 @@ file1 %>%
   bind_rows(file3) %>% 
   bind_rows(file4) %>% 
   as.data.frame() %>% 
-  filter(Year == cur_yr) -> raw_sample
+  filter(Year == cur_yr)  %>% 
+  kable(digits = 3)
 ```
 # Figures
 ![](../figures/redcrab/regional_biomass2018.png)
