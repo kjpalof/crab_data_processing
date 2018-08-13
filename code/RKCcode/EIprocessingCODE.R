@@ -80,7 +80,7 @@ tab %>%
 dat4 %>%
   mutate(inverse_n = 1 / npots, weighting = inverse_n * Area) ->dat5
 dat5 %>%
-  rename(Missing = Var.6, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
+  dplyr::rename(Missing = Var.6, Large.Females = `Large Females`, Small.Females = `Small Females`) -> dat5
 # this is neccessary so that current years file (dat5) matches the historic file names
 
 #This version is ready to calculate CPUE for each recruit class
@@ -268,9 +268,14 @@ head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
-write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
-dat5 %>% group_by(Year) %>% summarise (n=n())
 
+dat5 %>% 
+  group_by(Year) %>% 
+  summarise (effective_no_pots=n()) %>% 
+  right_join(raw_samp) %>% 
+  as.data.frame() -> raw_samp
+
+write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
 
 ### stock assessment figures --------------
 head(CPUE_ALL_YEARS)
