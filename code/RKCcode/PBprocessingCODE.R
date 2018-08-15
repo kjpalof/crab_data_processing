@@ -272,8 +272,15 @@ head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
+
+dat5 %>% 
+  group_by(Year) %>% 
+  summarise (effective_no_pots=n()) %>% 
+  right_join(raw_samp) %>% 
+  as.data.frame() -> raw_samp
+
 write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
-dat5 %>% group_by(Year) %>% summarise (n=n())
+
 
 ### stock assessment figures --------------
 head(CPUE_ALL_YEARS)
