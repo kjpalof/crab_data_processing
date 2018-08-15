@@ -298,7 +298,8 @@ CPUE_wt_all %>% filter(Year >= 1993) -> CPUE_wt_from93
 write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/', 
                                  cur_yr, '/cpue_wt_all_yrs.csv'), row.names = FALSE)
 
-
+### note !!! need to update bimoass.csv file with 2018 CSA estiamte before running 
+#   this function.
 panel_figure('Pybus', 2018, 'Pybus', 1) # panel with all 3 figures
 panel_figure('Pybus', 2018, 'Pybus', 2) # male panel
 panel_figure('Pybus', 2018, 'Pybus', 3) # female panel
