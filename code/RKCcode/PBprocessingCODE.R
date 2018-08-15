@@ -195,7 +195,7 @@ summary(smF_fit)
 dat5_cur_yr
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, cur_yr, 'Pybus', 'Pybus')
+long_t(dat5_cur_yr, baseline, cur_yr, 'Pybus', 'Pybus')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
@@ -232,7 +232,7 @@ LgF_dat1 %>%
 
 ##### % poor (<10 %) clutch -----------------------------------
 
-poor_clutch(LgF_dat1, 'Pybus', cur_yr)
+poor_clutch(largef_all, 'Pybus', cur_yr)
 # output is saved as poorclutch_current.csv - which has all pots for current year
 #     and poorclutch_17.csv which has the percentage and SD of poor clutches for current year 
 
