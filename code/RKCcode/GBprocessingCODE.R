@@ -197,7 +197,7 @@ summary(smF_fit)
 dat5_cur_yr
 #make sure you have a file with only current years data - created above
 
-long_t(dat5_current, baseline, cur_yr, 'Gambier', 'Gambier')
+long_t(dat5_cur_yr, baseline, cur_yr, 'Gambier', 'Gambier')
 # output is saved as longterm.csv
 
 ##### Weights from length - weight relatinship.-----------------
@@ -257,7 +257,7 @@ poorclutch_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cu
                                   '/poorclutch_all.csv'))
 
 #function for short term trends and output saving.
-poor_clutch_short(females_all, 'Gambier', cur_yr)
+poor_clutch_short(poorclutch_all, 'Gambier', cur_yr)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
@@ -276,8 +276,14 @@ head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
   summarise_all(funs(sum)) -> raw_samp
+
+dat5 %>% 
+  group_by(Year) %>% 
+  summarise (effective_no_pots=n()) %>% 
+  right_join(raw_samp) %>% 
+  as.data.frame() -> raw_samp
+
 write.csv(raw_samp, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/raw_sample.csv'))
-dat5 %>% group_by(Year) %>% summarise (n=n())
 
 
 ### stock assessment figures --------------
