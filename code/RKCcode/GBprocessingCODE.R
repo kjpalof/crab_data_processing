@@ -161,6 +161,11 @@ short_t(bypot_st, cur_yr, "Gambier")
 bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females, factor_key = TRUE) 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
+bypot_st %>% 
+  select(Year, Pot.No, Strata.Code, Pre_Recruit, Recruit, Post_Recruit) %>% 
+  gather(recruit.status, crab, Pre_Recruit:Post_Recruit, factor_key = TRUE) %>% 
+  ggplot(aes(Year, crab)) +geom_point() + facet_wrap(~recruit.status)
+
 ### short term plots----------------
 plot(BYPOT_ST$Year, BYPOT_ST$Juvenile)
 Juv_fit <-lm(Juvenile ~ Year, data = BYPOT_ST, weights = weighting)
