@@ -3,9 +3,9 @@ title: "Regional Summary of red king crab for Southeast Alaska"
 author: "Katie Palof"
 date: "August 7, 2018"
 output:
-  word_document: default
   html_document:
     df_print: paged
+  word_document: default
 ---
 
 ```{r setup, include = FALSE}
@@ -51,9 +51,9 @@ file1 <- read.csv(paste0('../results/redcrab/Juneau/', cur_yr, '/raw_sample.csv'
 file2 <- read.csv(paste0('../results/redcrab/Excursion/', cur_yr, '/raw_sample.csv'))
 file3 <- read.csv(paste0('../results/redcrab/LynnSisters/', cur_yr, '/raw_sample.csv'))
 file4 <- read.csv(paste0('../results/redcrab/Peril/', cur_yr, '/raw_sample.csv'))
-#file5 <- read.csv(paste0('../results/redcrab/Pybus/', cur_yr, '/raw_sample.csv'))
-#file6 <- read.csv(paste0('../results/redcrab/Gambier/', cur_yr, '/raw_sample.csv'))
-#file7 <- read.csv(paste0('../results/redcrab/Seymour/', cur_yr, '/raw_sample.csv'))
+file5 <- read.csv(paste0('../results/redcrab/Pybus/', cur_yr, '/raw_sample.csv'))
+file6 <- read.csv(paste0('../results/redcrab/Gambier/', cur_yr, '/raw_sample.csv'))
+file7 <- read.csv(paste0('../results/redcrab/Seymour/', cur_yr, '/raw_sample.csv'))
 
 file1 %>% 
   select(-X) %>% 
@@ -69,11 +69,23 @@ file3 %>%
 file4 %>% 
   select(-X) %>% 
   mutate(Location = "Peril") -> file4
+file5 %>% 
+  select(-X) %>% 
+  mutate(Location = "Pybus") -> file5
+file6 %>% 
+  select(-X) %>% 
+  mutate(Location = "Gambier") -> file6
+file7 %>% 
+  select(-X) %>% 
+  mutate(Location = "Seymour") -> file7
 
 file1 %>% 
   bind_rows(file2) %>% 
   bind_rows(file3) %>% 
   bind_rows(file4) %>% 
+  bind_rows(file5) %>% 
+  bind_rows(file6) %>% 
+  bind_rows(file7) %>% 
   as.data.frame() %>% 
   filter(Year == cur_yr)  %>% 
   kable(digits = 3)
