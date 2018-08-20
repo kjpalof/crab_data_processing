@@ -167,6 +167,8 @@ write_csv(poorclutch_summary_all, paste0('results/redcrab/', area, '/', year, '/
 }
 
 poor_clutch_long <- function(poorclutch_current, area, year){
+  if(nrow(poorclutch_current) > 1){
+  
   lt_female <- t.test(poorclutch_current$var1, mu = 0.10)
   
   longt_female <- matrix(nrow = 1, ncol = 2)
@@ -181,7 +183,15 @@ poor_clutch_long <- function(poorclutch_current, area, year){
     mutate(significant = ifelse(p.value < 0.05 & mean > 0.10, -1,
                                 ifelse(p.value <0.05 & mean < 0.10, 1, 0))) %>% 
     mutate(recruit.status = c("large.female")) -> longt_female #estimate is slope from regression
+  }
   
+  if(nrow(poorclutch_current) ==1) {
+    longt_female <- matrix(nrow = 1, ncol = 2)
+    rownames(longt_female) <- c("large.female")
+    colnames(longt_female) <- c("mean", "p.value")
+    longt_female <- as.data.frame(longt_female)
+      }
+  #return(longt_female)
   write_csv(longt_female, paste0('results/redcrab/', area, '/', year, '/lt_female.csv'))
 }
 
