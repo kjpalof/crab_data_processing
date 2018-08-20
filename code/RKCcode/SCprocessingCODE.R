@@ -104,9 +104,6 @@ write.csv(CPUE_wt, paste0('./results/redcrab/', survey.location, '/', cur_yr, '/
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
-dat %>% filter(Year == cur_yr)  # 7-29
-dat[628,8] # 7-31
-# so mid-date would be 30th.
 
 
 ##### Historic file ---------------------------------------
