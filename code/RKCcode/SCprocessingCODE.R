@@ -240,7 +240,7 @@ poor_clutch_long(poorclutch_current, 'Seymour', cur_yr)
 poorclutch_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
                                   '/poorclutch_all.csv'))
 #function for short term trends and output saving.
-poor_clutch_short(females_all, 'Seymour', cur_yr)
+poor_clutch_short(poorclutch_all, 'Seymour', cur_yr)
 # output saved as short_female.csv
 
 ##### egg percentage overall -----------------------------------
