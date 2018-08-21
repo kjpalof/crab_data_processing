@@ -3,9 +3,9 @@ title: "Regional Summary of red king crab for Southeast Alaska"
 author: "Katie Palof"
 date: "August 7, 2018"
 output:
+  word_document: default
   html_document:
     df_print: paged
-  word_document: default
 ---
 
 ```{r setup, include = FALSE}
