@@ -28,6 +28,7 @@ kable(biomass_c, digits = 2)
 
 ## Biomass summary
 ```{r biomass2, echo = FALSE }
+# must rerun figure2_tables_2018 script to get a new version of this file
 regional_b <- read.csv(paste0('../results/redcrab/regional_', cur_yr, '.csv'))
 regional_b %>% 
   select(Location, legal.biomass, mature.biomass, legal.adj, mature.adj) %>% 
