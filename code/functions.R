@@ -408,7 +408,7 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
     geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey65")+
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
-    theme(legend.position = c(0.7,0.8), 
+    theme(legend.position = c(0.8,0.8), 
           axis.text = element_text(size = 12), 
           axis.title=element_text(size=14,face="bold"), 
           plot.title = element_text(size = 24))
@@ -483,7 +483,7 @@ panel_figure <- function(survey.location, cur_yr, base.location, option){
                                                         na.rm = TRUE) + 25000),
                        breaks= seq(min(0), max(max(biomass_graph$pounds, 
                                                    na.rm = TRUE)+25000), by = 50000)) +
-    theme(legend.position = c(0.7,0.8), 
+    theme(legend.position = c(0.8,0.8), 
           axis.text = element_text(size = 12), 
           axis.title=element_text(size=14,face="bold")) + 
     geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1")+
