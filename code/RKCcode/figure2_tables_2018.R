@@ -148,7 +148,7 @@ biomass %>%
   write.csv(paste0('./results/redcrab/regional_', cur_yr, '.csv'), row.names = FALSE) -> biomass_rate
 
 # Table 3 - bioamss, adj, Equ.er.adj -----------
-biomass_rate %>% 
-  mutate(total.GHL = mature.adj*equ.er.adj)
+#biomass_rate %>% 
+#  mutate(total.GHL = mature.adj*equ.er.adj)
   
 
