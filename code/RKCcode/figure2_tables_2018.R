@@ -22,7 +22,7 @@ biomass <- read.csv("./data/redcrab/biomass.csv")
 exploit_rate <- read.csv("./data/redcrab/table3.csv")
 
 ## clean up figure 2-------
-# regional biomass
+# regional biomass ----
 biomass %>% 
   group_by(Year) %>% 
   summarise(legal = sum(legal.biomass), mature = sum(mature.biomass)) %>% 
@@ -34,7 +34,15 @@ fishery.status %>%
 regional.b %>% 
   left_join(fishery.status) -> regional.b
 
-# baseline
+# change in biomass estimation ----
+regional.b %>% 
+  filter(Year > cur_yr-2) %>% 
+  gather(type, pounds, legal:mature, factor_key = TRUE) %>% 
+  select(-status) %>% 
+  spread(key = Year, value = pounds) %>% 
+  mutate(change = (`2018`-`2017`)/`2017`)
+
+# baseline ---
 # 1993 - 2007 
 regional.b %>% 
   filter(Year >= 1993 & Year <= 2007) %>% 
