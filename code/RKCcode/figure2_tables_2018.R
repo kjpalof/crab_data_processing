@@ -40,7 +40,7 @@ regional.b %>%
   gather(type, pounds, legal:mature, factor_key = TRUE) %>% 
   select(-status) %>% 
   spread(key = Year, value = pounds) %>% 
-  mutate(change = (`2018`-`2017`)/`2017`)
+  mutate(change = (`2018`-`2017`)/`2017`) # report these values in stock health doc
 
 # baseline ---
 # 1993 - 2007 
