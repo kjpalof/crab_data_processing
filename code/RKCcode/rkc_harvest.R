@@ -12,6 +12,7 @@
 rm(list = ls()) # clear workspace since data frames have same names
 #####Load Packages ---------------------------------
 source('./code/functions.R')
+cur_yr = 2018
 library(xlsx)
 
 #####Load Data ---------------------------------------------------
@@ -122,8 +123,9 @@ mr_adjust <- read.csv('./data/redcrab/adj_final_stock_assessment.csv')
 biomass %>% 
   filter(Year == 2017) %>% 
   mutate(HR = ifelse(Location == "Juneau", round(harvest/mature.biomass*100, 2), 
-                     round(harvest/adj.mature*100, 2)))
-
+                     round(harvest/adj.mature*100, 2))) -> est_HR
+write.csv(est_HR, (paste0('./results/redcrab/estimate_HR', 
+                                       cur_yr,'.csv')))
 
 # % of baseline for each area ------------    
 mr_adjust %>% 
@@ -150,3 +152,5 @@ biomass %>%
   left_join(baseline_mature_biomass) %>% 
   mutate(percent_away_mature_base = 
            100-(mature.biomass/mature_base*100)) ->percent_mature_base
+write.csv(percent_mature_base, (paste0('./results/redcrab/percentage_of_mature_base', 
+                                       cur_yr,'.csv')))
