@@ -2,6 +2,9 @@
 # 7-10-18
 # code here summarizes harvest data for the current year RKC
 # this code is set for the 2017 fishery.
+
+# Code added at the end of this file to estimate the harvest rate for 2017 fishery.
+#     Need to have the updated 2018 biomass estimates file for this.
 # harvest data from fish tickets in OceanAK summarize for use in Southeast RKC CSA's 
 # have to modify the output from "detailed fish tickets" need to add "Number of Animals...sum" to this.
 
@@ -108,3 +111,42 @@ write.csv(annual_catch, './results/redcrab/rkc_annual_catch_17.csv')
 
 
 ### personal use -------------------
+### estimated HR cur yr ---------------------------------
+biomass <- read.csv("./data/redcrab/biomass.csv") 
+# 2018 biomass estimates for each survey area from the CSA model.
+# use harvest in this file since it include PU harvest estimates - see exploitation
+#         rate analysis project for more details on this.
+mr_adjust <- read.csv('./data/redcrab/adj_final_stock_assessment.csv')
+
+# estimated harvest rate for 2017 by survey area -----
+biomass %>% 
+  filter(Year == 2017) %>% 
+  mutate(HR = ifelse(Location == "Juneau", round(harvest/mature.biomass*100, 2), 
+                     round(harvest/adj.mature*100, 2)))
+
+
+# % of baseline for each area ------------    
+mr_adjust %>% 
+  select(-X) %>% 
+  mutate(Location = ifelse(area == "St_James", "LynnSisters", as.character(area))) %>% 
+  select(-area) -> mr_adjust2
+biomass %>% 
+  left_join(mr_adjust2) %>% 
+  mutate(adj.legal = legal.biomass*weighted_ADJ, 
+         adj.mature = mature.biomass*weighted_ADJ) -> biomass
+
+biomass %>% 
+  select(-weighted_ADJ) %>% 
+  gather(type, pounds, harvest:adj.legal, factor_key = TRUE) %>% 
+  filter(Year >= 1993) -> biomass_graph
+
+biomass_graph %>% 
+  filter(Year <= 2007, type == 'mature.biomass') %>% 
+  group_by(Location) %>% 
+  summarise(mature_base = mean(pounds)) -> baseline_mature_biomass
+# want this summarizes as % below or above baseline 
+biomass %>% 
+  filter(Year ==2018) %>% 
+  left_join(baseline_mature_biomass) %>% 
+  mutate(percent_away_mature_base = 
+           100-(mature.biomass/mature_base*100)) ->percent_mature_base
