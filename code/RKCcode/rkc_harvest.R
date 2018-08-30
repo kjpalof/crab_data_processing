@@ -1,12 +1,14 @@
 # K.Palof  ADF&G
 # 7-10-18
+# code here summarizes harvest data for the current year RKC
+# this code is set for the 2017 fishery.
 # harvest data from fish tickets in OceanAK summarize for use in Southeast RKC CSA's 
 # have to modify the output from "detailed fish tickets" need to add "Number of Animals...sum" to this.
 
 # commercial catch
 rm(list = ls()) # clear workspace since data frames have same names
 #####Load Packages ---------------------------------
-library(tidyverse)
+source('./code/functions.R')
 library(xlsx)
 
 #####Load Data ---------------------------------------------------
@@ -21,12 +23,15 @@ personal_use <- read.csv("./data/redcrab/personal_use_RKC_11A_2017.csv")
   
 ### clean up  ------
 unique(harvest$Species.Code.and.Name)
-
+# only works for 2017 due to issues with 115-10
 harvest %>% 
   select(Species.Class, Season, CFEC, ADFG.Number, Date.of.Landing, Stat.Area, 
          Species.Code.and.Name, Number.Of.Animals, Whole.Weight..sum., Pot.Lifts) %>%  
   rename(stat.area = Stat.Area) %>% 
-  left_join(survey.area) -> harvest2
+  left_join(survey.area) %>% 
+  mutate(survey.area = ifelse(stat.area == 11510, 'juneau', 
+                              as.character(survey.area))) -> harvest2
+
 
 harvest_A %>% 
   select(Species.Class, Season, CFEC, ADFG.Number, Date.of.Landing, Stat.Area, 
