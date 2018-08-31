@@ -49,6 +49,8 @@ fishery.status %>%
 regional.b %>% 
   left_join(fishery.status) -> regional.b
 write.csv(regional.b, paste0('./results/redcrab/regional_biomass_', cur_yr, '.csv'))
+# use these values for table A1 in stock health document 
+
 # change in biomass estimation ----
 regional.b %>% 
   filter(Year > cur_yr-2) %>% 
