@@ -44,10 +44,14 @@ biomass %>%
   as.data.frame() -> regional.b
 fishery.status %>% 
   select(Year = year, status) %>% 
-  mutate(status = ifelse(status == "PU only", "closed", as.character(status))) -> fishery.status
+  mutate(status = ifelse(status == "PU only", "closed", as.character(status))) %>% 
+  # add next line to deal with current year which is TBD in file but will most 
+  # likely be closed in current year (2018)
+  mutate(status = ifelse(status == "TBD", "closed", as.character(status)))-> fishery.status.update
+
 
 regional.b %>% 
-  left_join(fishery.status) -> regional.b
+  left_join(fishery.status.update) -> regional.b
 write.csv(regional.b, paste0('./results/redcrab/regional_biomass_', cur_yr, '.csv'))
 # use these values for table A1 in stock health document 
 
@@ -77,7 +81,7 @@ reg_baseline[3:4, ] ->  reg_baseline_MR
 #  gather(type, pounds, legal:mature, factor_key = TRUE) -> regional.
 
 
-# Figure 2 regional biomass CSA biomass---------
+# Figure 2 TBD regional biomass CSA biomass---------
 # should have 2018 model with longterm baselines (1993-2007) and closure status. 
 #   also show 2018 forecast as distinct from model output
 regional.b %>% 
@@ -112,7 +116,7 @@ regional.b %>%
   ggsave(paste0('./figures/redcrab/CSAregional_biomass', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
 
 
-# Figure 2 regional biomass M/R adjusted biomass---------
+# Figure 2 TBD regional biomass M/R adjusted biomass---------
 # should have 2018 model with longterm baselines (1993-2007) and closure status. 
 #   also show 2018 forecast as distinct from model output
 regional.b %>% 
@@ -147,7 +151,40 @@ regional.b %>%
             hjust = -0.05, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
   ggsave(paste0('./figures/redcrab/MRregional_biomass', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
 
-
+# Figure 2 **CLOSED** regional biomass M/R adjusted biomass---------
+# should have 2018 model with longterm baselines (1993-2007) and closure status. 
+#   also show 2018 forecast as distinct from model output
+regional.b %>% 
+  select(Year, adj_legal, adj_mature, status) %>%
+  gather(type, pounds, adj_legal:adj_mature, factor_key = TRUE) %>% 
+  ggplot(aes(Year, pounds, group = type)) +
+  geom_line(aes(colour = type, group = type, linetype = type))+
+  geom_point(aes(colour = type, shape = status, fill = type), size =3) +
+  geom_hline(data = reg_baseline_MR, aes(yintercept = pounds, 
+                                         linetype = type, colour = type)) +
+  scale_colour_manual(name = "", values = c("black", "grey60", "black", "grey60"), 
+                      guide = FALSE)+
+  scale_shape_manual(name = "Fishery Status", values = c(25, 21, 8))+
+  scale_linetype_manual(name = "", values = c("solid", "dashed", "solid", "dashed"), 
+                        guide = FALSE) +
+  scale_fill_manual(name = "", values = c("black", "gray75"), 
+                    guide = FALSE) +
+  scale_y_continuous(labels = comma, limits = c(0,(max(regional.b$adj_mature,
+                                                       na.rm = TRUE) + 100000)),
+                     breaks= seq(min(0), max(max(regional.b$adj_mature, na.rm = TRUE) +100000), 
+                                 by = 500000)) +
+  scale_x_continuous(breaks = seq(min(1975),max(max(regional.b$Year) + 1), by = 2)) +
+  ggtitle("Biomass of surveyed areas for Southeast Alaska red king crab") + 
+  ylab("Biomass (lb)") + 
+  theme(plot.title = element_text(hjust =0.5)) +
+  theme(legend.position = c(0.825,0.793), legend.title = element_text(size = 9), 
+        legend.text = element_text(size = 8), axis.text.x = element_text(angle = 45), 
+        axis.title = element_text(size = 14, face = "bold"), 
+        axis.text = element_text(size = 12)) +
+  theme(axis.text.x = element_text(vjust = 0.50)) +
+  geom_text(data = reg_baseline_MR, aes(x = st_yr, y = pounds, label = label), 
+            hjust = -0.05, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
+  ggsave(paste0('./figures/redcrab/MRregional_biomass', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
 
 
 
