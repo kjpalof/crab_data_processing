@@ -291,6 +291,10 @@ panel_figure('Seymour', 2018, 'Seymour Canal', 3, 1) # female panel
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
 
+### NON CONF panel --------------
+panel_figure_NC('Seymour', 2018, 'Seymour Canal', 1, 1)
+panel_figure_NC('Seymour', 2018, 'Seymour Canal', 2, 1)
+
 
 ### female file all years -----
 # create females file for all years
