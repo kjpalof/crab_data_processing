@@ -309,6 +309,10 @@ panel_figure('Peril', 2018, 'Deadman Reach', 3) # female panel
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
 
+### NON CONF panel --------------
+panel_figure_NC('Peril', 2018, 'Deadman Reach', 1, 0) # panel with all 3 figures
+panel_figure_NC('Peril', 2018, 'Deadman Reach', 2, 0)
+
 ### female file all years -----
 # create females file for all years
 # raw_data has OceanAK output until 2016. 

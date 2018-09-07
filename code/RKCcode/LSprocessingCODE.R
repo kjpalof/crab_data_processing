@@ -298,12 +298,16 @@ write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/',
 
 
 panel_figure('LynnSisters', 2018, 'LynnSisters')
-panel_figure('LynnSisters', 2018, 'LynnSisters', 1) # panel with all 3 figures
-panel_figure('LynnSisters', 2018, 'LynnSisters', 2) # male panel
-panel_figure('LynnSisters', 2018, 'LynnSisters', 3) # female panel
+panel_figure('LynnSisters', 2018, 'LynnSisters', 1, 0) # panel with all 3 figures
+panel_figure('LynnSisters', 2018, 'LynnSisters', 2, 0) # male panel
+panel_figure('LynnSisters', 2018, 'LynnSisters', 3, 0) # female panel
 
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
+
+### NON CONF panel --------------
+panel_figure_NC('LynnSisters', 2018, 'LynnSisters', 1, 0) # panel with all 3 figures
+panel_figure_NC('LynnSisters', 2018, 'LynnSisters', 2, 0)
 
 ### female file all years -----
 # create females file for all years
