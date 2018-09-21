@@ -1,12 +1,24 @@
 #K.Palof 10-4-17
 
-#Functions for processing Tanner crab data from the red crab survey.  All areas (except NJ) are
-#     included in one file so need to add a grouping variable for Area/Location
+#Functions for processing Tanner crab data from the red crab survey.  All areas (except NJ / SP) 
+#     are included in one file so need to add a grouping variable for Area/Location
 
 ## load packages -----------
 library(tidyverse)
 library(weights)
 library(broom)
+
+library(stringr)
+library(reshape2)
+library(extrafont)
+library(ggthemes)
+library(plotrix)
+library(SDMTools)
+library(grid)
+library(gridExtra)
+library(FNGr)
+library(scales)
+library(cowplot)
 
 ### short term function ----------------
 #input is file with last four years of data summarized by pot
