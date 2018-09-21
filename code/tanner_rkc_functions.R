@@ -28,8 +28,7 @@ theme_set(theme_sleek())
 
 ### short term function ----------------
 #input is file with last four years of data summarized by pot
-# area
-# year
+  #  and year - grouped to include all areas
 short_t_tanner <- function(bypot_st, year) {
   bypot_st_long <- gather(bypot_st, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) 
   
