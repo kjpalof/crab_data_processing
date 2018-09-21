@@ -20,6 +20,12 @@ library(FNGr)
 library(scales)
 library(cowplot)
 
+#font_import()
+loadfonts(device="win")
+windowsFonts(Times=windowsFont("TT Times New Roman"))
+
+theme_set(theme_sleek())
+
 ### short term function ----------------
 #input is file with last four years of data summarized by pot
 # area
