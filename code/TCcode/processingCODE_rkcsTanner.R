@@ -1,5 +1,5 @@
 #K.Palof 
-# ADF&G 8-1-16 updated /10-6-16 / 8-18-17/9-25-17
+# ADF&G 9-21-18 updated and reworked similar to RKC code
 # Areas: RKCS areas for Tanner crab - EXCLUDES north juneau and stephens passage
 # includes: Excursion, Seymour Canal, Pybus Bay, Gambier Bay, Peril Strait, and Lynn Sisters
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP, prior to 2016  
