@@ -5,28 +5,25 @@
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP, prior to 2016  
 
 rm(list = ls()) # clear workspace since data frames have same names
-#####Load ---------------------------------
+### Load ---------------------------------
 
 source('./code/tanner_rkc_functions.R') # need to create versions of this code to deal with mutiple areas at once.
 
-###
-##### Data ---------------------------------------------------
-###
+
+### Data ---------------------------------------------------
 # change input file and input folder for each
 dat <- read.csv("./data/rkc_tanner/red crab survey for Tanner crab CSA.csv")
-                  # this is input from OceanAK - set up as red crab survey data for CSA
-#area <- read.csv("./data/Juneau/Juneau_Barlow_strata_area.csv") 
-                #NO area for this data since these are stratified by RKCS area.  
-#histdat <- read.csv("./data/Juneau/2Juneau Stratified CPUE 2015_area formula.csv")
-                  ## !!!!  In future years this file will be 'JNU_CPUE_ALL' and just get updated with current years data.
-#females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
+                  # this is input from OceanAK - set up as red crab survey data for CSA has all years
+                  # 1997 to present 
+# all data in this file do not need area, historic or female files here
+
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
 baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
-biomass <- read.csv("./data/rkc_tanner/biomass_tanner_RKCareas.csv")
+biomass <- read.csv("./data/rkc_tanner/biomass_tanner_RKCareas.csv") 
+# this file should be updated with 2018 model output.
 
-###
 ##### Initial review of new data ---------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
 levels(dat$Pot.Condition)
