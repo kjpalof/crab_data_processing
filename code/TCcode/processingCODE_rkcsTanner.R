@@ -5,29 +5,12 @@
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP, prior to 2016  
 
 rm(list = ls()) # clear workspace since data frames have same names
-#####Load Packages ---------------------------------
-library(tidyverse)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
-library(grid)
-library(gridExtra)
-#font_import()
-#loadfonts(device="win")
-windowsFonts(Times=windowsFont("TT Times New Roman"))
+#####Load ---------------------------------
 
-theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
-            theme(panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank()))
 source('./code/tanner_rkc_functions.R') # need to create versions of this code to deal with mutiple areas at once.
 
 ###
-#####Load Data ---------------------------------------------------
+##### Data ---------------------------------------------------
 ###
 # change input file and input folder for each
 dat <- read.csv("./data/rkc_tanner/red crab survey for Tanner crab CSA.csv")
