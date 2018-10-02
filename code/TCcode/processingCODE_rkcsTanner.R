@@ -109,25 +109,22 @@ dat3 %>%
 write.csv(CPUE_all, paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_CPUE_all.csv'))
 
 ##### Historic file ---------------------------------------
-###
+
 #brought in all the years - 2013 to 2016 - needed at once from OceanAK in the future can do this or add current
 #   year to this file.
 # this is the final file by pot.  Now this file can be summarized to give CPUE by year like above (see dat 5 to CPUE_wt_JNU_2016)
 # change same of folder and file.
-write.csv(dat3, './results/RKCS_tanner/RKCS_perpot_allyears.csv')
+write.csv(dat3, paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_perpot_allyears.csv'))
 
-
-###
 ##### Short term trends -------------------------------------
-###
-#look at trend for the last 4 years.  Need a file with last four years
+# look at trend for the last 4 years.  Need a file with last four years
 # attempt to use broom for short term trends 
-#tidy(Lfem_fit) # want to save $estimate here
-#glance(Lfem_fit) # want to save r.squared and p.value
+# tidy(Lfem_fit) # want to save $estimate here
+# glance(Lfem_fit) # want to save r.squared and p.value
 
 head(dat3)
 dat3 %>%
-  filter(Year >=2014) %>% 
+  filter(Year >= cur_yr-3 ) %>% 
   select( -Missing) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
 #remove Missing and NA columns
 
