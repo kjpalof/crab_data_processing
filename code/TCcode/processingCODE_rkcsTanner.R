@@ -12,7 +12,7 @@ source('./code/tanner_rkc_functions.R') # need to create versions of this code t
 
 ### Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/rkc_tanner/red crab survey for Tanner crab CSA.csv")
+dat <- read.csv("./data/rkc_tanner/red crab survey for Tanner crab CSA_18.csv")
                   # this is input from OceanAK - set up as red crab survey data for CSA has all years
                   # 1997 to present 
 # all data in this file do not need area, historic or female files here
