@@ -8,7 +8,7 @@ rm(list = ls()) # clear workspace since data frames have same names
 ### Load ---------------------------------
 
 source('./code/tanner_rkc_functions.R') # need to create versions of this code to deal with mutiple areas at once.
-
+cur_yr <- 2018
 
 ### Data ---------------------------------------------------
 # change input file and input folder for each
@@ -39,7 +39,6 @@ dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1) -> test1
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - RKC soak time should be between 18-24??? double check this
 
-####
 ##### Tanner specific manipulations -----------------------------
 ####Survey areas ONLY 
 # remove Juneau and Barlow - do these seperately due to needing GIS to seperate the areas.
@@ -74,16 +73,16 @@ dat1ab %>%
                                          ifelse(Sex.Code ==2 & Width.Millimeters>0 & !is.na(Width.Millimeters), 'Large.Females', 
                                                 ifelse(is.na(Width.Millimeters), 'Missing', 'Missing'))))))))) -> Tdat1
 #write.csv(Tdat1, './results/problemstanner3.csv')
-Tdat1 %>% filter(mod_recruit == "Missing")
+Tdat1 %>% filter(mod_recruit == "Missing") # check for data issues
 
 Tdat1 %>% filter(is.na(mod_recruit))
-###
+
 ##### By Pot ----------------------------------------------------
-####
 #Now summarize by pot - remember to keep areas seperate.
 #Need Number of Specimens by recruit class
 Tdat1 %>%
-  group_by(Year, AREA, Pot.No, mod_recruit) %>% # use AREA here instead of location due to multiple location names for one survey area
+  group_by(Year, AREA, Pot.No, mod_recruit) %>% # use AREA here instead of location due to 
+                                                #  multiple location names for one survey area
   summarise(crab = sum(Number.Of.Specimens)) %>% 
   filter(!is.na(mod_recruit)) -> dat2 #remove any NAs due to data issues.
 
@@ -93,11 +92,10 @@ dat3 <- dcast(dat2, Year + AREA + Pot.No ~ mod_recruit, sum, drop=TRUE)
 
 # No weighting by strata here for RKCS data due to it being designed for RKC.
 
-####
 ##### CPUE for all years ----------------------------------
-
 #This version is ready to calculate CPUE for each recruit class
-#Calculates a  mean CPUE and SE for each recruit class # not weighted due to lack of tanner specific strata on red crab survey
+#Calculates a  mean CPUE and SE for each recruit class 
+# not weighted due to lack of tanner specific strata on red crab survey
 dat3 %>%
   group_by(AREA, Year) %>%
   summarise(Pre_Recruit_u = mean(Pre_Recruit), PreR_SE = (sd(Pre_Recruit)/(sqrt(sum(!is.na(Pre_Recruit))))), 
@@ -108,9 +106,8 @@ dat3 %>%
             SmallF_u = mean(Small.Females), SmallF_SE = (sd(Small.Females)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_all
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_all, './results/RKCS_tanner/RKCS_CPUE_all.csv')
+write.csv(CPUE_all, paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_CPUE_all.csv'))
 
-###
 ##### Historic file ---------------------------------------
 ###
 #brought in all the years - 2013 to 2016 - needed at once from OceanAK in the future can do this or add current
