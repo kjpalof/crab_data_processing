@@ -128,19 +128,17 @@ dat3 %>%
   select( -Missing) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
 #remove Missing and NA columns
 
-short_t_tanner(dat3a, 2017)
+short_t_tanner(dat3a, cur_yr)
 
 dat3a_long <- gather(dat3a, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
 ggplot(dat3a_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~AREA)
-###
 
-###
 ##### Long term trends ---------------------
-###
-#compare 2017 CPUE distribution to the long term mean - need to create or have file with long term means.
+
+# compare current year CPUE distribution to the long term mean - need to create or have file with long term means.
 dat3 %>%
-  filter(Year == 2017) ->dat3_2017
+  filter(Year == cur_yr) ->dat3_curyr
 baseline
 #make sure you have a file with only current years data 
 
