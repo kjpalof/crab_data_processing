@@ -135,15 +135,13 @@ dat3a_long <- gather(dat3a, mod_recruit, crab, Juvenile:Small.Females, factor_ke
 ggplot(dat3a_long, aes(Year, crab, color = mod_recruit))+geom_point() +facet_wrap(~AREA)
 
 ##### Long term trends ---------------------
-
 # compare current year CPUE distribution to the long term mean - need to create or have file with long term means.
 dat3 %>%
   filter(Year == cur_yr) ->dat3_curyr
 baseline
-#make sure you have a file with only current years data 
+# make sure you have a file with only current years data 
 
 # create a function to run the t.test and loop it over each area
-#test1 <- long_ttest('EI', 2017, baseline = baseline, bypot = dat3)
 
 # long_ttest function does not need editing each year, BUT the long_loop_17 
 #     function needs to be edited with the current year and confirmed that the 
@@ -151,11 +149,10 @@ baseline
 
 areas <- c('PB', 'EI', 'LS', 'GB', 'SC', 'PS')
 
-long_term <- lapply(areas, long_loop_17)
-write.csv(long_term, './results/RKCS_tanner/long_term.csv')
+long_term <- lapply(areas, long_loop_17, curyr = cur_yr)
+write.csv(long_term, paste0('./results/RKCS_tanner/', cur_yr, '/long_term.csv'))
 
 ##### Weights from length - weight relatinship--------------------
-
 # Linear model is changed for each area
 weight_length <- data.frame(AREA =character(),  slope =numeric(), coeff = numeric())
 
