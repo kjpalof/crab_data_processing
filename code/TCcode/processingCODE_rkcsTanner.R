@@ -223,7 +223,6 @@ poorclutch1 %>%
 write.csv(percent_low_clutch, paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_percent_low_clutch.csv'))
 
 ##### egg percentage overall -----------------------------------
-####
 LgF_Tdat1 %>%
   group_by(Year, AREA, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
@@ -236,16 +235,15 @@ clutch_by_pot %>%
 # add this to the table with percent_low_clutch?
 percent_low_clutch %>%
   right_join(percent_clutch) -> female_clutch_info
-write.csv(female_clutch_info, './results/RKCS_tanner/RKCS_percent_clutch.csv')
+write.csv(female_clutch_info, paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_percent_clutch.csv'))
 
 
 ##### Long term females -------------------------
-####
 glimpse(poorclutch1)
-#compare 2017 CPUE distribution to the long term mean
+#compare current year's CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2017) ->poorclutch1_current
-#make sure you have a file with only 2016 data
+  filter(Year == cur_yr) ->poorclutch1_current
+#make sure you have a file with only current years data
 #calculate the t.test
 
 Fem_long_term <- lapply(areas, Fem_long_loop)
