@@ -106,8 +106,8 @@ long_ttest <- function(area, year, baseline, bypot){
 }
 
 ### function to loop long term function above ------------
-long_loop_17 <- function(x){
-  long_ttest(x, 2017, baseline = baseline, bypot = dat3)
+long_loop_17 <- function(x, curyr){
+  long_ttest(x, curyr, baseline = baseline, bypot = dat3)
 }
 
 ### female percent poor clutch ---------
