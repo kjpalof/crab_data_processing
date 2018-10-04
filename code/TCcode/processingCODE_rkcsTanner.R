@@ -247,7 +247,8 @@ poorclutch1 %>%
 #calculate the t.test
 
 Fem_long_term <- lapply(areas, Fem_long_loop)
-write.csv(Fem_long_term, './results/RKCS_tanner/Female_long_term.csv')
+Fem_long_term
+write.csv(Fem_long_term, paste0('./results/RKCS_tanner/', cur_yr, '/Female_long_term.csv'))
 # need to figure out a way to store these results in a better format
 
 ##### Short term females ------------------------
