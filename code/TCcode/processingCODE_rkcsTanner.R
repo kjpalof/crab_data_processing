@@ -252,13 +252,13 @@ write.csv(Fem_long_term, paste0('./results/RKCS_tanner/', cur_yr, '/Female_long_
 # need to figure out a way to store these results in a better format
 
 ##### Short term females ------------------------
-#look at trend for the last 4 years.  Need a file with last four years in it - females from above
+# look at trend for the last 4 years.  Need a file with last four years in it - females from above
 
 head(poorclutch1) # has all years of data from OceanAK
 
 # need to run the regression for each area.
 # use function found in source function code
-poor_clutch_short(poorclutch1, 2017)
+poor_clutch_short(poorclutch1, cur_yr)
 
 ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~AREA)
 ###
