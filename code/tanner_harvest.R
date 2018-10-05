@@ -41,7 +41,8 @@ harvest %>%
 # remove 11511 from Lynn Canal - make it part of 'other'
 # by stat area, not needed for this analysis
 harvest %>%
- group_by(Season, Stat.Area, survey.area) %>%
+  filter(Date.of.Landing != '2018-07-13 00:00:00') %>% 
+  group_by(Season, Stat.Area, survey.area) %>%
   summarise(permits = length(unique(CFEC)), 
                              numbers = sum(Number.Of.Animals), 
             pounds = sum(Whole.Weight..sum.)) -> harvest2
@@ -53,6 +54,7 @@ write.csv(harvest2, paste0('./results/tanner/comm_catch_by_statarea', cur_yr,'.c
 
 ### by survey area --------------------------
 harvest %>%
+  filter(Date.of.Landing != '2018-07-13 00:00:00') %>% 
   group_by(Season, survey.area)%>%
   summarise(permits = length(unique(CFEC)), numbers = sum(Number.Of.Animals), 
             pounds = sum(Whole.Weight..sum.)) -> comm.catch.sum
@@ -62,6 +64,7 @@ write.csv(comm.catch.sum, paste0('./results/tanner/tanner_comm_catch', cur_yr,'.
 ### mid-catch date ------------------
 harvest %>%
   #filter (Season == "Sep2017 - Aug18") %>% 
+  filter(Date.of.Landing != '2018-07-13 00:00:00') %>% 
   group_by(survey.area, Date.of.Landing) %>%
   summarise(numbers = sum(Number.Of.Animals)) ->mid.catch
 
