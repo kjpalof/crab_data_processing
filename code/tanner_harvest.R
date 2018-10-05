@@ -58,13 +58,21 @@ harvest %>%
             pounds = sum(Whole.Weight..sum.)) -> comm.catch.sum
 
 # lynn sister and north juneau need to be manually split up in area 115-10
-write.csv(comm.catch.sum, './results/tanner/tanner_comm_catch.csv')
+write.csv(comm.catch.sum, paste0('./results/tanner/tanner_comm_catch', cur_yr,'.csv'))
 ### mid-catch date ------------------
 harvest %>%
-  filter (Season == "Sep2016 - Aug17") %>% 
+  #filter (Season == "Sep2017 - Aug18") %>% 
   group_by(survey.area, Date.of.Landing) %>%
   summarise(numbers = sum(Number.Of.Animals)) ->mid.catch
-write.csv(mid.catch, './results/tanner/tanner_mid_catch_date.csv')
+
+mid.catch %>% 
+  group_by(survey.area) %>% 
+  summarise(total = sum(numbers)) -> step1
+mid.catch %>% 
+  left_join(step1) %>% 
+  mutate(ratio_catch = numbers/total) -> mid.catch2
+
+write.csv(mid.catch2, paste0('./results/tanner/tanner_mid_catch_date', cur_yr, '.csv'))
 
 ### total annual harvest  ---------------------
 comm.catch.sum %>%
