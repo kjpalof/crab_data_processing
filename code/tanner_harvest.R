@@ -1,16 +1,17 @@
 #K.Palof 
-# ADF&G 11-2-16
+# ADF&G 11-2-16 / 10-4-18
 # data from OceanAK summarize for use in Tanner CSA's 
 # have to modify the output from "detailed fish tickets" need to add "Number of Animals...sum" to this.
 
 # commercial catch
-rm(list = ls()) # clear workspace since data frames have same names
-#####Load Packages ---------------------------------
-library(tidyverse)
 
-#####Load Data ---------------------------------------------------
-# change input file and input folder for each
-harvest <- read.csv("./data/harvest_17.csv")
+# Load ---------------------------
+library(tidyverse)
+cur_yr = 2018
+
+# Data ---------------------------------------------------
+# change input file to most recent year's catch from OceanAK for each
+harvest <- read.csv("./data/Tanner_Detailed Fish Tickets.csv")
 glimpse(harvest)
 
 unique(harvest$Stat.Area)
@@ -45,7 +46,7 @@ harvest %>%
                              numbers = sum(Number.Of.Animals), 
             pounds = sum(Whole.Weight..sum.)) -> harvest2
 
-write.csv(harvest2, './results/tanner/comm_catch_by_statarea.csv')
+write.csv(harvest2, paste0('./results/tanner/comm_catch_by_statarea', cur_yr,'.csv'))
 #dat %>%
 #  filter(Stat.Area == 11510, Season == 'Sep2015 - Aug16') %>%
 #  select(Season, CFEC, Stat.Area, )
