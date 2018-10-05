@@ -189,6 +189,8 @@ glimpse(Tdat1)
 # need just the date of Time.Set and then to get the mid-date
 #Tdat1 %>%
 # mutate(time.set = as.POSIXlt(Time.Set)) -> Tdat1
+Tdat1 %>% filter(Year == 2018 & AREA == "SC")
+
 
 ##### Females - large or mature females --------------------------
 
