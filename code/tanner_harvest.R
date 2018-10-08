@@ -127,9 +127,25 @@ write.csv(harvest2_all, paste0('./results/tanner/comm_catch_by_statarea_98_', cu
 
 ### all years by survey area --------------------------
 harvest_all %>%
-  group_by(Season, survey.area)%>%
-  summarise(permits = length(unique(CFEC)), numbers = sum(Number.Of.Animals), 
-            pounds = sum(Whole.Weight..sum.)) -> comm.catch.sum_all
+  group_by(survey.area, Season)%>%
+  summarise(permits = length(unique(CFEC)), numbers = sum(Number.Of.Animals, na.rm = TRUE), 
+            pounds = sum(Whole.Weight..sum., na.rm = TRUE)) -> comm.catch.sum_all
+
+# need a season reference column in terms of years
+library(stringr)
+numextract <- function(string){ 
+  str_extract(string, "\\-*\\d+\\.*\\d*")
+} 
+
+comm.catch.sum_all %>% 
+  mutate(year = as.numeric(numextract(Season))) -> comm.catch.sum_all
+
 
 # lynn sister and north juneau need to be manually split up in area 115-10
 write.csv(comm.catch.sum_all, paste0('./results/tanner/tanner_comm_catch_98_', cur_yr,'.csv'))
+### !!!!!!  These may not be correct for North Juneau, Stephens Passage and Lynn Sisters due to shared stat areas
+##                    CHECK these with old excel files before going forward.
+# checked harvest with sigma plot file:
+# good: EI, PB, GB, SC, PS
+# needs correcting using logbooks: NJ, LS, SP
+# needs to be checked: GLB, IS, TB, HB
