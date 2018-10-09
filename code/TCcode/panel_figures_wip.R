@@ -15,32 +15,33 @@ source('./code/tanner_rkc_functions.R')
 
 # data -----
 cur_yr <- 2018
-survey.location <- 'Excursion'
+survey.location <- 'EI' # survey locations here are codes: EI, PS, PB, GB, SC, LS
 
-CPUE_wt_graph <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
-                               '/cpue_wt_all_yrs.csv'))
-poorclutch_summary <- read.csv(paste0('./results/redcrab/', survey.location, 
-                                      '/', cur_yr, '/poorclutch_summary_all.csv'))
-egg_mean_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
-                                '/egg_percent_mean_all.csv'))
+CPUE_wt_graph <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
+                               '/RKCS_CPUE_all.csv'))
+poorclutch_summary <- read.csv(paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_percent_low_clutch.csv'))
+egg_mean_all <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
+                                '/RKCS_percent_clutch.csv'))
 # file with year and mean percent poor clutch and se poor clutch from 1993 to current
-mr_adjust <- read.csv('./data/redcrab/adj_final_stock_assessment.csv')
-baseline <- read.csv("./data/redcrab/longterm_means.csv")
-biomass <- read.csv("./data/redcrab/biomass.csv") 
-# file for all locations.  Has legal and mature biomass from current year CSA & harvest
-# mr adjustments can be made in the function using mr_adjust file.
+
+baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
+biomass <- read.csv("./data/rkc_tanner/tanner_2018_biomassmodel.csv") 
+harvest <- read.csv("./results/tanner/tanner_comm_catch_98_2018.csv")
+# file for all locations.  Has legal and mature biomass from current year CSA 
+# harvest comes from processing in 'tanner_harvest.R' - need to fix some survey areas using logbooks look at notes in that file.
 
 # prep data ------
 ### Mature males-----
 #create data frame that has mature males - just means
 # data fame that has mature males - just SE
 CPUE_wt_graph %>% 
-  select(Year,Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
+  filter(AREA == survey.location) %>% 
+  select(Year,Pre_Recruit_u, Recruit_u, Post_Recruit_u, 
                          PreR_SE, Rec_SE, PR_SE) -> males
-males_long <- gather(males, recruit.status, value1, Pre_Recruit_wt:PR_SE, factor_key = TRUE)
+males_long <- gather(males, recruit.status, value1, Pre_Recruit_u:PR_SE, factor_key = TRUE)
 males_long %>% 
-  mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_wt",
-                             "pre.recruit", ifelse(recruit.status == "Recruit_wt", 
+  mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_u",
+                             "pre.recruit", ifelse(recruit.status == "Recruit_u", 
                                 "recruit", ifelse(recruit.status == "PreR_SE", 
                                 "pre.recruit", ifelse(recruit.status == "Rec_SE", 
                                 "recruit", "post.recruit "))))) %>% 
@@ -53,16 +54,16 @@ males_long %>% select (-recruit.status) %>% spread(type, value1) -> males_graph
 
 ### females/juv prep ------------
 CPUE_wt_graph %>% 
-  select(Year,Juvenile_wt, SmallF_wt, MatF_wt, 
+  filter(AREA == survey.location) %>% 
+  select(Year,Juvenile_u, SmallF_u, MatF_u, 
                          Juv_SE, SmallF_SE, MatF_SE) -> femjuv
-femjuv_long <- gather(femjuv, recruit.status, value1, Juvenile_wt:MatF_SE, factor_key = TRUE)
+femjuv_long <- gather(femjuv, recruit.status, value1, Juvenile_u:MatF_SE, factor_key = TRUE)
 femjuv_long %>% 
-  mutate(recruit.class = ifelse(recruit.status == "Juvenile_wt",
-                                              "juvenile.male", 
-                                              ifelse(recruit.status == "SmallF_wt", 
-                                                     "juvenile.female", ifelse(recruit.status == "Juv_SE", 
-                                                                               "juvenile.male", ifelse(recruit.status == "SmallF_SE", 
-                                                                                                       "juvenile.female", "mature.female"))))) %>% 
+  mutate(recruit.class = ifelse(recruit.status == "Juvenile_u", "juvenile.male", 
+                            ifelse(recruit.status == "SmallF_u", 
+                             "juvenile.female", ifelse(recruit.status == "Juv_SE", 
+                              "juvenile.male", ifelse(recruit.status == "SmallF_SE", 
+                                "juvenile.female", "mature.female"))))) %>% 
   mutate(type = ifelse(recruit.status == "Juv_SE",
                        "se", 
                        ifelse(recruit.status == "SmallF_SE", 
@@ -72,11 +73,11 @@ femjuv_long %>% select (-recruit.status) %>% spread(type, value1) -> femjuv_grap
 
 ### baseline cpue values ----
 baseline %>% 
-  filter(Location == survey.location) ->baseline2
+  filter(AREA == survey.location) ->baseline2
 
 ## poor clutch --------
 poorclutch_summary %>% 
-  filter(Year >= 1993) %>% 
+  filter(AREA == survey.location) %>% 
   mutate(Pclutch100 = Pclutch *100, 
          Pclutch.se100 = Pclutch.se*100) %>% 
   select(Year, Pclutch100, Pclutch.se100) ->poorclutch_summary93
