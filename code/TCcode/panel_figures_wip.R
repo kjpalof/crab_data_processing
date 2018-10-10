@@ -76,11 +76,9 @@ baseline %>%
   filter(AREA == survey.location) ->baseline2
 
 ## poor clutch --------
-poorclutch_summary %>% 
+poorclutch_summary %>% # this data is coming in as a percentage not a ratio
   filter(AREA == survey.location) %>% 
-  mutate(Pclutch100 = Pclutch *100, 
-         Pclutch.se100 = Pclutch.se*100) %>% 
-  select(Year, Pclutch100, Pclutch.se100) ->poorclutch_summary93
+  select(Year, Pclutch, Pclutch.se) ->poorclutch_summary_a
 ## mean egg percent -------
 egg_mean_all %>% 
   filter(Year >= 1993) -> egg_mean_all_93
