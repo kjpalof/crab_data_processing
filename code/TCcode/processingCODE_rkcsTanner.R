@@ -4,7 +4,6 @@
 # includes: Excursion, Seymour Canal, Pybus Bay, Gambier Bay, Peril Strait, and Lynn Sisters
 # code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP, prior to 2016  
 
-rm(list = ls()) # clear workspace since data frames have same names
 ### Load ---------------------------------
 
 source('./code/tanner_rkc_functions.R') # need to create versions of this code to deal with mutiple areas at once.
