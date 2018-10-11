@@ -218,7 +218,9 @@ LgF_Tdat1 %>%
 poorclutch1 <- dcast(poorclutch, Year + AREA + Pot.No ~ Less25, sum, drop=TRUE)
 
 poorclutch1 %>%
-  mutate(var1 = y / (y+n)) -> poorclutch1
+  mutate(var1 = y / (y+n)) %>% 
+  filter(!is.na(var1)) -> poorclutch1
+
 poorclutch1 %>%
   group_by(AREA, Year)%>%
   summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
@@ -231,8 +233,8 @@ LgF_Tdat1 %>%
 
 clutch_by_pot %>%
   group_by(AREA, Year)%>%
-  summarise(mean = mean(egg_mean), 
-            egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
+  summarise(mean = mean(egg_mean, na.rm = TRUE), 
+            egg.se = (sd(!is.na(egg_mean))/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
 
 # add this to the table with percent_low_clutch?
 percent_low_clutch %>%
