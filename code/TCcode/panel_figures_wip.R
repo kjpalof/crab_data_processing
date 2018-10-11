@@ -56,22 +56,15 @@ males_long %>%
 males_long %>% select (-recruit.status) %>% spread(type, value1) -> males_graph
 
 ### females/juv prep ------------
+# current only mature females is graphed for tanner crab areas - why?  not sure check on this.
 CPUE_wt_graph %>% 
   filter(AREA == survey.location) %>% 
-  select(Year,Juvenile_u, SmallF_u, MatF_u, 
-                         Juv_SE, SmallF_SE, MatF_SE) -> femjuv
-femjuv_long <- gather(femjuv, recruit.status, value1, Juvenile_u:MatF_SE, factor_key = TRUE)
+  select(Year, MatF_u, MatF_SE) -> femjuv
+femjuv_long <- gather(femjuv, recruit.status, value1, MatF_u:MatF_SE, factor_key = TRUE)
 femjuv_long %>% 
-  mutate(recruit.class = ifelse(recruit.status == "Juvenile_u", "juvenile.male", 
-                            ifelse(recruit.status == "SmallF_u", 
-                             "juvenile.female", ifelse(recruit.status == "Juv_SE", 
-                              "juvenile.male", ifelse(recruit.status == "SmallF_SE", 
-                                "juvenile.female", "mature.female"))))) %>% 
-  mutate(type = ifelse(recruit.status == "Juv_SE",
-                       "se", 
-                       ifelse(recruit.status == "SmallF_SE", 
-                              "se", ifelse(recruit.status == "MatF_SE", 
-                                           "se", "mean"))))-> femjuv_long
+  mutate(recruit.class = "mature.female") %>% 
+  mutate(type = ifelse(recruit.status == "MatF_SE", 
+                                           "se", "mean"))-> femjuv_long
 femjuv_long %>% select (-recruit.status) %>% spread(type, value1) -> femjuv_graph
 
 ### baseline cpue values ----
