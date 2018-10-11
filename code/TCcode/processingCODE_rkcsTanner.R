@@ -234,7 +234,7 @@ LgF_Tdat1 %>%
 clutch_by_pot %>%
   group_by(AREA, Year)%>%
   summarise(mean = mean(egg_mean, na.rm = TRUE), 
-            egg.se = (sd(!is.na(egg_mean))/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
+            egg.se = (sd(egg_mean, na.rm = TRUE)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
 
 # add this to the table with percent_low_clutch?
 percent_low_clutch %>%
