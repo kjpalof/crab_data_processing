@@ -151,3 +151,12 @@ write.csv(comm.catch.sum_all, paste0('./results/tanner/tanner_comm_catch_98_', c
 # good: EI, PB, GB, SC, PS
 # needs correcting using logbooks: NJ, LS, SP
 # needs to be checked: GLB, IS, TB, HB
+
+### all years total annual harvest  ---------------------
+comm.catch.sum_all %>%
+  group_by(Season)%>%
+  summarise(numbers = sum(numbers), pounds = sum(pounds)) -> annual_catch_all
+
+write.csv(annual_catch, paste0('./results/tanner/tanner_annual_catch_98_', cur_yr,'.csv'))
+
+
