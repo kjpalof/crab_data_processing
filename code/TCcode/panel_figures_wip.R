@@ -81,19 +81,20 @@ poorclutch_summary %>% # this data is coming in as a percentage not a ratio
   select(Year, Pclutch, Pclutch.se) ->poorclutch_summary_a
 ## mean egg percent -------
 egg_mean_all %>% 
-  filter(Year >= 1993) -> egg_mean_all_93
+  filter(AREA == survey.location) %>% 
+  select(Year, mean, egg.se) -> egg_mean_all_a
 ## female egg data -------
 # combine these data sets for graphing.  Create one with means and one with SEs.
-poorclutch_summary93 %>% 
-  left_join(egg_mean_all_93) -> female_egg
-female_egg_long <- gather(female_egg, vname, value1, Pclutch100:egg.se, factor_key = TRUE)
+poorclutch_summary_a %>% 
+  left_join(egg_mean_all_a) -> female_egg
+female_egg_long <- gather(female_egg, vname, value1, Pclutch:egg.se, factor_key = TRUE)
 female_egg_long %>% 
-  mutate(female.egg = ifelse(vname == "Pclutch100",
+  mutate(female.egg = ifelse(vname == "Pclutch",
                              "% poor clutch", 
                              ifelse(vname == "mean", 
-                                    "total % clutch", ifelse(vname == "Pclutch.se100", 
+                                    "total % clutch", ifelse(vname == "Pclutch.se", 
                                                              "% poor clutch", "total % clutch")))) %>% 
-  mutate(type = ifelse(vname == "Pclutch.se100", "se", ifelse(vname == "egg.se", 
+  mutate(type = ifelse(vname == "Pclutch.se", "se", ifelse(vname == "egg.se", 
                                                               "se", "mean"))) %>% 
   select (-vname) %>% 
   spread(type, value1) -> female_egg_graph
