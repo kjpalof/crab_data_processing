@@ -120,7 +120,7 @@ p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   scale_shape_manual(name = "", values = c(15, 16, 17))+
   
   #ylim(0,20) + 
-  ggtitle(area) + ylab("CPUE (number/pot)")+ xlab("")+
+  ggtitle(area) + ylab("Mature male CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
@@ -134,18 +134,17 @@ p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+
 p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+ 
   geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
   geom_line(aes(color = recruit.class, group = recruit.class))+
-  scale_colour_manual(name = "", values = c("grey34","grey62", "grey1"))+
-  scale_shape_manual(name = "", values = c(17, 16, 15))+
+  scale_colour_manual(name = "", values = c( "grey1"))+
+  scale_shape_manual(name = "", values = c(15))+
   
-  ylim(0,40) +ggtitle("") + ylab("CPUE (number/pot)")+ xlab("")+
+  #ylim(0,40) + 
+  ggtitle("") + ylab("Mature female CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                 width =.4) +
-  geom_hline(yintercept = baseline2$Juvenile, color = "grey62")+
-  geom_hline(yintercept = baseline2$Small.Female, color = "grey34")+
   geom_hline(yintercept = baseline2$Large.Female, color = "black")+
-  theme(legend.position = c(0.7,0.8))
+  theme(legend.position = c(0.3,0.8))
 
 
 #### F1c Female eggs graph -----------
@@ -163,6 +162,7 @@ p3 <- ggplot(female_egg_graph, aes(Year, mean)) +
   scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = female.egg), 
                 width =.4) +
+  geom_hline(yintercept = 10, color = "black") +
   theme(legend.position = c(0.2,0.5)) 
 
 ### biomass harvest graph --------------
@@ -173,17 +173,21 @@ p4 <- ggplot(biomass_graph, aes(Year, pounds, group = type))+
   scale_shape_manual(name = "", values = c(1, 18, 32, 18))+
   scale_linetype_manual(name = "", values = c("blank", "solid", "solid", "dashed")) +
   ggtitle("") + 
-  ylab("Legal biomass (lbs)") + 
-  xlab("Year") +
+  ylab("Biomass (lbs)") + 
+  xlab("Survey Year") +
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-  scale_y_continuous(labels = comma, limits = c(0,200000),
-                     breaks= seq(min(0), max(200000), by = 50000)) +
+  scale_y_continuous(labels = comma, limits = c(0,max(biomass_graph$pounds, 
+                                                      na.rm = TRUE) + 25000),
+                     breaks= seq(min(0), max(max(biomass_graph$pounds, 
+                                                 na.rm = TRUE)+25000), by = 50000))  +
   theme(legend.position = c(0.7,0.8)) + 
-  geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1")+
-  geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
+  geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1", linetype = "dashed")
 
 
+panel <- plot_grid(p1, p2, p3, p4, ncol = 1, align = 'v')
+panel_1 <- plot_grid(p1, p4, ncol = 1, align = 'v')
+panel_2 <- plot_grid(p2, p3, ncol = 1, align = 'v')
 ### FINAL plot -------------
 png(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '.png'), res= 600, width = 8, height =11, units = "in")
 #grid.arrange(p1, p2, p3, p4, ncol = 1)
