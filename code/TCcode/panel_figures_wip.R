@@ -16,7 +16,10 @@ source('./code/tanner_rkc_functions.R')
 # data -----
 cur_yr <- 2018
 survey.location <- 'EI' # survey locations here are codes: EI, PS, PB, GB, SC, LS
-
+Area = "Excursion Inlet" # area is used in biomass /harvest file:  Icy Strait, Glacier Bay, 
+     # Holkham Bay, Thomas Bay, Stephens Passage, North Juneau, Lynn Sisters, Pybus Bay, 
+     # Gambier Bay, Excursion Inlet, Peril Strait, Seymour Canal  
+ 
 CPUE_wt_graph <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
                                '/RKCS_CPUE_all.csv'))
 poorclutch_summary <- read.csv(paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_percent_low_clutch.csv'))
@@ -100,22 +103,14 @@ female_egg_long %>%
   spread(type, value1) -> female_egg_graph
 
 ## biomass manipulations --------
-
-# file for all locations.  Has legal biomass from CSA, harvest
-# mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
-# adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
-mr_adjust %>% 
-  select(-X) %>% 
-  mutate(Location = ifelse(area == "St_James", "Lynn Sisters", as.character(area))) %>% 
-  select(-area) -> mr_adjust2
-
+# file for all locations.  Has preR, legal, and mature biomass from CSAs
+harvest %>% 
+  select(Year, Area = survey.area, pounds) ->harvest_a
+  
 biomass %>% 
-  left_join(mr_adjust2) %>% 
-  mutate(adj.legal = legal.biomass*weighted_ADJ) -> biomass
-
-biomass %>% 
-  select(-weighted_ADJ) %>% 
-  gather(type, pounds, harvest:adj.legal, factor_key = TRUE) %>% 
+  left_join(harvest_a) %>% 
+  select(Year, Area, harvest = pounds, Legal, Mature) %>% 
+  gather(type, pounds, harvest:Mature, factor_key = TRUE) %>% 
   filter(Location == survey.location) -> biomass_graph
 
 biomass_graph %>% 
