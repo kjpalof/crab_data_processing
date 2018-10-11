@@ -114,9 +114,9 @@ biomass %>%
   filter(Area == area) -> biomass_graph
 
 biomass_graph %>% 
-  filter(Year <= 2007) %>% 
+  filter(Year < 2007) %>% 
   spread(type, pounds) %>% 
-  summarise(legal_mean = mean(legal.biomass), legal_adj_mean = mean(adj.legal)) -> baseline_means
+  summarise(legal_mean = mean(Legal), mature_mean = mean(Mature)) -> baseline_means
 
 # Figure panel -----
 #### F1a mature male plot -----------
@@ -126,7 +126,8 @@ p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+
   scale_colour_manual(name = "", values = c("grey1", "grey62", "grey34"))+
   scale_shape_manual(name = "", values = c(15, 16, 17))+
   
-  ylim(0,7) +ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab("")+
+  ylim(0,20) + 
+  ggtitle(area) + ylab("CPUE (number/pot)")+ xlab("")+
   theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
