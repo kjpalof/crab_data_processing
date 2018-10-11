@@ -16,7 +16,7 @@ source('./code/tanner_rkc_functions.R')
 # data -----
 cur_yr <- 2018
 survey.location <- 'EI' # survey locations here are codes: EI, PS, PB, GB, SC, LS
-Area = "Excursion Inlet" # area is used in biomass /harvest file:  Icy Strait, Glacier Bay, 
+area = "Excursion Inlet" # area is used in biomass /harvest file:  Icy Strait, Glacier Bay, 
      # Holkham Bay, Thomas Bay, Stephens Passage, North Juneau, Lynn Sisters, Pybus Bay, 
      # Gambier Bay, Excursion Inlet, Peril Strait, Seymour Canal  
  
@@ -111,7 +111,7 @@ biomass %>%
   left_join(harvest_a) %>% 
   select(Year, Area, harvest = pounds, Legal, Mature) %>% 
   gather(type, pounds, harvest:Mature, factor_key = TRUE) %>% 
-  filter(Location == survey.location) -> biomass_graph
+  filter(Area == area) -> biomass_graph
 
 biomass_graph %>% 
   filter(Year <= 2007) %>% 
