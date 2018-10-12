@@ -168,36 +168,39 @@ poor_clutch_short <- function(females_all, year){
 }
 
 ## CONF panel figure ---------------
-panel_figure <- function(survey.location, cur_yr, base.location, option, scale){
-  # survey.location and baseline.location are the same is most areas.  Check
-  # baseline file to see if they differ
+panel_figure <- function(survey.location, cur_yr, area, option){
+  # survey.location here are codes: EI, PS, PB, GB, SC, LS
+  # area is used in biomass /harvest file:  Icy Strait, Glacier Bay, 
+      # Holkham Bay, Thomas Bay, Stephens Passage, North Juneau, Lynn Sisters, Pybus Bay, 
+      # Gambier Bay, Excursion Inlet, Peril Strait, Seymour Canal  
   # cur_yr is the current year
   # option refers to output from this function. 
   # Option 1 - all 4 on one file, Option 2 - just p1, p4 (males), 
-  # Option 3 - p2,p3 (females), Option 4 - created for Seymour Canal scaling issues
-  CPUE_wt_graph <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
-                                   '/cpue_wt_all_yrs.csv'))
-  poorclutch_summary <- read.csv(paste0('./results/redcrab/', survey.location, 
-                                        '/', cur_yr, '/poorclutch_summary_all.csv'))
-  egg_mean_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
-                                  '/egg_percent_mean_all.csv'))
-  # file with year and mean percent poor clutch and se poor clutch from 1993 to current
-  mr_adjust <- read.csv('./data/redcrab/adj_final_stock_assessment.csv')
-  baseline <- read.csv("./data/redcrab/longterm_means.csv")
-  biomass <- read.csv("./data/redcrab/biomass.csv") 
+  # Option 3 - p2,p3 (females)
+  CPUE_wt_graph <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
+                                   '/RKCS_CPUE_all.csv'))
+  poorclutch_summary <- read.csv(paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_percent_low_clutch.csv'))
+  egg_mean_all <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
+                                  '/RKCS_percent_clutch.csv'))
+  # file with year and mean percent poor clutch and se poor clutch 
+  baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
+  biomass <- read.csv("./data/rkc_tanner/tanner_2018_biomassmodel.csv") 
+  harvest <- read.csv("./results/tanner/tanner_comm_catch_98_2018.csv") # needs to be updated with
+                                    # recent year - both biomass and harvest files.
   # file for all locations.  Has legal and mature biomass from current year CSA & harvest
-  # mr adjustments can be made in the function using mr_adjust file.
+
   # prep data 
   ### Mature males
   # create data frame that has mature males - just means
   # data fame that has mature males - just SE
   CPUE_wt_graph %>% 
-    select(Year,Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
+    filter(AREA == survey.location) %>% 
+    select(Year,Pre_Recruit_u, Recruit_u, Post_Recruit_u, 
            PreR_SE, Rec_SE, PR_SE) -> males
-  males_long <- gather(males, recruit.status, value1, Pre_Recruit_wt:PR_SE, factor_key = TRUE)
+  males_long <- gather(males, recruit.status, value1, Pre_Recruit_u:PR_SE, factor_key = TRUE)
   males_long %>% 
-    mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_wt",
-                                  "pre.recruit", ifelse(recruit.status == "Recruit_wt", 
+    mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_u",
+                                  "pre.recruit", ifelse(recruit.status == "Recruit_u", 
                                                         "recruit", ifelse(recruit.status == "PreR_SE", 
                                                                           "pre.recruit", ifelse(recruit.status == "Rec_SE", 
                                                                                                 "recruit", "post.recruit "))))) %>% 
@@ -209,91 +212,71 @@ panel_figure <- function(survey.location, cur_yr, base.location, option, scale){
   males_long %>% select (-recruit.status) %>% spread(type, value1) -> males_graph
   
   ### females/juv prep ------------
+  # current only mature females is graphed for tanner crab areas - why?  not sure check on this.
   CPUE_wt_graph %>% 
-    select(Year,Juvenile_wt, SmallF_wt, MatF_wt, 
-           Juv_SE, SmallF_SE, MatF_SE) -> femjuv
-  femjuv_long <- gather(femjuv, recruit.status, value1, Juvenile_wt:MatF_SE, factor_key = TRUE)
+    filter(AREA == survey.location) %>% 
+    select(Year, MatF_u, MatF_SE) -> femjuv
+  femjuv_long <- gather(femjuv, recruit.status, value1, MatF_u:MatF_SE, factor_key = TRUE)
   femjuv_long %>% 
-    mutate(recruit.class = ifelse(recruit.status == "Juvenile_wt",
-                                  "juvenile.male", 
-                                  ifelse(recruit.status == "SmallF_wt", 
-                                         "juvenile.female", ifelse(recruit.status == "Juv_SE", 
-                                                                   "juvenile.male", ifelse(recruit.status == "SmallF_SE", 
-                                                                                           "juvenile.female", "mature.female"))))) %>% 
-    mutate(type = ifelse(recruit.status == "Juv_SE",
-                         "se", 
-                         ifelse(recruit.status == "SmallF_SE", 
-                                "se", ifelse(recruit.status == "MatF_SE", 
-                                             "se", "mean"))))-> femjuv_long
+    mutate(recruit.class = "mature.female") %>% 
+    mutate(type = ifelse(recruit.status == "MatF_SE", 
+                         "se", "mean"))-> femjuv_long
   femjuv_long %>% select (-recruit.status) %>% spread(type, value1) -> femjuv_graph
   
   # baseline cpue values -----
   baseline %>% 
-    filter(Location == base.location) -> baseline2
+    filter(AREA == survey.location) ->baseline2
   
   ## poor clutch --------
-  poorclutch_summary %>% 
-    filter(Year >= 1993) %>% 
-    mutate(Pclutch100 = Pclutch *100, 
-           Pclutch.se100 = Pclutch.se*100) %>% 
-    select(Year, Pclutch100, Pclutch.se100) ->poorclutch_summary93
+  poorclutch_summary %>% # this data is coming in as a percentage not a ratio
+    filter(AREA == survey.location) %>% 
+    select(Year, Pclutch, Pclutch.se) ->poorclutch_summary_a
   ## mean egg percent -------
   egg_mean_all %>% 
-    filter(Year >= 1993) -> egg_mean_all_93
+    filter(AREA == survey.location) %>% 
+    select(Year, mean, egg.se) -> egg_mean_all_a
   ## female egg data -------
   # combine these data sets for graphing.  Create one with means and one with SEs.
-  poorclutch_summary93 %>% 
-    left_join(egg_mean_all_93) -> female_egg
-  female_egg_long <- gather(female_egg, vname, value1, Pclutch100:egg.se, factor_key = TRUE)
+  poorclutch_summary_a %>% 
+    left_join(egg_mean_all_a) -> female_egg
+  female_egg_long <- gather(female_egg, vname, value1, Pclutch:egg.se, factor_key = TRUE)
   female_egg_long %>% 
-    mutate(female.egg = ifelse(vname == "Pclutch100",
+    mutate(female.egg = ifelse(vname == "Pclutch",
                                "% poor clutch", 
                                ifelse(vname == "mean", 
-                                      "total % clutch", ifelse(vname == "Pclutch.se100", 
+                                      "total % clutch", ifelse(vname == "Pclutch.se", 
                                                                "% poor clutch", "total % clutch")))) %>% 
-    mutate(type = ifelse(vname == "Pclutch.se100", "se", ifelse(vname == "egg.se", 
-                                                                "se", "mean"))) %>% 
+    mutate(type = ifelse(vname == "Pclutch.se", "se", ifelse(vname == "egg.se", 
+                                                             "se", "mean"))) %>% 
     select (-vname) %>% 
     spread(type, value1) -> female_egg_graph
+  
   ## biomass manipulations 
-  
-  # file for all locations.  Has legal biomass from CSA, harvest
-  # mr.biomass is biomass adjusted using mark-recapture experiments for those years or previous years
-  # adj.biomass applied the m/r adjusted that was current in 2016 to all previous years - just for visualization.
-  mr_adjust %>% 
-    select(-X) %>% 
-    mutate(Location = ifelse(area == "St_James", "LynnSisters", as.character(area))) %>% 
-    select(-area) -> mr_adjust2
+  # file for all locations.  Has preR, legal, and mature biomass from CSAs
+  harvest %>% 
+    select(Year, Area = survey.area, pounds) ->harvest_a
   
   biomass %>% 
-    left_join(mr_adjust2) %>% 
-    mutate(adj.legal = legal.biomass*weighted_ADJ) -> biomass
-  
-  biomass %>% 
-    select(-weighted_ADJ) %>% 
-    gather(type, pounds, harvest:adj.legal, factor_key = TRUE) %>% 
-    filter(Location == survey.location) %>% 
-    filter(Year >= 1993) -> biomass_graph
+    left_join(harvest_a) %>% 
+    select(Year, Area, harvest = pounds, Legal, Mature) %>% 
+    gather(type, pounds, harvest:Mature, factor_key = TRUE) %>% 
+    filter(Area == area) -> biomass_graph
   
   biomass_graph %>% 
-    filter(Year <= 2007) %>% 
+    filter(Year < 2007) %>% 
     spread(type, pounds) %>% 
-    summarise(legal_mean = mean(legal.biomass), 
-              legal_adj_mean = mean(adj.legal)) -> baseline_means
+    summarise(legal_mean = mean(Legal), mature_mean = mean(Mature)) -> baseline_means
   
   # Figure panel -----
   #### F1a mature male plot -----------
   p1 <- ggplot(males_graph, aes(Year, mean, group = recruit.class))+ 
-    geom_point(aes(colour = recruit.class, shape = recruit.class, 
-                   fill = recruit.class), size =3) +
-    geom_line(aes(group = recruit.class, colour = recruit.class))+
-    scale_colour_manual(name = "", values = c("grey1", "grey65", "grey34"))+
-    scale_fill_manual(name = "", values = c("grey1", "grey65", "grey34")) +
+    geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
+    geom_line(aes(color = recruit.class, group = recruit.class))+
+    scale_colour_manual(name = "", values = c("grey1", "grey62", "grey34"))+
     scale_shape_manual(name = "", values = c(15, 16, 17))+
-    scale_y_continuous(limits = c(0,(max(males_graph$mean) + max(males_graph$se))),
-                       oob = rescale_none) +
-    #ylim(0,(max(males_graph$mean) + max(males_graph$se))) + 
-    ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab(NULL)+
+    #scale_y_continuous(limits = c(0,(max(males_graph$mean) + max(males_graph$se))),
+    #                   oob = rescale_none) +
+    ggtitle(survey.location) + ylab("Mature male CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
