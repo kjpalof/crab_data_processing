@@ -25,7 +25,7 @@ CPUE_wt_graph <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
 poorclutch_summary <- read.csv(paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_percent_low_clutch.csv'))
 egg_mean_all <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
                                 '/RKCS_percent_clutch.csv'))
-# file with year and mean percent poor clutch and se poor clutch from 1993 to current
+# file with year and mean percent poor clutch and se poor clutch from 
 
 baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
 biomass <- read.csv("./data/rkc_tanner/tanner_2018_biomassmodel.csv") 
