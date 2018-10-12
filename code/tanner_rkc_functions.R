@@ -284,7 +284,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey65")+
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
-    theme(legend.position = c(0.8,0.8), 
+    theme(legend.position = c(0.3,0.85), 
           axis.text = element_text(size = 12), 
           axis.title=element_text(size=14,face="bold"), 
           plot.title = element_text(size = 24))
@@ -294,20 +294,18 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   p2 <- ggplot(femjuv_graph, aes(Year, mean, group = recruit.class))+ 
     geom_point(aes(color = recruit.class, shape = recruit.class), size =3) +
     geom_line(aes(color = recruit.class, group = recruit.class))+
-    scale_colour_manual(name = "", values = c("grey34","grey62", "grey1"))+
-    scale_shape_manual(name = "", values = c(17, 16, 15))+
+    scale_colour_manual(name = "", values = c( "grey1"))+
+    scale_shape_manual(name = "", values = c(15))+
     
     #ylim(0,25) + 
-    scale_y_continuous(limits = c(0,25), oob = rescale_none) +
-    ylab("CPUE (number/pot)")+ xlab(NULL)+
+    #scale_y_continuous(limits = c(0,25), oob = rescale_none) +
+    ylab("Mature female CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                   width =.4) +
-    geom_hline(yintercept = baseline2$Juvenile, color = "grey62")+
-    geom_hline(yintercept = baseline2$Small.Female, color = "grey34")+
     geom_hline(yintercept = baseline2$Large.Female, color = "black")+
-    theme(legend.position = c(0.7,0.8), 
+    theme(legend.position = c(0.3,0.8), 
           axis.text = element_text(size = 12), 
           axis.title=element_text(size=14,face="bold"))
   
@@ -331,6 +329,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     ylim(0,100) + 
     ylab("Percentage") + 
     xlab(NULL) +
+    geom_hline(yintercept = 10, color = "black") +
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     theme(legend.position = c(0.2,0.5), 
@@ -341,7 +340,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     p3 = p3 + theme(axis.text.x = element_blank())
   }
   if(option ==3){
-    p3 = p3 + xlab("Year")
+    p3 = p3 + xlab("Survey Year")
   }
   
   ### biomass harvest graph --------------
@@ -351,23 +350,23 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     scale_colour_manual(name = "", values = c("grey1", "grey1", "grey48", "grey62"))+
     scale_shape_manual(name = "", values = c(1, 18, 32, 18))+
     scale_linetype_manual(name = "", values = c("blank", "solid", "solid", "dashed")) +
-    ylab("Legal biomass (lbs)") + 
-    xlab("Year") +
+    ylab("Biomass (lbs)") + 
+    xlab("Survey Year") +
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     scale_y_continuous(labels = comma, limits = c(0,max(biomass_graph$pounds, 
                                                         na.rm = TRUE) + 25000),
                        breaks= seq(min(0), max(max(biomass_graph$pounds, 
                                                    na.rm = TRUE)+25000), by = 50000)) +
-    theme(legend.position = c(0.8,0.8), 
+    theme(legend.position = c(0.7,0.8), 
           axis.text = element_text(size = 12), 
           axis.title=element_text(size=14,face="bold")) + 
-    geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1")+
-    geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
-  if(scale == 1){
-    p4 = p4 + scale_y_continuous(labels = comma, limits = c(0,1400000),
-                                 breaks= seq(min(0), max(1400000), by = 50000), oob = rescale_none)
-  }
+    geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1", linetype = "dashed")+
+    #geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
+  #if(scale == 1){
+  #  p4 = p4 + scale_y_continuous(labels = comma, limits = c(0,1400000),
+  #                               breaks= seq(min(0), max(1400000), by = 50000), oob = rescale_none)
+  #}
   
   ### FINAL plot -------------
   #png(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '.png'), res= 600, 
@@ -384,7 +383,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
                 panel <- plot_grid(p1, p4, ncol = 1, align = 'v'), 
                 ifelse(option == 3, 
                        panel <- plot_grid(p2, p3, ncol = 1, align = 'v'), 0)))
-  ggsave(paste0('./figures/redcrab/', survey.location, '_', cur_yr, '_', 
+  ggsave(paste0('./figures/rkcs_tanner/', survey.location, '_', cur_yr, '_', 
                 option, '.png'), panel,  
          dpi = 800, width = 8, height = 9.5)
 }
