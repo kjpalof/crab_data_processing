@@ -266,6 +266,10 @@ poor_clutch_short(poorclutch1, cur_yr)
 ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~AREA)
 ###
 
+## panel figures -----
+panel_figure("EI", 2018, "Excursion Inlet", 2)
+panel_figure("EI", 2018, "Excursion Inlet", 3)
+
 
 ####
 ##### input for CSA in R ---------------------------
