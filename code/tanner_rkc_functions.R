@@ -276,7 +276,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     scale_shape_manual(name = "", values = c(15, 16, 17))+
     #scale_y_continuous(limits = c(0,(max(males_graph$mean) + max(males_graph$se))),
     #                   oob = rescale_none) +
-    ggtitle(survey.location) + ylab("Mature male CPUE (number/pot)")+ xlab(NULL)+
+    ggtitle(area) + ylab("Mature male CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
@@ -310,7 +310,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
           axis.title=element_text(size=14,face="bold"))
   
   if(option == 3){
-    p2 = p2 + ggtitle(paste0('Female/juvenile CPUE and egg health for ', survey.location)) +
+    p2 = p2 + ggtitle(paste0('Female/juvenile CPUE and egg health for ', area)) +
       theme(plot.title = element_text(size = 24))
   }
   
@@ -361,7 +361,8 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     theme(legend.position = c(0.7,0.8), 
           axis.text = element_text(size = 12), 
           axis.title=element_text(size=14,face="bold")) + 
-    geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1", linetype = "dashed")+
+    geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1", 
+               linetype = "dashed")
     #geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
   #if(scale == 1){
   #  p4 = p4 + scale_y_continuous(labels = comma, limits = c(0,1400000),
