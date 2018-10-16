@@ -270,6 +270,17 @@ ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~AREA)
 panel_figure("EI", 2018, "Excursion Inlet", 2)
 panel_figure("EI", 2018, "Excursion Inlet", 3)
 
+panel_figure("SC", 2018, "Seymour Canal", 2)
+panel_figure("SC", 2018, "Seymour Canal", 3)
+
+panel_figure("PB", 2018, "Pybus Bay", 2)
+panel_figure("PB", 2018, "Pybus Bay", 3)
+
+panel_figure("GB", 2018, "Gambier Bay", 2)
+panel_figure("GB", 2018, "Gambier Bay", 3)
+
+panel_figure("PS", 2018, "Peril Strait", 2)
+panel_figure("PS", 2018, "Peril Strait", 3)
 
 ####
 ##### input for CSA in R ---------------------------
