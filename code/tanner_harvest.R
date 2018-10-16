@@ -23,7 +23,7 @@ unique(harvest$Stat.Area)
 harvest %>%
   mutate(survey.area = ifelse(Stat.Area ==11023, 'Gambier Bay', ifelse(Stat.Area == 11423, 'Icy Strait', 
                         ifelse(Stat.Area == 11470, 'Glacier Bay', ifelse(Stat.Area == 11012, 
-                        'Thomas Bay', ifelse(Stat.Area == 11150,'North Juneau', 
+                        'Thomas Bay', ifelse(Stat.Area == 11150 | Stat.Area  = 11155,'North Juneau', 
                          ifelse(Stat.Area ==11021 | Stat.Area ==11022, 'Pybus Bay', 
                          ifelse(Stat.Area == 11480 |Stat.Area ==11425, 'Excursion Inlet', 
                          ifelse(Stat.Area==11120 | Stat.Area ==11121, 'Holkham Bay', 
@@ -97,7 +97,7 @@ unique(harvest_all$Stat.Area)
 harvest_all %>%
   mutate(survey.area = ifelse(Stat.Area ==11023, 'Gambier Bay', ifelse(Stat.Area == 11423, 'Icy Strait', 
                         ifelse(Stat.Area == 11470, 'Glacier Bay', ifelse(Stat.Area == 11012, 
-                         'Thomas Bay', ifelse(Stat.Area == 11150,'North Juneau', 
+                         'Thomas Bay', ifelse(Stat.Area == 11150 | Stat.Area  = 11155,'North Juneau', 
                           ifelse(Stat.Area ==11021 | Stat.Area ==11022, 'Pybus Bay', 
                            ifelse(Stat.Area == 11480 |Stat.Area ==11425, 'Excursion Inlet', 
                             ifelse(Stat.Area==11120 | Stat.Area ==11121, 'Holkham Bay', 
@@ -119,6 +119,13 @@ harvest_all %>%
                                     Stat.Area ==10532, 'Camden', 'Other'))))))))))))))) -> harvest_all
 # remove 11511 from Lynn Canal - make it part of 'other'
 # by stat area, not needed for this analysis
+
+## merge logbook ----
+harvest_all %>% 
+  select(Season, Stat.Area, Number.Of.Animals, Whole.Weight..sum., Pot.Lifts, 
+         survey.area)
+
+
 harvest_all %>%
   group_by(Season, Stat.Area, survey.area) %>%
   summarise(permits = length(unique(CFEC)), 
