@@ -12,12 +12,24 @@ library(readxl)
 
 #####Load Data -------------------------------------
 # change input file and input folder for each
-logb <- read_excel(path = "./data/TannerLogbookData_2017.xlsx", sheet = 1)
+logb <- read_excel(path = "./data/logbook_tanner_statarea115_97to2018.xlsx", sheet = "AlexData", 
+                   skip = 13)
 glimpse(logb)
-
 
 # need data and comments from stat area 115-10
 logb %>% 
   filter(DISTRICT == 115 & SUB_DISTRICT == 10) %>% 
   select(YEAR, DISTRICT, SUB_DISTRICT, AREA_DESCRIPTION, NUMBER_POTS_LIFTED, 
          TARGET_SPECIES_RETAINED, COMMENTS) ->log11510
+
+# sort into LS or NJ -----
+log11510 %>% 
+  mutate(survey.area = case_when(grepl("james", AREA_DESCRIPTION, ignore.case = TRUE) ~ "Lynn Sisters", 
+                                 grepl("berner", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau"))
+
+unique(log11510$AREA_DESCRIPTION)
+grep("james", log11510$AREA_DESCRIPTION, ignore.case = TRUE, value = TRUE)
+
+#log11510$AREA_DESCRIPTION[grep("james", log11510$AREA_DESCRIPTION)] -> "Lynn Sisters"
+
+log11510$AREA_DESCRIPTION == grep("james", log11510$AREA_DESCRIPTION, ignore.case = TRUE, value = TRUE)
