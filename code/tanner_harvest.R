@@ -40,7 +40,7 @@ harvest %>%
                          Stat.Area == 11117|Stat.Area == 11118, 'Seymour Canal', 
                          ifelse(Stat.Area == 11431|Stat.Area == 11432|Stat.Area == 11433|Stat.Area == 11434, 
                             'PFred', 
-                         ifelse(Stat.Area == 11510|Stat.Area == 11215, 'Lynn Sisters', 
+                         ifelse(Stat.Area == 11215, 'Lynn Sisters', 
                          ifelse(Stat.Area == 10940|Stat.Area == 10941|Stat.Area == 10942|Stat.Area == 10943|
                                 Stat.Area ==10532, 'Camden', 'Other')))))))))))))))  -> harvest
 # remove 11511 from Lynn Canal - make it part of 'other'
@@ -114,13 +114,15 @@ harvest_all %>%
                                   Stat.Area == 11117|Stat.Area == 11118, 'Seymour Canal', 
                            ifelse(Stat.Area == 11431|Stat.Area == 11432|Stat.Area == 11433|Stat.Area == 11434, 
                                   'PFred', 
-                           ifelse(Stat.Area == 11510|Stat.Area == 11215, 'Lynn Sisters', 
+                           ifelse(Stat.Area == 11215, 'Lynn Sisters', 
                            ifelse(Stat.Area == 10940|Stat.Area == 10941|Stat.Area == 10942|Stat.Area == 10943|
                                     Stat.Area ==10532, 'Camden', 'Other'))))))))))))))) -> harvest_all
 # remove 11511 from Lynn Canal - make it part of 'other'
 # by stat area, not needed for this analysis
 
 ## merge logbook ----
+# this is just to deal with 11510 - which was called "other" above but needs to be divided 
+#     between North Juneau and Lynn Sisters.
 harvest_all %>% 
   select(Season, Stat.Area, Number.Of.Animals, Whole.Weight..sum., Pot.Lifts, 
          survey.area)
