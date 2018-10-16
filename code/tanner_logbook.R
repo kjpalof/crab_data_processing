@@ -23,13 +23,22 @@ logb %>%
          TARGET_SPECIES_RETAINED, COMMENTS) ->log11510
 
 # sort into LS or NJ -----
+#unique(log11510$AREA_DESCRIPTION)
 log11510 %>% 
-  mutate(survey.area = case_when(grepl("james", AREA_DESCRIPTION, ignore.case = TRUE) ~ "Lynn Sisters", 
-                                 grepl("berner", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau"))
+  mutate(survey.area = case_when(grepl("james", AREA_DESCRIPTION, ignore.case = TRUE) ~ "Lynn Sisters",
+                                 grepl("lynn", AREA_DESCRIPTION, ignore.case = TRUE) ~ "Lynn Sisters",
+                                 grepl("berner", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("ben", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("eagle", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("island", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("end", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("sher", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("er", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("sher", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("mary", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("stone", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("pt", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau", 
+                                 grepl("boat", AREA_DESCRIPTION, ignore.case = TRUE) ~ "North Juneau")) -> log11510
 
-unique(log11510$AREA_DESCRIPTION)
-grep("james", log11510$AREA_DESCRIPTION, ignore.case = TRUE, value = TRUE)
 
-#log11510$AREA_DESCRIPTION[grep("james", log11510$AREA_DESCRIPTION)] -> "Lynn Sisters"
 
-log11510$AREA_DESCRIPTION == grep("james", log11510$AREA_DESCRIPTION, ignore.case = TRUE, value = TRUE)
