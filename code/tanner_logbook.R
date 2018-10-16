@@ -60,3 +60,5 @@ log11510 %>%
             pots = sum(NUMBER_POTS_LIFTED)) %>% 
   left_join(total_no) %>% 
   mutate(percent = crabs/total_no) -> percent_assigned_97_18
+
+write.csv(percent_assigned_97_18, './results/tanner/logbook_11510_98_18.csv')
