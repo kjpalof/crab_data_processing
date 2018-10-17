@@ -15,6 +15,7 @@ harvest <- read.csv("./data/Tanner_Detailed Fish Tickets.csv")
 glimpse(harvest)
 
 harvest_all <- read.csv("./data/Tanner_Detailed Fish Tickets_98_18.csv")
+logb11510 <- read.csv("./results/tanner/logbook_11510_98_18.csv")
 
 ### current year ----------------------
 unique(harvest$Stat.Area)
@@ -23,7 +24,7 @@ unique(harvest$Stat.Area)
 harvest %>%
   mutate(survey.area = ifelse(Stat.Area ==11023, 'Gambier Bay', ifelse(Stat.Area == 11423, 'Icy Strait', 
                         ifelse(Stat.Area == 11470, 'Glacier Bay', ifelse(Stat.Area == 11012, 
-                        'Thomas Bay', ifelse(Stat.Area == 11150 | Stat.Area  = 11155,'North Juneau', 
+                        'Thomas Bay', ifelse(Stat.Area == 11150, 'North Juneau', 
                          ifelse(Stat.Area ==11021 | Stat.Area ==11022, 'Pybus Bay', 
                          ifelse(Stat.Area == 11480 |Stat.Area ==11425, 'Excursion Inlet', 
                          ifelse(Stat.Area==11120 | Stat.Area ==11121, 'Holkham Bay', 
@@ -96,36 +97,39 @@ unique(harvest_all$Stat.Area)
 # refer to '2014-2015 fish tickets.xlsx'
 harvest_all %>%
   mutate(survey.area = ifelse(Stat.Area ==11023, 'Gambier Bay', ifelse(Stat.Area == 11423, 'Icy Strait', 
-                        ifelse(Stat.Area == 11470, 'Glacier Bay', ifelse(Stat.Area == 11012, 
-                         'Thomas Bay', ifelse(Stat.Area == 11150 | Stat.Area  = 11155,'North Juneau', 
-                          ifelse(Stat.Area ==11021 | Stat.Area ==11022, 'Pybus Bay', 
-                           ifelse(Stat.Area == 11480 |Stat.Area ==11425, 'Excursion Inlet', 
-                            ifelse(Stat.Area==11120 | Stat.Area ==11121, 'Holkham Bay', 
-                             ifelse(Stat.Area==11140|Stat.Area==11141|Stat.Area==11142|Stat.Area==11143,
-                              'Stephens Passage', 
-                               ifelse(Stat.Area == 11351|Stat.Area == 11352|Stat.Area == 11353|
-                                Stat.Area == 11354|Stat.Area == 11355|Stat.Area == 11356|Stat.Area == 11357|
-                                 Stat.Area == 11358, 'Peril Strait', 
-                           ifelse(Stat.Area == 11101|Stat.Area == 11102|Stat.Area == 11103|
-                                  Stat.Area == 11104|Stat.Area == 11105|Stat.Area == 11106|
-                                  Stat.Area == 11107|Stat.Area == 11108|Stat.Area == 11109|
-                                  Stat.Area == 11110|Stat.Area == 11111|Stat.Area == 11112|
-                                  Stat.Area == 11113|Stat.Area == 11114|Stat.Area == 11115|Stat.Area == 11116|
-                                  Stat.Area == 11117|Stat.Area == 11118, 'Seymour Canal', 
-                           ifelse(Stat.Area == 11431|Stat.Area == 11432|Stat.Area == 11433|Stat.Area == 11434, 
-                                  'PFred', 
-                           ifelse(Stat.Area == 11215, 'Lynn Sisters', 
-                           ifelse(Stat.Area == 10940|Stat.Area == 10941|Stat.Area == 10942|Stat.Area == 10943|
-                                    Stat.Area ==10532, 'Camden', 'Other'))))))))))))))) -> harvest_all
+                       ifelse(Stat.Area == 11470, 'Glacier Bay', ifelse(Stat.Area == 11012, 
+                        'Thomas Bay', ifelse(Stat.Area == 11150, 'North Juneau', 
+                       ifelse(Stat.Area ==11021 | Stat.Area ==11022, 'Pybus Bay', 
+                       ifelse(Stat.Area == 11480 |Stat.Area ==11425, 'Excursion Inlet', 
+                       ifelse(Stat.Area==11120 | Stat.Area ==11121, 'Holkham Bay', 
+                       ifelse(Stat.Area==11140|Stat.Area==11141|Stat.Area==11142|Stat.Area==11143,
+                        'Stephens Passage', 
+                       ifelse(Stat.Area == 11351|Stat.Area == 11352|Stat.Area == 11353|
+                       Stat.Area == 11354|Stat.Area == 11355|Stat.Area == 11356|Stat.Area == 11357|
+                       Stat.Area == 11358, 'Peril Strait', 
+                       ifelse(Stat.Area == 11101|Stat.Area == 11102|Stat.Area == 11103|
+                       Stat.Area == 11104|Stat.Area == 11105|Stat.Area == 11106|
+                       Stat.Area == 11107|Stat.Area == 11108|Stat.Area == 11109|
+                       Stat.Area == 11110|Stat.Area == 11111|Stat.Area == 11112|
+                       Stat.Area == 11113|Stat.Area == 11114|Stat.Area == 11115|Stat.Area == 11116|
+                       Stat.Area == 11117|Stat.Area == 11118, 'Seymour Canal', 
+                       ifelse(Stat.Area == 11431|Stat.Area == 11432|Stat.Area == 11433|Stat.Area == 11434, 
+                       'PFred', 
+                       ifelse(Stat.Area == 11215, 'Lynn Sisters', 
+                       ifelse(Stat.Area == 10940|Stat.Area == 10941|Stat.Area == 10942|Stat.Area == 10943|
+                       Stat.Area ==10532, 'Camden', 'Other')))))))))))))))  -> harvest_all
 # remove 11511 from Lynn Canal - make it part of 'other'
 # by stat area, not needed for this analysis
 
 ## merge logbook ----
 # this is just to deal with 11510 - which was called "other" above but needs to be divided 
 #     between North Juneau and Lynn Sisters.
+harvest_all %>% filter(Stat.Area == 11510)
 harvest_all %>% 
   select(Season, Stat.Area, Number.Of.Animals, Whole.Weight..sum., Pot.Lifts, 
          survey.area)
+
+
 
 
 harvest_all %>%
