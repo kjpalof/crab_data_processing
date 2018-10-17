@@ -121,17 +121,6 @@ harvest_all %>%
 # remove 11511 from Lynn Canal - make it part of 'other'
 # by stat area, not needed for this analysis
 
-## merge logbook ----
-# this is just to deal with 11510 - which was called "other" above but needs to be divided 
-#     between North Juneau and Lynn Sisters.
-harvest_all %>% filter(Stat.Area == 11510)
-harvest_all %>% 
-  select(Season, Stat.Area, Number.Of.Animals, Whole.Weight..sum., Pot.Lifts, 
-         survey.area)
-
-
-
-
 harvest_all %>%
   group_by(Season, Stat.Area, survey.area) %>%
   summarise(permits = length(unique(CFEC)), 
@@ -141,19 +130,34 @@ harvest_all %>%
 write.csv(harvest2_all, paste0('./results/tanner/comm_catch_by_statarea_98_', cur_yr,'.csv'))
 
 ### all years by survey area --------------------------
-harvest_all %>%
-  group_by(survey.area, Season)%>%
-  summarise(permits = length(unique(CFEC)), numbers = sum(Number.Of.Animals, na.rm = TRUE), 
-            pounds = sum(Whole.Weight..sum., na.rm = TRUE)) -> comm.catch.sum_all
-
+# add year ----
 # need a season reference column in terms of years
 library(stringr)
 numextract <- function(string){ 
   str_extract(string, "\\-*\\d+\\.*\\d*")
 } 
+harvest2_all %>% 
+  mutate(Year = as.numeric(numextract(Season))) -> harvest2_all
 
-comm.catch.sum_all %>% 
-  mutate(Year = as.numeric(numextract(Season))) -> comm.catch.sum_all
+## merge logbook ----
+# this is just to deal with 11510 - which was called "other" above but needs to be divided 
+#     between North Juneau and Lynn Sisters.
+logb11510 %>% 
+  filter(survey.area == "North Juneau") %>% 
+  select(Year = YEAR, percentNJ = percent) -> logb_merge
+
+harvest2_all %>% 
+  filter(Stat.Area == 11510) %>% 
+  left_join(logb_merge) %>% 
+  mutate(no_NJ = numbers*percentNJ,
+         no_LS = numbers*(1-percentNJ), 
+         lb_NJ = pounds*percentNJ,
+         lb_LS = pounds*(1-percentNJ))
+
+harvest2_all %>%
+  group_by(survey.area, Season)%>%
+  summarise(permits = sum(permits), numbers = sum(numbers), 
+            pounds = sum(pounds)) -> comm.catch.sum_all
 
 
 # lynn sister and north juneau need to be manually split up in area 115-10
