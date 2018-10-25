@@ -153,23 +153,25 @@ harvest2_all %>%
          no_LS = numbers*(1-percentNJ), 
          lb_NJ = pounds*percentNJ,
          lb_LS = pounds*(1-percentNJ)) %>% 
-  select(Year, no_NJ, no_LS, lb_NJ, lb_LS) %>% 
-  gather("label", "value", 4:7) %>% 
+  select(Year, permits, no_NJ, no_LS, lb_NJ, lb_LS) %>% 
+  gather("label", "value", 5:8) %>% 
   mutate(survey.area = case_when(grepl("NJ", label, ignore.case = TRUE) ~ "North Juneau",
                                  grepl("LS", label, ignore.case = TRUE) ~ "Lynn Sisters"), 
          units = case_when(grepl("no", label, ignore.case = TRUE) ~ "numbers", 
                            grepl("lb", label, ignore.case = TRUE) ~ "pounds")) %>% 
-  select(Season, Stat.Area, survey.area, Year, units, value)
+  select(Season, Stat.Area, survey.area, permits, Year, units, value) %>% 
+  spread(units, value) %>% 
+  select(Season, Stat.Area, survey.area, permits, numbers, pounds, Year) -> stat_11510
 
 
-
-
-
+### Deal with 11510 -----------
+# - take it out manipulate it above and add it back in
 harvest2_all %>%
-  group_by(survey.area, Season)%>%
+  filter(Stat.Area != 11510) %>% 
+  bind_rows(stat_11510) %>% 
+  group_by(survey.area, Season) %>%
   summarise(permits = sum(permits), numbers = sum(numbers), 
             pounds = sum(pounds)) -> comm.catch.sum_all
-
 
 # lynn sister and north juneau need to be manually split up in area 115-10
 write.csv(comm.catch.sum_all, paste0('./results/tanner/tanner_comm_catch_98_', cur_yr,'.csv'))
