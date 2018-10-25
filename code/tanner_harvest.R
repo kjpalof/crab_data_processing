@@ -15,7 +15,7 @@ harvest <- read.csv("./data/Tanner_Detailed Fish Tickets.csv")
 glimpse(harvest)
 
 harvest_all <- read.csv("./data/Tanner_Detailed Fish Tickets_98_18.csv")
-logb11510 <- read.csv("./results/tanner/logbook_11510_98_18.csv")
+logb11510 <- read.csv("./results/tanner/logbook_11510_98_18.csv") # from tanner_logbook.R calculations
 
 ### current year ----------------------
 unique(harvest$Stat.Area)
@@ -152,7 +152,18 @@ harvest2_all %>%
   mutate(no_NJ = numbers*percentNJ,
          no_LS = numbers*(1-percentNJ), 
          lb_NJ = pounds*percentNJ,
-         lb_LS = pounds*(1-percentNJ))
+         lb_LS = pounds*(1-percentNJ)) %>% 
+  select(Year, no_NJ, no_LS, lb_NJ, lb_LS) %>% 
+  gather("label", "value", 4:7) %>% 
+  mutate(survey.area = case_when(grepl("NJ", label, ignore.case = TRUE) ~ "North Juneau",
+                                 grepl("LS", label, ignore.case = TRUE) ~ "Lynn Sisters"), 
+         units = case_when(grepl("no", label, ignore.case = TRUE) ~ "numbers", 
+                           grepl("lb", label, ignore.case = TRUE) ~ "pounds")) %>% 
+  select(Season, Stat.Area, survey.area, Year, units, value)
+
+
+
+
 
 harvest2_all %>%
   group_by(survey.area, Season)%>%
