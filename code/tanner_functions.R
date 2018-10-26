@@ -8,6 +8,25 @@ library(tidyverse)
 library(weights)
 library(broom)
 
+library(stringr)
+library(reshape2)
+library(extrafont)
+library(ggthemes)
+library(plotrix)
+library(SDMTools)
+library(grid)
+library(gridExtra)
+library(FNGr)
+library(scales)
+library(cowplot)
+
+loadfonts(device="win")
+windowsFonts(Times=windowsFont("TT Times New Roman"))
+
+theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
+            theme(panel.grid.major = element_blank(),
+                  panel.grid.minor = element_blank()))
+
 ### short term function ----------------
 #input is file with last four years of data summarized by pot
 # area
