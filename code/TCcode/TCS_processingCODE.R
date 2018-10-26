@@ -10,12 +10,14 @@ cur_yr <- 2018
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/TCS/TCS data_13_17.csv")
+dat <- read.csv("./data/TCS/tanner crab survey for CSA_13_18.csv")
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/TCS/TCSstrata_area.csv") 
 baseline <- read.csv("./data/TCS/longterm_means_TC.csv")
 # brought in all data since 2013 - this was after survey was stratified.  Older data needs to be imported
 # from data file and NOT OceanAK since it won't have survey strata designations in OceanAK
+# biomass <- read.csv() # need to bring this in for figures later.
+
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
 
@@ -26,20 +28,18 @@ dat %>%
   filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> dat1
 
 dat1 %>%
-  filter(Recruit.Status == "", Length.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
+  filter(Recruit.Status == "", Width.Millimeters >= 1) # this SHOULD produce NO rows.  If it does you have data problems go back and correct
 # before moving forward.
+dat1 %>% filter(Recruit.Status == "", Number.Of.Specimens >= 1) #-> test1
+# check pot 15, 2013 Holkham Bay - pull again from OceanAK
 
 # also need to check soak time and to make sure all crab that were measured have a recruit status
 #come back later and add a soak time column - tanner soak time should be between 16-20??? double check this
 
 ##### Tanner specific manipulations -----------------------------
 ###     Survey areas ONLY 
-#             confirm that only the four surveys areas are present.
-levels(dat1$Location) # 2015 presence of one port camden pot.  remove this.
-
-dat1 %>%
-  filter(Location != "Port Camden") -> dat1
-# remove SP from here also.  These are in their own file since they now use RKC only data.
+#   confirm that only the four surveys areas are present.
+levels(dat1$Location) # 
 
 ### add columns used later 
 dat1 %>%
@@ -58,11 +58,15 @@ dat1 %>%
                                         ifelse(Sex.Code ==2 & Width.Millimeters>0 & !is.na(Width.Millimeters), 'Large.Females', 
                                          ifelse(is.na(Width.Millimeters), 'Missing', 'Missing'))))))))) -> Tdat1
 
+# confirm this worked
+Tdat1 %>% 
+  filter(mod_recruit == "Missing")
+
 ##### By Pot ----------------------------------------------------
 #Now summarize by pot - remember to keep areas seperate.
 #Need Number of Specimens by recruit class USE mod_recruit here.
 Tdat1 %>%
-  group_by(Year, Location, Pot.No, Density.Strata.Code,mod_recruit) %>% 
+  group_by(Year, Location, Pot.No, Density.Strata.Code, mod_recruit) %>% 
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
 dat3 <- dcast(dat2, Year + Location + Pot.No + Density.Strata.Code ~ mod_recruit, sum, drop=TRUE)
