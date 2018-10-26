@@ -1,29 +1,12 @@
 #K.Palof 
-# ADF&G 11-4-16 / 10-17-17
+# ADF&G 11-4-16 / 10-17-17 / 10-26-18
 # Areas: Tanner crab survey areas - includes Holkham, Thomas, Glacier Bay and Icy Strait
 # code to process data from Ocean AK to use in crab CSA models.  
-#Prior to 2016 this was done in excel then JMP
+# Prior to 2016 this was done in excel then JMP
 
-rm(list = ls()) # clear workspace since data frames have same names
-#####Load Packages ---------------------------------
-library(tidyverse)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
-library(grid)
-library(gridExtra)
-loadfonts(device="win")
-windowsFonts(Times=windowsFont("TT Times New Roman"))
-
-theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
-            theme(panel.grid.major = element_blank(),
-                  panel.grid.minor = element_blank()))
-
+#####Load ------------
+source('./code/tanner_functions.R')
+cur_yr <- 2018
 
 #####Load Data ---------------------------------------------------
 # change input file and input folder for each
