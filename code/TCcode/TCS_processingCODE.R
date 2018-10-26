@@ -67,14 +67,15 @@ Tdat1 %>%
 #Need Number of Specimens by recruit class USE mod_recruit here.
 Tdat1 %>%
   group_by(Year, Location, Pot.No, Density.Strata.Code, mod_recruit) %>% 
-  summarise(crab = sum(Number.Of.Specimens)) -> dat2
+  summarise(crab = sum(Number.Of.Specimens)) %>% 
+  filter(!is.na(mod_recruit)) -> dat2
 
 dat3 <- dcast(dat2, Year + Location + Pot.No + Density.Strata.Code ~ mod_recruit, sum, drop=TRUE)
 
 # Join area input file with dat3 - which is the data summarized by pot.  Each sampling area has it's own area file or area per
 #     strata.  This is used to calculating the weighting for weighted CPUE.
 dat3 %>%
-  select( -`NA`) %>% #remove NA column.  This is due to some data errors that need to be fixed in the entry
+  #select( -`NA`) %>% #remove NA column.  This is due to some data errors that need to be fixed in the entry
   right_join(area) -> tab
 #Calculates the number of pots per strata.  
 tab %>%
@@ -82,7 +83,7 @@ tab %>%
   summarise(npots  = length(Pot.No)) -> pots_per_strata
 
 ##### Weighted CPUE current year -----------------------------------
-#the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
+# the weighting is the product of the area for each strata and the inverse (1/n) of the number of pots per strata per year
 # need to combine data sets to accomplish this.
 
 tab %>%
