@@ -107,7 +107,7 @@ dat5 %>%
             SmallF_wt = wt.mean(Small.Females, weighting), SmallF_SE = (wt.sd(Small.Females, weighting)/(sqrt(sum(!is.na(Small.Females))))),
             MatF_wt = wt.mean(Large.Females, weighting), MatF_SE = (wt.sd(Large.Females, weighting)/(sqrt(sum(!is.na(Large.Females)))))) -> CPUE_wt_all
 # check to confirm previous years CPUEs match
-write.csv(CPUE_wt_all, './results/TCS/CPUE_all.csv') # contains last four years of survey data 
+write.csv(CPUE_wt_all, paste0('./results/TCS/', cur_yr, '/', cur_yr,'CPUE_all.csv')) # contains last four years of survey data 
 
 ### historic file ---------
 # eventually need to import data from 1997 to 2013 that has post-strata assignments.
@@ -119,10 +119,10 @@ write.csv(CPUE_wt_all, './results/TCS/CPUE_all.csv') # contains last four years 
 # function 
 head(dat3) # make sure this is the file with each recruit class as a column by year, location and pot no
 dat3 %>%
-  select (- `NA`) %>% 
-  filter(Year >=2013) -> dat3 # confirm that is only contains the last 4 years.  This year needs to be changed every year
+  #select (- `NA`) %>% 
+  filter(Year >= (cur_yr -3)) -> dat3 # confirm that is only contains the last 4 years.  This year needs to be changed every year
 
-short_t_tanner(dat3, 2017)
+short_t_tanner(dat3, cur_yr)
 
 dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE)
 
