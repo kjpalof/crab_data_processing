@@ -60,7 +60,7 @@ short_t_tanner <- function(bypot_st, year) {
     mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
                                 ifelse(p.value <0.05 & slope <0, -1, 0))) %>%
     mutate(score = 0.25*significant) -> short_term_results
-  write_csv(short_term_results, paste0('results/TCS/shortterm.csv'))
+  write_csv(short_term_results, paste0('results/TCS/', cur_yr,'/shortterm.csv'))
 }
 
 
