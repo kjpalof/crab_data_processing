@@ -141,14 +141,15 @@ ggplot(graph1, aes(Year, crab, color = mod_recruit)) + geom_point() +geom_smooth
 # compare current year's data to long term mean - for each Location
 # need to use dat5 because the weighting column is needed.
 
-long_ttest('Thomas Bay', 2017, baseline, dat5)
+#long_ttest('Thomas Bay', 2017, baseline, dat5)
 
 areas <- c('Icy Strait', 'Glacier Bay', 'Holkham Bay', 'Thomas Bay')
 #areas <- c('Holkham Bay', 'Thomas Bay')
 
-long_term <- lapply(areas, long_loop_17)
-write.csv(long_term, './results/TCS/long_term.csv')
-# **FLAG** need to save these results in a better format
+long_term <- lapply(areas, long_loop_17, curyr = cur_yr)
+long_term_all <- bind_rows(long_term)
+
+write.csv(long_term_all, paste0('./results/TCS/', cur_yr,'/long_term.csv'))
 
 ##### Weights from length - weight relatinship--------------------
 #
