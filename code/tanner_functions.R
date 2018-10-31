@@ -60,7 +60,7 @@ short_t_tanner <- function(bypot_st, year) {
     mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
                                 ifelse(p.value <0.05 & slope <0, -1, 0))) %>%
     mutate(score = 0.25*significant) -> short_term_results
-  write_csv(short_term_results, paste0('results/TCS/', cur_yr,'/shortterm.csv'))
+  write_csv(short_term_results, paste0('results/TCS/', year,'/shortterm.csv'))
 }
 
 
@@ -106,6 +106,6 @@ long_ttest <- function(area, year, baseline, bypot){
 }
 
 ### function to loop long term function above ------------
-long_loop_17 <- function(x){
-  long_ttest(x, 2017, baseline = baseline, bypot = dat5)
+long_loop_17 <- function(x, curyr){
+  long_ttest(x, curyr, baseline = baseline, bypot = dat5)
 }
