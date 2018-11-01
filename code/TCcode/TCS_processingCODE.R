@@ -175,14 +175,14 @@ Legal =c("Recruit", "Post_Recruit")
 datWL %>% 
   group_by(Location, Year) %>% 
   filter(Sex.Code == 1) %>% 
-  summarise(mature_lbs = wt.mean(weight_lb[Recruit.Status %in% Mature], 
-                                 Number.Of.Specimens[Recruit.Status %in% Mature]), 
-            legal_lbs = wt.mean(weight_lb[Recruit.Status %in% Legal], 
-                                Number.Of.Specimens[Recruit.Status %in% Legal]), 
-            prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
-                               Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
+  summarise(mature_lbs = wt.mean(weight_lb[mod_recruit %in% Mature], 
+                                 Number.Of.Specimens[mod_recruit %in% Mature]), 
+            legal_lbs = wt.mean(weight_lb[mod_recruit %in% Legal], 
+                                Number.Of.Specimens[mod_recruit %in% Legal]), 
+            prer_lbs = wt.mean(weight_lb[mod_recruit == "Pre_Recruit"], 
+                               Number.Of.Specimens[mod_recruit == "Pre_Recruit"])) -> male_weights
 # final results with score - save here
-write.csv(male_weights, './results/TCS/TCS_weights.csv')
+write.csv(male_weights, paste0('./results/TCS/', cur_yr, '/TCS_weights.csv'))
 
 
 ##### Females - large or mature females --------------------------
