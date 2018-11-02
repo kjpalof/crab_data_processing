@@ -20,7 +20,7 @@ dat <- read.csv("./data/nj_stp/Juneau_red crab survey for Tanner crab CSA_2018.c
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/nj_stp/stp_strata_area.csv") 
 #     density strata for tanner stratification in Stephen's Passage area
-#seperate <- read.csv("./data/nj_stp/RKC_TannerStrata_SP.csv") 
+seperate <- read.csv("./data/nj_stp/2018_sp_pots.csv") 
 #     from Kellii using GIS, puts Juneau area pots into density strata
 baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
 
@@ -54,29 +54,28 @@ dat1 %>%
 #come back later and add a soak time column - tanner soak time should be between 16-20??? double check this
 
 ##### seperate NJ and Juneau (also known as SP) ---------------------
-dat %>%
+dat1 %>%
   mutate(area = ifelse(Location == "Barlow Cove", "NJ", 
-                       ifelse(Location == "Juneau" & Pot.No %in% seperate$Pot_No, "Juneau", "NJ"))) ->dat
+                       ifelse(Location == "Juneau" & Pot.No %in% seperate$Pot_No, "Juneau", "NJ"))) ->dat1
 #seperating the areas since North Juneau does not have density strata - since it's a red crab area
 # and Juneau does since it's based on the Tanner Stephens Passage strata.
-dat %>% 
+dat1 %>% 
   filter(area == "NJ") ->dat.NJ
-dat %>% 
+dat1 %>% 
   filter(area == "Juneau") -> dat.SP
 
 #### North Juneau ----------------------
 ###  need to keep barlow (location code 12, 1) and juneau (location code 13, 23) seperate
 ##### Historic file ---------------------------------------
-###
-#need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
-# any issues with recalculating the crab per pot due to edits in data.
-# read in historic by pot file and make sure variable names match
-nj_histdat <- read.csv("./data/nj_stp/NJ_rawdata_all.csv")
-glimpse(histdat) # make sure the column names here match those in dat.NJ
+### these files are read in above
+#     need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
+#       any issues with recalculating the crab per pot due to edits in data.
+#       read in historic by pot file and make sure variable names match
+glimpse(NJ_hist) # make sure the column names here match those in dat.NJ
 dat.NJ %>% select(- Latitude.Decimal.Degrees, -Longitude.Decimal.Degrees) -> dat.NJ
-nj_histdat %>% select ( -X ) -> nj_histdat
-data.NJ.all <- rbind(nj_histdat, dat.NJ)
-write.csv(data.NJ.all, './results/nj_stp/NJ_rawdata_all.csv')
+NJ_hist %>% select ( -X ) -> NJ_hist
+data.NJ.all <- rbind(NJ_hist, dat.NJ)
+write.csv(data.NJ.all, paste0('./results/nj_stp/', cur_yr,'/NJ_rawdata_all.csv'))
 
 ### data manipulations ----------------------
 # easier area since there are NO strata
@@ -99,14 +98,13 @@ data.NJ.all %>%
 ##### By Pot ----------------------------------------------------
 #### Keep sub_area in the data frame!!!!!!!!!!!
 #Now summarize by pot - only one area - NJ
-
 Tdat1 %>%
   group_by(Year, area, sub_area, Pot.No, mod_recruit) %>% # use area here instead of location due to multiple location names for one survey area
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
 dat3 <- dcast(dat2, Year + area + sub_area + Pot.No ~ mod_recruit, sum, drop=TRUE)
 head(dat3)# check to make sure things worked.
-write.csv(dat3, './results/nj_stp/dat3.csv')
+#write.csv(dat3, './results/nj_stp/dat3.csv')
 
 # No weighting by strata here for RKCS data due to it being designed for RKC.
 
@@ -123,7 +121,7 @@ dat3 %>%
             SmallF_u = mean(Small.Females), SmallF_SE = (sd(Small.Females)/(sqrt(sum(!is.na(Small.Females)))))) -> CPUE_ALL
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder for each area
-write.csv(CPUE_ALL, './results/nj_stp/NJ_CPUE_ALL.csv')
+write.csv(CPUE_ALL, paste0('./results/nj_stp/', cur_yr, '/NJ_CPUE_ALL.csv'))
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years
@@ -136,7 +134,7 @@ write.csv(CPUE_ALL, './results/nj_stp/NJ_CPUE_ALL.csv')
 head(dat3)
 
 dat3 %>%
-  filter(Year >= 2014) -> dat3a # confirm that is only contains the last 4 years.  This year needs to be changed every year
+  filter(Year >= cur_yr-3) -> dat3a # confirm that is only contains the last 4 years.  
 
 dat3_long <- gather(dat3a, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
 
