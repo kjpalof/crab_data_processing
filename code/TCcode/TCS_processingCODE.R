@@ -231,30 +231,10 @@ poorclutch1 %>%
 #calculate the t.test
 Fem_long_term <- lapply(areas, Fem_long_loop) #assumes above file is named 'poorclutch1_current'
 Fem_long_term
-write.csv(Fem_long_term, paste0('./results/RKCS_tanner/', cur_yr, '/Female_long_term.csv'))
-# need to figure out a way to store these results in a better format
-poor_clutch_long(poorclutch1_current, )
 
-#calculate the t.test
-poorclutch1_current %>%
-  filter(Location == "Glacier Bay") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_current %>%
-  filter(Location == "Thomas Bay") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_current %>%
-  filter(Location == "Icy Strait") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
-poorclutch1_current %>%
-  filter(Location == "Holkham Bay") -> LT_poor
-t.test(LT_poor$var1, mu = 0.10)
+Fem_long_term_all <- bind_rows(Fem_long_term)
+write.csv(Fem_long_term_all, paste0('./results/TCS/', cur_yr,'/Fem_poorclutch_long_term.csv'))
 
-# attemps to do this all at once ***FLAG *** not working.  need to fix this.
-
-poorclutch1_current %>%
-  group_by(Location) %>%
-  do(tidy(t.test(poorclutch1_current$var1, mu=0.10, data=.))) ->lt_clutch
-  
 ##### Short term females ------------------------
 
 #look at trend for the last 4 years. 
