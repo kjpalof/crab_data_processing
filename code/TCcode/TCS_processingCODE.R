@@ -218,15 +218,23 @@ poorclutch1 %>%
 poorclutch1 %>%
   group_by(Location, Year)%>%
   summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
-write.csv(percent_low_clutch, './results/TCS/TCS_precent_low_clutch.csv')
+write.csv(percent_low_clutch, paste0('./results/TCS/', cur_yr, '/TCS_precent_low_clutch.csv'))
 
 ##### Long term females -------------------------
 
 glimpse(poorclutch1)
 #compare current year's CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2017) ->poorclutch1_current
-#make sure you have a file with only 2016 data
+  filter(Year == cur_yr) ->poorclutch1_current
+#make sure you have a file with only current year's  data and that area vector is defined - line 146
+
+#calculate the t.test
+Fem_long_term <- lapply(areas, Fem_long_loop) #assumes above file is named 'poorclutch1_current'
+Fem_long_term
+write.csv(Fem_long_term, paste0('./results/RKCS_tanner/', cur_yr, '/Female_long_term.csv'))
+# need to figure out a way to store these results in a better format
+poor_clutch_long(poorclutch1_current, )
+
 #calculate the t.test
 poorclutch1_current %>%
   filter(Location == "Glacier Bay") -> LT_poor
