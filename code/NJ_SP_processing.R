@@ -162,16 +162,16 @@ short_term_results %>%
                               ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
   mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
 # final results with score - save here
-write.csv(short_term_results, './results/nj_stp/NJ_shortterm.csv')
+write.csv(short_term_results, paste0('./results/nj_stp/', cur_yr, '/NJ_shortterm.csv'))
 
 dat3_long %>%
   filter(mod_recruit %in% recruit_used) ->st_dat3_long
 ggplot(st_dat3_long, aes(Year, crab, color = mod_recruit))+geom_point() 
 
 ##### Long term trends ---------------------
-#compare 2017 CPUE distribution to the long term mean
+#compare current year CPUE distribution to the long term mean
 dat3 %>%
-  filter(Year == 2017) ->dat3_2017
+  filter(Year == cur_yr) ->dat3_current
 #make sure you have a file with only current years data
 baseline %>% 
   filter(AREA == 'NJ') -> baseline_NJ
