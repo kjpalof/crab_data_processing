@@ -1,27 +1,19 @@
 #K.Palof 
-# ADF&G 11-15-16 / 10-11-17
+# ADF&G 11-15-16 / 10-11-17 / 11-2-18
 # Areas: tanner crab assessment of red crab areas : North Juneau and Stephens Passage
 #   done seperately because they need to be divided into these two areas based on the pot locations, 
 #   division is done by Kellii Wood - she places SP pots in their correct strata and the rest of the pots 
 #   for that year are used for NJ
-# process 2016 data first and then add to older data already stored. 
+# process current year's data first and then add to older data already stored. 
 
 # code to process data from Ocean AK to use in crab CSA models.  
 # This was done in excel then JMP, prior to 2016  
 
-rm(list = ls()) # clear workspace since data frames have same names
-#####Load Packages ---------------------------------
-library(tidyverse)
-library(stringr)
-library(reshape2)
-library(extrafont)
-library(ggthemes)
-library(plotrix)
-library(SDMTools)
-library(weights)
-library(broom)
+#####Load -------------
+source('./code/tanner_functions.R')
+cur_yr <- 2018
 
-#####Load Data ---------------------------------------------------
+#####Data ---------------------------------------------------
 # change input file and input folder for each
 dat <- read.csv("./data/nj_stp/Juneau_red crab survey for Tanner crab CSA.csv")
 # this is input from OceanAK - set up as red crab survey data for CSA
