@@ -325,14 +325,12 @@ dat.SP %>%
 #need to add current years CPUE to the historic CPUE file.  For simplicity reasons this will be inputed for each of the bays.  This will avoid
 # any issues with recalculating the crab per pot due to edits in data.
 # read in historic by pot file and make sure variable names match
-histdat <- read.csv("./data/nj_stp/SP_rawdata_all.csv")
-glimpse(histdat) # make sure the column names here match those in dat.NJ
-histdat %>% 
-  select( - X) -> histdat
+glimpse(SP_hist) # make sure the column names here match those in dat.NJ
+
 dat.SP %>% 
   select( -Latitude.Decimal.Degrees, -Longitude.Decimal.Degrees) -> dat.SP
-data.SP.all <- rbind(histdat, dat.SP)
-write.csv(data.SP.all, './results/nj_stp/SP_rawdata_all.csv', row.names = FALSE)
+data.SP.all <- rbind(SP_hist, dat.SP)
+write.csv(data.SP.all, paste0('./results/nj_stp/', cur_yr,'/SP_rawdata_all.csv', row.names = FALSE))
 
 ### data manipulations ----------------------
 # easier area since there are NO strata
@@ -349,7 +347,7 @@ data.SP.all %>%
                    ifelse(Sex.Code ==2 & Egg.Development.Code==4 & !is.na(Egg.Development.Code), 'Small.Females', 
                     ifelse(Sex.Code ==2 & Width.Millimeters>0 & !is.na(Width.Millimeters), 'Large.Females', 
                      ifelse(is.na(Width.Millimeters), 'Missing', 'Missing'))))))))) -> Tdat1
-write.csv(Tdat1, './results/nj_stp/Tdat1_SP.csv')
+# write.csv(Tdat1, paste0('./results/nj_stp/', cur_yr, '/Tdat1_SP.csv'))
 # add in area and weighting by strata
 
 ##### By Pot ----------------------------------------------------
@@ -360,7 +358,7 @@ Tdat1 %>%
   summarise(crab = sum(Number.Of.Specimens)) -> dat2
 
 dat3 <- dcast(dat2, Year + area + Pot.No + Tanner.Density.Strata.Code ~ mod_recruit, sum, drop=TRUE)
-write.csv(dat3, './results/nj_stp/SP_dat3.csv')
+# write.csv(dat3, paste0('./results/nj_stp/', cur_yr, '/SP_dat3.csv'))
 # Join area input file with dat3 - which is the data summarized by pot.  Each sampling area has it's own area file or area per
 #     strata.  This is used to calculating the weighting for weighted CPUE.
 dat3 %>%
@@ -399,7 +397,7 @@ dat5 %>%
                 (sqrt(sum(!is.na(Large.Females)))))) -> CPUE_wt_all
 # check to confirm last years CPUEs match - that's why we use two years.
 # change name and folder here.
-write.csv(CPUE_wt_all, './results/nj_stp/SP_CPUE_ALL.csv')
+write.csv(CPUE_wt_all, paste0('./results/nj_stp/', cur_yr, '/SP_CPUE_ALL.csv'))
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years
@@ -409,7 +407,7 @@ write.csv(CPUE_wt_all, './results/nj_stp/SP_CPUE_ALL.csv')
 
 head(dat3)
 dat3 %>%
-  filter(Year >= 2014) -> dat3 
+  filter(Year >= cur_yr-3) -> dat3 
 # confirm that is only contains the last 4 years.  This year needs to be changed every year
 
 dat3_long <- gather(dat3, mod_recruit, crab, Juvenile:Small.Females, factor_key = TRUE) # need the long version for this.
@@ -438,7 +436,7 @@ short_term_results %>%
                               ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
   mutate(score = 0.25*significant) -> short_term_results #estimate is slope from regression
 # final results with score - save here
-write.csv(short_term_results, './results/nj_stp/SP_shortterm.csv')
+write.csv(short_term_results, paste0('./results/nj_stp/', cur_yr, '/SP_shortterm.csv'))
 
 dat3_long %>%
   filter(mod_recruit %in% recruit_used) ->st_dat3_long
@@ -447,7 +445,7 @@ ggplot(st_dat3_long, aes(Year, crab))+geom_point() +facet_wrap (~ mod_recruit)
 ##### Long term trends ---------------------
 #compare current year CPUE distribution to the long term mean
 dat5 %>%
-  filter(Year == 2017) ->dat5_current
+  filter(Year == cur_yr) ->dat5_current
 #make sure you have a file with only 2016 data
 # long term baseline values are different for each area, I guess make a file for each area?
 #
