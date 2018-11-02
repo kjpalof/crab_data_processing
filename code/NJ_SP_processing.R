@@ -129,7 +129,7 @@ write.csv(CPUE_ALL, paste0('./results/nj_stp/', cur_yr, '/NJ_CPUE_ALL.csv'))
 #tidy(Lfem_fit) # want to save $estimate here
 #glance(Lfem_fit) # want to save r.squared and p.value
 
-# can I use red crab function here? 
+# can I use red crab function here?  **FIX**
 #source('./code/functions.R')
 head(dat3)
 
@@ -178,12 +178,12 @@ baseline %>%
 # long term baseline values are different for each area, I guess make a file for each area?
 #
 # the y = has to be changed for each area but once they are set they are the same from year to year
-t.test(dat3_2017$Large.Females, mu = baseline_NJ$Large.Female)
-t.test(dat3_2017$Pre_Recruit, mu = baseline_NJ$Pre_Recruit)
-t.test(dat3_2017$Recruit, mu = baseline_NJ$Recruit)
-t.test(dat3_2017$Post_Recruit, mu = baseline_NJ$Post_Recruit)
+t.test(dat3_current$Large.Females, mu = baseline_NJ$Large.Female)
+t.test(dat3_current$Pre_Recruit, mu = baseline_NJ$Pre_Recruit)
+t.test(dat3_current$Recruit, mu = baseline_NJ$Recruit)
+t.test(dat3_current$Post_Recruit, mu = baseline_NJ$Post_Recruit)
 
-# need to summarize these to save the results - see function for red crab
+# **FIX** need to summarize these to save the results - see function for red crab
 
 ##### Weights from length - weight relatinship--------------------
 # Linear model is changed for each area
@@ -198,18 +198,18 @@ Legal =c("Recruit", "Post_Recruit")
 datWL %>% 
   group_by(Year) %>% 
   filter(Sex.Code == 1) %>% 
-  summarise(mature_lbs = wt.mean(weight_lb[Recruit.Status %in% Mature], 
-                                 Number.Of.Specimens[Recruit.Status %in% Mature]), 
-            legal_lbs = wt.mean(weight_lb[Recruit.Status %in% Legal], 
-                                Number.Of.Specimens[Recruit.Status %in% Legal]), 
-            prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
-                               Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
+  summarise(mature_lbs = wt.mean(weight_lb[mod_recruit %in% Mature], 
+                                 Number.Of.Specimens[mod_recruit %in% Mature]), 
+            legal_lbs = wt.mean(weight_lb[mod_recruit %in% Legal], 
+                                Number.Of.Specimens[mod_recruit %in% Legal]), 
+            prer_lbs = wt.mean(weight_lb[mod_recruit == "Pre_Recruit"], 
+                               Number.Of.Specimens[mod_recruit == "Pre_Recruit"])) -> male_weights
 
-write.csv(male_weights, './results/nj_stp/NJ_weights.csv')
+write.csv(male_weights, paste0('./results/nj_stp/', cur_yr, '/NJ_weights.csv'))
 
 ##### survey mid-date --------------------
 Tdat1 %>%
-  filter(Year ==2016) %>%
+  filter(Year == cur_yr) %>%
   distinct(Time.Hauled)
 
 ##### Females - large or mature females --------------------------
@@ -248,13 +248,13 @@ poorclutch1 %>%
   group_by(Year)%>%
   summarise(Pclutch = mean(var1)*100 , 
             Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
-write.csv(percent_low_clutch, './results/nj_stp/NJ_precent_low_clutch.csv')
+write.csv(percent_low_clutch, paste0('./results/nj_stp/', cur_yr, '/NJ_precent_low_clutch.csv'))
 
 ##### Long term females -------------------------
 glimpse(poorclutch1)
 #compare current year's CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2017) ->poorclutch1_current
+  filter(Year == cur_yr) ->poorclutch1_current
 #make sure you have a file with only current year's data
 #calculate the t.test
 t.test(poorclutch1_current$var1, mu = 0.10)
@@ -265,7 +265,7 @@ t.test(poorclutch1_current$var1, mu = 0.10)
 head(poorclutch1) # should have the last 4 years from OceanAK
 
 poorclutch1 %>%
-  filter(Year >= 2014) -> LgF_short # short term file has last 4 years in it
+  filter(Year >= cur_yr-3) -> LgF_short # short term file has last 4 years in it
 
 # need to run the regression for each area.
 LgF_short %>% 
@@ -289,7 +289,7 @@ F_short_term_results %>%
                               ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
   mutate(score = 0.25*significant) -> F_short_term_results #estimate is slope from regression
 # final results with score - save here
-write.csv(F_short_term_results, './results/nj_stp/NJ_Fem_shortterm.csv')
+write.csv(F_short_term_results, paste0('./results/nj_stp/', cur_yr, '/NJ_Fem_shortterm.csv'))
 ggplot(poorclutch1, aes(Year, var1))+geom_point() 
 
 ##### egg percentage overall -----------------------------------
@@ -302,7 +302,7 @@ clutch_by_pot %>%
   group_by(Year)%>%
   summarise(mean = mean(egg_mean), 
             egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
-write.csv(percent_clutch, './results/nj_stp/NJ_percent_clutch.csv')
+write.csv(percent_clutch, paste0('./results/nj_stp/', cur_yr, '/NJ_percent_clutch.csv'))
 
 #### Stephens Passage  ----------------------
 ###  All these are Juneau so no sub_area (location code 13, 23) 
