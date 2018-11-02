@@ -110,7 +110,7 @@ long_loop_17 <- function(x, curyr){
   long_ttest(x, curyr, baseline = baseline, bypot = dat5)
 }
 
-### female percent poor clutch ---------
+### female percent poor clutch long term---------
 poor_clutch_long <- function(poorclutch_current, area){
   poorclutch_current %>% 
     filter(Location == area) -> data.use
@@ -137,7 +137,36 @@ Fem_long_loop <- function(x){
   poor_clutch_long(poorclutch_current = poorclutch1_current, x)
 }
 
-
+### female percent poor clutch short term -------------
+poor_clutch_short <- function(females_all, year){
+  females_all %>%
+    filter(Year >= (year-3)) -> LgF_short # short term file has last 4 years in it
+  #output this file as .csv to add to next year
+  #write_csv(females_all, paste0('results/redcrab/', area,'/poorclutch_females_all.csv'))
+  
+  LgF_short %>% 
+    group_by(Location) %>% 
+    do(fit = lm(var1 ~ Year, data =.)) -> fem_short
+  fem_short %>% 
+    tidy(fit) -> fem_short_slope
+  fem_short %>% 
+    glance(fit) -> fem_short_out
+  
+  fem_short_out %>% 
+    select(Location, r.squared, p.value) -> fem_short_term_out
+  fem_short_slope %>% 
+    filter(term == 'Year') %>% 
+    rename(slope = estimate) %>% 
+    select(Location, slope) %>% 
+    right_join(fem_short_term_out) -> fem_short_results
+  
+  #Now need to add column for significance and score
+  fem_short_results %>%
+    mutate(significant = ifelse(p.value < 0.05 & slope > 0, -1,
+                                ifelse(p.value <0.05 & slope <0, 1, 0))) %>%
+    mutate(score = 0.25*significant) -> short_term_results
+  write_csv(short_term_results, paste0('results/TCS/', year, '/female_shortterm.csv'))
+}
 
 
 
