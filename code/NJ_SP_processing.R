@@ -476,19 +476,19 @@ Legal =c("Recruit", "Post_Recruit")
 datWL %>% 
   group_by(Year) %>% 
   filter(Sex.Code == 1) %>% 
-  summarise(mature_lbs = wt.mean(weight_lb[Recruit.Status %in% Mature], 
-                                 Number.Of.Specimens[Recruit.Status %in% Mature]), 
-            legal_lbs = wt.mean(weight_lb[Recruit.Status %in% Legal], 
-                                Number.Of.Specimens[Recruit.Status %in% Legal]), 
-            prer_lbs = wt.mean(weight_lb[Recruit.Status == "Pre_Recruit"], 
-                               Number.Of.Specimens[Recruit.Status == "Pre_Recruit"])) -> male_weights
+  summarise(mature_lbs = wt.mean(weight_lb[mod_recruit %in% Mature], 
+                                 Number.Of.Specimens[mod_recruit %in% Mature]), 
+            legal_lbs = wt.mean(weight_lb[mod_recruit %in% Legal], 
+                                Number.Of.Specimens[mod_recruit %in% Legal]), 
+            prer_lbs = wt.mean(weight_lb[mod_recruit == "Pre_Recruit"], 
+                               Number.Of.Specimens[mod_recruit == "Pre_Recruit"])) -> male_weights
 # final results with score - save here
 
-write.csv(male_weights, './results/nj_stp/SP_weights.csv')
+write.csv(male_weights, paste0('./results/nj_stp/', cur_yr, '/SP_weights.csv'))
 
 ##### survey mid-date --------------------
 Tdat1 %>%
-  filter(Year == 2017) %>%
+  filter(Year == cur_yr) %>%
   distinct(Time.Hauled)
 
 ##### Females - large or mature females --------------------------
@@ -526,13 +526,13 @@ poorclutch1 %>%
   group_by(area, Year)%>%
   summarise(Pclutch = mean(var1)*100 , 
             Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
-write.csv(percent_low_clutch, './results/nj_stp/SP_precent_low_clutch.csv')
+write.csv(percent_low_clutch, paste0('./results/nj_stp/', cur_yr, '/SP_precent_low_clutch.csv'))
 
 ##### Long term females -------------------------
 glimpse(poorclutch1)
 #compare 2016 CPUE distribution to the long term mean
 poorclutch1 %>%
-  filter(Year == 2017) ->poorclutch1_current
+  filter(Year == cur_yr) ->poorclutch1_current
 #make sure you have a file with only 2016 data
 #calculate the t.test
 t.test(poorclutch1_current$var1, mu = 0.10)
@@ -542,7 +542,7 @@ t.test(poorclutch1_current$var1, mu = 0.10)
 head(poorclutch1) # should have the last 4 years from OceanAK
 
 poorclutch1 %>%
-  filter(Year >= 2014) -> LgF_short # short term file has last 4 years in it
+  filter(Year >= cur_yr-3) -> LgF_short # short term file has last 4 years in it
 
 # need to run the regression for each area.
 LgF_short %>% 
@@ -564,7 +564,7 @@ F_short_term_results %>%
                               ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
   mutate(score = 0.25*significant) -> F_short_term_results #estimate is slope from regression
 # final results with score - save here
-write.csv(F_short_term_results, './results/nj_stp/SP_Fem_shortterm.csv')
+write.csv(F_short_term_results, paste0('./results/nj_stp/', cur_yr, '/SP_Fem_shortterm.csv'))
 ggplot(poorclutch1, aes(Year, var1))+geom_point() 
 
 ##### egg percentage overall -----------------------------------
@@ -575,4 +575,4 @@ LgF_Tdat1 %>%
 clutch_by_pot %>%
   group_by(Location, Year)%>%
   summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
-write.csv(percent_clutch, './results/nj_stp/SP_percent_clutch.csv')
+write.csv(percent_clutch, paste0('./results/nj_stp/', cur_yr, '/SP_percent_clutch.csv'))
