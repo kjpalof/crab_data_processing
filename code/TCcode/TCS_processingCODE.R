@@ -236,37 +236,12 @@ Fem_long_term_all <- bind_rows(Fem_long_term)
 write.csv(Fem_long_term_all, paste0('./results/TCS/', cur_yr,'/Fem_poorclutch_long_term.csv'))
 
 ##### Short term females ------------------------
-
 #look at trend for the last 4 years. 
 head(poorclutch1) # has data since 2013
 
-poorclutch1 %>%
-  filter(Year >= 2014) -> LgF_short # short term file has last 4 years in it
+poor_clutch_short(poorclutch1, cur_yr)
 
-# need to run the regression for each area.
-LgF_short %>% 
-  group_by(Location) %>%
-  do(fit = lm(var1 ~ Year, data =.)) %>%
-  tidy(fit) %>% 
-  filter(term == 'Year') %>% 
-  select(Location, estimate) -> one
-LgF_short %>% 
-  group_by(Location) %>%
-  do(fit = lm(var1 ~ Year, data =.)) %>%
-  glance(fit) %>% 
-  select(Location, r.squared, p.value) ->two
-one %>%
-  right_join(two) -> F_short_term_results # estimate here is slope from regression
-
-#Now need to add column for significance and score
-F_short_term_results %>%
-  mutate(significant = ifelse(p.value < 0.05 & estimate > 0, 1,
-                              ifelse(p.value <0.05 & estimate <0, -1, 0))) %>%
-  mutate(score = 0.25*significant) -> F_short_term_results #estimate is slope from regression
-# final results with score - save here
-write.csv(F_short_term_results, './results/TCS/TCS_Fem_shortterm.csv')
 ggplot(poorclutch1, aes(Year, var1))+geom_point() +facet_wrap(~Location)
-
 
 ##### egg percentage overall -----------------------------------
 LgF_Tdat1 %>%
