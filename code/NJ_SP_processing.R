@@ -15,13 +15,19 @@ cur_yr <- 2018
 
 #####Data ---------------------------------------------------
 # change input file and input folder for each
-dat <- read.csv("./data/nj_stp/Juneau_red crab survey for Tanner crab CSA.csv")
+dat <- read.csv("./data/nj_stp/Juneau_red crab survey for Tanner crab CSA_2018.csv")
+# all current year pots from Juneau and Barlow Cove
 # this is input from OceanAK - set up as red crab survey data for CSA
 area <- read.csv("./data/nj_stp/stp_strata_area.csv") 
-seperate <- read.csv("./data/nj_stp/RKC_TannerStrata_SP.csv") 
+#     density strata for tanner stratification in Stephen's Passage area
+#seperate <- read.csv("./data/nj_stp/RKC_TannerStrata_SP.csv") 
+#     from Kellii using GIS, puts Juneau area pots into density strata
 baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
+
+SP_hist <- read.csv(paste0('./results/nj_stp/', cur_yr-1, '/SP_rawdata_all.csv'))
+NJ_hist <- read.csv(paste0('./results/nj_stp/', cur_yr-1, '/NJ_rawdata_all.csv'))
 # bring in historic data for each area below.
-## !!!!  In future years this file will be 'JNU_CPUE_ALL' and just get updated with current years data.
+
 #females <- read.csv("./data/Juneau/RKC_11_16_large females_by_pot.csv")
 head(dat)
 glimpse(dat) # confirm that data was read in correctly.
@@ -31,9 +37,8 @@ dat %>% select(Year, Location.Code, Location, Pot.No, Depth.Fathoms, Latitude.De
                Longitude.Decimal.Degrees) %>% 
   group_by(Year, Location, Pot.No) %>% 
   summarise(Depth.Fathoms = mean(Depth.Fathoms), Latitude.Decimal.Degrees = mean(Latitude.Decimal.Degrees), 
-            Longitude.Decimal.Degrees = mean(Longitude.Decimal.Degrees)) -> juneau_pot_info_17
-write.csv(juneau_pot_info_17, './data/nj_stp/juneau_pot_info_17.csv')
-
+            Longitude.Decimal.Degrees = mean(Longitude.Decimal.Degrees)) -> juneau_pot_info
+write.csv(juneau_pot_info, paste0('./data/nj_stp/juneau_pot_info_', cur_yr,'.csv'))
 
 ##### Initial review of new data ---------------------------------
 # remove pots with Pot condition code that's not "normal" or 1 
