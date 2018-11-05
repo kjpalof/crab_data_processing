@@ -256,3 +256,12 @@ write.csv(percent_clutch, './results/TCS/TCS_percent_clutch.csv')
 # these don't match previous calculations in JMP- why ??
 
 
+## panel figures -----
+panel_figure("EI", 2018, "Excursion Inlet", 2)
+panel_figure("EI", 2018, "Excursion Inlet", 3)
+
+panel_figure("SC", 2018, "Seymour Canal", 2)
+panel_figure("SC", 2018, "Seymour Canal", 3)
+
+panel_figure("PB", 2018, "Pybus Bay", 2)
+panel_figure("PB", 2018, "Pybus Bay", 3)
