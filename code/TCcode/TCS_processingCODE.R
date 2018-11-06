@@ -259,9 +259,24 @@ LgF_Tdat1 %>%
 clutch_by_pot %>%
   group_by(Location, Year)%>%
   summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
-write.csv(percent_clutch, './results/TCS/TCS_percent_clutch.csv')
+write.csv(percent_clutch, paste0('./results/TCS/', cur_yr,'/TCS_percent_clutch.csv'))
 # these don't match previous calculations in JMP- why ??
 
+## female historic data combined ----------------
+historic_low <- read.csv('./results/TCS/2018/historic_TCS_precent_low_clutch.csv')
+historic_clutch <- read.csv('./results/TCS/2018/historic_TCS_percent_clutch.csv')
+
+historic_low %>% 
+  filter(Year < 2013) %>% 
+  select (-X) %>% 
+  bind_rows(percent_low_clutch) %>% 
+  write.csv(paste0('./results/TCS/', cur_yr, '/all_years_percent_low_clutch.csv'))
+
+historic_clutch %>% 
+  filter(Year < 2013) %>% 
+  select (-X) %>% 
+  bind_rows(percent_clutch) %>% 
+  write.csv(paste0('./results/TCS/', cur_yr, '/all_years_percent_clutch.csv'))
 
 ## panel figures -----
 panel_figure("EI", 2018, "Excursion Inlet", 2)
