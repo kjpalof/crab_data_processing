@@ -149,3 +149,50 @@ dat5 %>%
 
 # check to confirm previous years CPUEs match
 write.csv(CPUE_wt_all, paste0('./results/TCS/', cur_yr, '/Historic_CPUE_all.csv'))
+
+
+##### Females - large or mature females --------------------------
+# large or mature females
+Tdat1 %>%
+  filter(Sex.Code == 2, mod_recruit == 'Large.Females') -> LgF_Tdat1
+
+#make sure this does NOT include immature females
+# this is egg_development_code == 4
+LgF_Tdat1 %>%
+  filter(Egg.Development.Code == 4)
+##### % poor (<10 %) clutch -----------------------------------
+# This selects those rows that do not have an egg percentage.
+# if these rows have a egg. development code and egg condition code then the egg percentage should be there
+# if developement = 3 and condition is 4 or 5 then egg percentage should be 0.
+LgF_Tdat1[is.na(LgF_Tdat1$Egg.Percent),]
+# need to change these to 0. 
+LgF_Tdat1 %>%
+  mutate(Egg.Percent =ifelse(is.na(Egg.Percent) & Egg.Development.Code > 0,
+                             0, Egg.Percent)) -> LgF_Tdat1
+LgF_Tdat1 %>%
+  mutate(Less25 = ifelse(Egg.Percent < 25, "y", "n"))-> LgF_Tdat1 # where 1 is yes and 2 is no
+
+LgF_Tdat1 %>%
+  filter(!is.na(Less25)) %>% 
+  group_by(Year, Location, Pot.No, Less25) %>%
+  summarise(no_sum = sum(Number.Of.Specimens)) -> poorclutch
+
+poorclutch1 <- dcast(poorclutch, Year + Location + Pot.No ~ Less25, sum, drop=TRUE)
+
+poorclutch1 %>%
+  mutate(var1 = y / (y+n)) -> poorclutch1
+poorclutch1 %>%
+  group_by(Location, Year)%>%
+  summarise(Pclutch = mean(var1)*100 , Pclutch.se = ((sd(var1))/sqrt(sum(!is.na(var1))))*100) -> percent_low_clutch
+write.csv(percent_low_clutch, paste0('./results/TCS/', cur_yr, '/historic_TCS_precent_low_clutch.csv'))
+
+##### egg percentage overall -----------------------------------
+LgF_Tdat1 %>%
+  filter(!is.na(Egg.Percent)) %>% 
+  group_by(Year, Location, Pot.No) %>%
+  summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
+
+clutch_by_pot %>%
+  group_by(Location, Year)%>%
+  summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
+write.csv(percent_clutch, paste0('./results/TCS/', cur_yr, '/historic_TCS_percent_clutch.csv'))
