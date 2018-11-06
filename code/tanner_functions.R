@@ -19,6 +19,7 @@ library(gridExtra)
 library(FNGr)
 library(scales)
 library(cowplot)
+library(readxl)
 
 loadfonts(device="win")
 windowsFonts(Times=windowsFont("TT Times New Roman"))
@@ -178,8 +179,8 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   # option refers to output from this function. 
   # Option 1 - all 4 on one file, Option 2 - just p1, p4 (males), 
   # Option 3 - p2,p3 (females)
-  CPUE_wt_graph <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
-                                   '/RKCS_CPUE_all.csv'))
+  CPUE_wt_graph <- read.csv(paste0('./results/TCS/', cur_yr,
+                                   '/2018_CPUE_historic.csv'))
   poorclutch_summary <- read.csv(paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_percent_low_clutch.csv'))
   egg_mean_all <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
                                   '/RKCS_percent_clutch.csv'))
