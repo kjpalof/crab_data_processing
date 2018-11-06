@@ -112,6 +112,13 @@ write.csv(CPUE_wt_all, paste0('./results/TCS/', cur_yr, '/', cur_yr,'CPUE_all.cs
 ### historic file ---------
 # eventually need to import data from 1997 to 2013 that has post-strata assignments.
 # need this data for biomass and CPUE trend figures to be in R - need to get them out of Sigma Plot
+hist_dat <- read.csv('./results/TCS/2018/Historic_CPUE_all.csv')
+hist_dat %>% 
+  select(-X) %>% 
+  filter(Year < 2013) %>% 
+  bind_rows(CPUE_wt_all) -> all_CPUE_data
+write.csv(all_CPUE_data, paste0('./results/TCS/', cur_yr, '/', cur_yr,'_CPUE_historic.csv'))
+
 
 ##### Short term trends -------------------------------------
 #look at trend for the last 4 years.  Need a file with last four years
