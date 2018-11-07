@@ -171,7 +171,7 @@ poor_clutch_short <- function(females_all, year){
 
 ## CONF panel figure ---------------
 panel_figure <- function(survey.location, cur_yr, area, option){
-  # survey.location here are codes: EI, PS, PB, GB, SC, LS
+  # survey.location here are codes: Thomas Bay, Icy Strait, Holkham Bay, and Glacier Bay
   # area is used in biomass /harvest file:  Icy Strait, Glacier Bay, 
   # Holkham Bay, Thomas Bay, Stephens Passage, North Juneau, Lynn Sisters, Pybus Bay, 
   # Gambier Bay, Excursion Inlet, Peril Strait, Seymour Canal  
