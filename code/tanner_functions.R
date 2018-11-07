@@ -359,7 +359,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     scale_y_continuous(labels = comma, limits = c(0,max(biomass_graph$pounds, 
                                                         na.rm = TRUE) + 25000),
                        breaks= seq(min(0), max(max(biomass_graph$pounds, 
-                                                   na.rm = TRUE)+25000), by = 50000)) +
+                                                  na.rm = TRUE)+25000), by = 100000)) +
     theme(legend.position = c(0.7,0.8), 
           axis.text = element_text(size = 12), 
           axis.title=element_text(size=14,face="bold")) + 
