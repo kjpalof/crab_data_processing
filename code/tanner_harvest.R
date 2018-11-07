@@ -169,7 +169,7 @@ harvest2_all %>%
 harvest2_all %>%
   filter(Stat.Area != 11510) %>% 
   bind_rows(stat_11510) %>% 
-  group_by(survey.area, Season) %>%
+  group_by(survey.area, Season, Year) %>%
   summarise(permits = sum(permits), numbers = sum(numbers), 
             pounds = sum(pounds)) -> comm.catch.sum_all
 
@@ -184,9 +184,9 @@ write.csv(comm.catch.sum_all, paste0('./results/tanner/tanner_comm_catch_98_', c
 
 ### all years total annual harvest  ---------------------
 comm.catch.sum_all %>%
-  group_by(Season)%>%
+  group_by(Season, Year)%>%
   summarise(numbers = sum(numbers), pounds = sum(pounds)) -> annual_catch_all
 
-write.csv(annual_catch, paste0('./results/tanner/tanner_annual_catch_98_', cur_yr,'.csv'))
+write.csv(annual_catch_all, paste0('./results/tanner/tanner_annual_catch_98_', cur_yr,'.csv'))
 
 
