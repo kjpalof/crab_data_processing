@@ -181,11 +181,11 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   # Option 3 - p2,p3 (females)
   CPUE_wt_graph <- read.csv(paste0('./results/TCS/', cur_yr,
                                    '/2018_CPUE_historic.csv'))
-  poorclutch_summary <- read.csv(paste0('./results/RKCS_tanner/', cur_yr, '/RKCS_percent_low_clutch.csv'))
-  egg_mean_all <- read.csv(paste0('./results/RKCS_tanner/', cur_yr,
-                                  '/RKCS_percent_clutch.csv'))
+  poorclutch_summary <- read.csv(paste0('./results/TCS/', cur_yr, '/all_years_percent_low_clutch.csv'))
+  egg_mean_all <- read.csv(paste0('./results/TCS/', cur_yr,
+                                  '/all_years_percent_clutch.csv'))
   # file with year and mean percent poor clutch and se poor clutch 
-  baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
+  baseline <- read.csv("./data/TCS/longterm_means_TC.csv")
   biomass <- read.csv("./data/rkc_tanner/tanner_2018_biomassmodel.csv") 
   harvest <- read.csv("./results/tanner/tanner_comm_catch_98_2018.csv") # needs to be updated with
   # recent year - both biomass and harvest files.
@@ -196,7 +196,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   # create data frame that has mature males - just means
   # data fame that has mature males - just SE
   CPUE_wt_graph %>% 
-    filter(AREA == survey.location) %>% 
+    filter(Location == survey.location) %>% 
     select(Year,Pre_Recruit_u, Recruit_u, Post_Recruit_u, 
            PreR_SE, Rec_SE, PR_SE) -> males
   males_long <- gather(males, recruit.status, value1, Pre_Recruit_u:PR_SE, factor_key = TRUE)
