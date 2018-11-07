@@ -287,3 +287,6 @@ panel_figure("Glacier Bay", 2018, "Glacier Bay", 3)
 
 panel_figure("Thomas Bay", 2018, "Thomas Bay", 2)
 panel_figure("Thomas Bay", 2018, "Thomas Bay", 3)
+
+panel_figure("Holkham Bay", 2018, "Holkham Bay", 2)
+panel_figure("Holkham Bay", 2018, "Holkham Bay", 3)
