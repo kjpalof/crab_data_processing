@@ -279,11 +279,11 @@ historic_clutch %>%
   write.csv(paste0('./results/TCS/', cur_yr, '/all_years_percent_clutch.csv'))
 
 ## panel figures -----
-panel_figure("EI", 2018, "Excursion Inlet", 2)
-panel_figure("EI", 2018, "Excursion Inlet", 3)
+panel_figure("Icy Strait", 2018, "Icy Strait", 2)
+panel_figure("Icy Strait", 2018, "Icy Strait", 3)
 
-panel_figure("SC", 2018, "Seymour Canal", 2)
-panel_figure("SC", 2018, "Seymour Canal", 3)
+panel_figure("Glacier Bay", 2018, "Glacier Bay", 2)
+panel_figure("Glacier Bay", 2018, "Glacier Bay", 3)
 
-panel_figure("PB", 2018, "Pybus Bay", 2)
-panel_figure("PB", 2018, "Pybus Bay", 3)
+panel_figure("Thomas Bay", 2018, "Thomas Bay", 2)
+panel_figure("Thomas Bay", 2018, "Thomas Bay", 3)
