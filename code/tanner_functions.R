@@ -280,7 +280,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     #                   oob = rescale_none) +
     ggtitle(survey.location) + ylab("Mature male CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
-    scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
+    scale_x_continuous(limits = c(1997, cur_yr), breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                   width =.4) +
     geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey65")+
