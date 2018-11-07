@@ -197,12 +197,12 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   # data fame that has mature males - just SE
   CPUE_wt_graph %>% 
     filter(Location == survey.location) %>% 
-    select(Year,Pre_Recruit_u, Recruit_u, Post_Recruit_u, 
+    select(Year,Pre_Recruit_wt, Recruit_wt, Post_Recruit_wt, 
            PreR_SE, Rec_SE, PR_SE) -> males
-  males_long <- gather(males, recruit.status, value1, Pre_Recruit_u:PR_SE, factor_key = TRUE)
+  males_long <- gather(males, recruit.status, value1, Pre_Recruit_wt:PR_SE, factor_key = TRUE)
   males_long %>% 
-    mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_u",
-                                  "pre.recruit", ifelse(recruit.status == "Recruit_u", 
+    mutate(recruit.class = ifelse(recruit.status == "Pre_Recruit_wt",
+                                  "pre.recruit", ifelse(recruit.status == "Recruit_wt", 
                                                         "recruit", ifelse(recruit.status == "PreR_SE", 
                                                                           "pre.recruit", ifelse(recruit.status == "Rec_SE", 
                                                                                                 "recruit", "post.recruit "))))) %>% 
@@ -216,9 +216,9 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   ### females/juv prep ------------
   # current only mature females is graphed for tanner crab areas - why?  not sure check on this.
   CPUE_wt_graph %>% 
-    filter(AREA == survey.location) %>% 
-    select(Year, MatF_u, MatF_SE) -> femjuv
-  femjuv_long <- gather(femjuv, recruit.status, value1, MatF_u:MatF_SE, factor_key = TRUE)
+    filter(Location == survey.location) %>% 
+    select(Year, MatF_wt, MatF_SE) -> femjuv
+  femjuv_long <- gather(femjuv, recruit.status, value1, MatF_wt:MatF_SE, factor_key = TRUE)
   femjuv_long %>% 
     mutate(recruit.class = "mature.female") %>% 
     mutate(type = ifelse(recruit.status == "MatF_SE", 
@@ -227,15 +227,15 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   
   # baseline cpue values -----
   baseline %>% 
-    filter(AREA == survey.location) ->baseline2
+    filter(Location == survey.location) ->baseline2
   
   ## poor clutch --------
   poorclutch_summary %>% # this data is coming in as a percentage not a ratio
-    filter(AREA == survey.location) %>% 
+    filter(Location == survey.location) %>% 
     select(Year, Pclutch, Pclutch.se) ->poorclutch_summary_a
   ## mean egg percent -------
   egg_mean_all %>% 
-    filter(AREA == survey.location) %>% 
+    filter(Location == survey.location) %>% 
     select(Year, mean, egg.se) -> egg_mean_all_a
   ## female egg data -------
   # combine these data sets for graphing.  Create one with means and one with SEs.
@@ -262,7 +262,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     left_join(harvest_a) %>% 
     select(Year, Area, harvest = pounds, Legal, Mature) %>% 
     gather(type, pounds, harvest:Mature, factor_key = TRUE) %>% 
-    filter(Area == area) -> biomass_graph
+    filter(Area == survey.location) -> biomass_graph
   
   biomass_graph %>% 
     filter(Year < 2007) %>% 
@@ -278,7 +278,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     scale_shape_manual(name = "", values = c(15, 16, 17))+
     #scale_y_continuous(limits = c(0,(max(males_graph$mean) + max(males_graph$se))),
     #                   oob = rescale_none) +
-    ggtitle(area) + ylab("Mature male CPUE (number/pot)")+ xlab(NULL)+
+    ggtitle(survey.location) + ylab("Mature male CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
@@ -312,7 +312,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
           axis.title=element_text(size=14,face="bold"))
   
   if(option == 3){
-    p2 = p2 + ggtitle(paste0(area, ' - Females')) +
+    p2 = p2 + ggtitle(paste0(survey.location, ' - Females')) +
       theme(plot.title = element_text(size = 24))
   }
   
