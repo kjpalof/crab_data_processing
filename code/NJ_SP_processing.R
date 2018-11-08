@@ -569,6 +569,7 @@ ggplot(poorclutch1, aes(Year, var1))+geom_point()
 
 ##### egg percentage overall -----------------------------------
 LgF_Tdat1 %>%
+  filter(!is.na(Egg.Percent)) %>% 
   group_by(Year, Location, Pot.No) %>%
   summarise (egg_mean = wt.mean(Egg.Percent, Number.Of.Specimens)) -> clutch_by_pot
 
@@ -576,3 +577,23 @@ clutch_by_pot %>%
   group_by(Location, Year)%>%
   summarise(mean = mean(egg_mean), egg.se = (sd(egg_mean)/sqrt(sum(!is.na(egg_mean))))) ->percent_clutch
 write.csv(percent_clutch, paste0('./results/nj_stp/', cur_yr, '/SP_percent_clutch.csv'))
+
+
+
+# panel figure SP ---------------
+survey.location = "Juneau"
+area = "Stephens Passage"
+abrv = "SP"
+panel_figure_jnu("Juneau", 2018, "Stephens Passage", "SP", 2)
+panel_figure_jnu("Juneau", 2018, "Stephens Passage", "SP", 3)
+
+
+# panel figure NJ ----
+# issues is that prior to 2009 don't have good idea of what raw data is used.  Take CPUE/SE and 
+#     female info from Sigma Plot file.
+survey.location = "North Juneau"
+area = "North Juneau"
+abrv = "NJ"
+panel_figure_nj("North Juneau", 2018, "North Juneau", "NJ", 2)
+panel_figure_nj("North Juneau", 2018, "North Juneau", "NJ", 3)
+
