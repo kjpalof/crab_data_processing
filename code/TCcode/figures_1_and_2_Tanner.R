@@ -23,21 +23,28 @@ survey_biomass <- read.csv("./data/TCS/survey_areas_biomass.csv")
 # Figure 1 ------------
 survey_biomass %>% 
   gather(type, pounds, Legal:Mature, factor_key = TRUE) %>% 
-  ggplot(aes(Year, pounds, group = type)) +
-  geom_line(aes(color = type, group = type, linetype = type))+
-  geom_point(aes(color = type, shape = type), size =3) +
-  scale_colour_manual(name = "", values = c("grey1", "grey48"))+
-  scale_shape_manual(name = "", values = c(16, 1))+
+  ggplot(aes(Year, y = pounds/1000000, group = type)) +
+  geom_line(aes(color = type, linetype = type))+
+  geom_point(aes(fill = type, shape = type), size =3) +
+  scale_fill_manual(name = "", values = c("black", "gray100")) + 
+  scale_colour_manual(name = "", values = c("gray1", "grey48"))+
+  scale_shape_manual(name = "", values = c(21, 21))+
   scale_linetype_manual(name = "", values = c("solid", "dashed")) +
-  ylab("Biomass (lbs)") + 
+  ylab("Biomass (1,000,000 lbs)") + 
   xlab("Survey Year") +
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-  scale_y_continuous(labels = comma, limits = c(0,max(survey_biomass$Mature, 
-                                                      na.rm = TRUE) + 1500000)) +
-  theme(legend.position = c(0.55,0.8), 
-        axis.text = element_text(size = 12), 
+  scale_y_continuous(labels = comma, limits = c(0,max(survey_biomass$Mature/1000000, 
+                                                      na.rm = TRUE) + 1.5), 
+                     breaks= seq(min(0), max(max(survey_biomass$Mature/1000000, 
+                                                 na.rm = TRUE)+ 1.5), by = 1.0)) +
+  theme(legend.position = c(0.65,0.80), 
+        axis.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
         axis.title=element_text(size=14,face="bold"))
+
+  ggsave(paste0('./figures/tanner/', cur_yr,'_figure1.png'), dpi = 800,
+         width = 8, height = 5.75)
 
 
 
