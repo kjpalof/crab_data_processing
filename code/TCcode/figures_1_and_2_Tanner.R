@@ -76,25 +76,27 @@ annual_harvest %>%
 ggplot(figure2, aes(x = Year, y = pounds/1000000)) +
   geom_bar(stat = "identity", 
            fill = "grey75", colour = "black") +
+  ggtitle("Commercial Tanner crab harvest") +
   ylab("Harvest (1,000,000 lbs)") + 
-  xlab("Fishery Year") +
+  xlab(NULL) +
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1991),max(cur_yr), by =2)) +
   scale_y_continuous(labels = comma, limits = c(0,max(figure2$pounds/1000000, 
                                                       na.rm = TRUE) + 0.5), 
                      breaks= seq(min(0), max(max(figure2$pounds/1000000, 
                                                  na.rm = TRUE)+ 0.5), by = 0.5)) +
-  theme(legend.position = c(0.65,0.80), 
+  theme(axis.text.x = element_blank(),
+        legend.position = c(0.65,0.80), 
         axis.text = element_text(size = 12),
         #axis.text.x = element_text(angle = 45, vjust = 0.5),
-        axis.title=element_text(size=14,face="bold"))
+        axis.title=element_text(size=14,face="bold")) -> fig2a
 
 # Figure 2b --------------
 ggplot(figure2, aes(x = Year, y = avg.cpue)) +
   geom_line(aes(x = Year, y = avg.cpue)) +
   geom_point(aes(x = Year, y = avg.cpue), size =3) +
-  geom_errorbar(aes(x = Year, ymin = avg.cpue - se, ymax = avg.cpue + se), 
-              width = 0, na.rm = TRUE) +
+  geom_errorbar(aes(x = Year, ymin = avg.cpue - 2*se, ymax = avg.cpue + 2*se), 
+              width = 0.2, na.rm = TRUE) +
   expand_limits(y = 0) +
   ylab("CPUE (crab per pot))") + 
   xlab("Fishery Year") +
@@ -104,8 +106,10 @@ ggplot(figure2, aes(x = Year, y = avg.cpue)) +
   theme(legend.position = c(0.65,0.80), 
         axis.text = element_text(size = 12),
         #axis.text.x = element_text(angle = 45, vjust = 0.5),
-        axis.title=element_text(size=14,face="bold")) #+
-  #geom_hline(yintercept = mean(figure2$avg.cpue, na.rm = TRUE))
+        axis.title=element_text(size=14,face="bold")) -> fig2b#+
+  #geom_hline(yintercept = mean(figure2$avg.cpue, na.rm = TRUE)) 
 
 
-  
+plot_grid(fig2a, fig2b, ncol = 1, align = 'v')
+ggsave(paste0('./figures/tanner/', cur_yr,'_figure2.png'), dpi = 800,
+       width = 8, height = 9.0)
