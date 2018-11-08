@@ -18,9 +18,10 @@ source('./code/tanner_functions.R')
 
 # data -----
 cur_yr <- 2018
-survey_biomass <- read.csv("./data/TCS/survey_areas_biomass.csv") 
-annual_catch <- read.csv("./results/tanner/tanner_annual_catch_98_2018.csv")
-harvest <- read.csv("./data/Tanner_Detailed Fish Tickets_85_18.csv")
+survey_biomass <- read.csv("./data/TCS/survey_areas_biomass.csv") #add to each year
+                
+harvest <- read.csv("./data/Tanner_Detailed Fish Tickets_85_18.csv") 
+# add current years catch to this file or repull all years
 std_cpue <- read.csv("C:/Users/kjpalof/Documents/R projects/tanner-crab/results/std_commericial_cpue.csv")
 #calculated in a seperate project "tanner-crab"
 
@@ -95,7 +96,7 @@ ggplot(figure2, aes(x = Year, y = pounds/1000000)) +
 ggplot(figure2, aes(x = Year, y = avg.cpue)) +
   geom_line(aes(x = Year, y = avg.cpue)) +
   geom_point(aes(x = Year, y = avg.cpue), size =3) +
-  geom_errorbar(aes(x = Year, ymin = avg.cpue - 2*se, ymax = avg.cpue + 2*se), 
+  geom_errorbar(aes(x = Year, ymin = avg.cpue - 2*se, ymax = avg.cpue + 2*se), #now displayed as confidence intervals
               width = 0.2, na.rm = TRUE) +
   expand_limits(y = 0) +
   ylab("CPUE (crab per pot))") + 
