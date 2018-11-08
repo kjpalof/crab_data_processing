@@ -19,6 +19,10 @@ source('./code/tanner_functions.R')
 # data -----
 cur_yr <- 2018
 survey_biomass <- read.csv("./data/TCS/survey_areas_biomass.csv") 
+annual_catch <- read.csv("./results/tanner/tanner_annual_catch_98_2018.csv")
+harvest <- read.csv("./data/Tanner_Detailed Fish Tickets_85_18.csv")
+std_cpue <- read.csv("C:/Users/kjpalof/Documents/R projects/tanner-crab/results/std_commericial_cpue.csv")
+#calculated in a seperate project "tanner-crab"
 
 # Figure 1 ------------
 survey_biomass %>% 
@@ -47,24 +51,61 @@ survey_biomass %>%
          width = 8, height = 5.75)
 
 
+# Figure 2 data prep --------------
+harvest %>% 
+    group_by(Season) %>%
+    summarise(permits = length(unique(CFEC)), 
+              numbers = sum(Number.Of.Animals, na.rm = TRUE), 
+              pounds = sum(Whole.Weight..sum., na.rm = TRUE)) -> annual_harvest
+# add year ----
+# need a season reference column in terms of years
+library(stringr)
+numextract <- function(string){ 
+  str_extract(string, "\\-*\\d+\\.*\\d*")
+} 
+annual_harvest %>% 
+  mutate(Year = as.numeric(numextract(Season))+1) -> annual_harvest
+
+annual_harvest %>% 
+  select(Year, pounds) %>% 
+  filter(Year > 1991) %>% 
+  left_join(std_cpue) -> figure2
 
 
-ggplot(survey_biomass, aes(Year, pounds, group = type))+ 
-  geom_point(aes(color = type, shape = type), size =3) +
-  geom_line(aes(color = type, group = type, linetype = type))+
-  scale_colour_manual(name = "", values = c("grey1", "grey1", "grey48", "grey62"))+
-  scale_shape_manual(name = "", values = c(1, 18, 32, 18))+
-  scale_linetype_manual(name = "", values = c("blank", "solid", "solid", "dashed")) +
-  ylab("Biomass (lbs)") + 
-  xlab("Survey Year") +
+# Figure 2a ----
+ggplot(figure2, aes(x = Year, y = pounds/1000000)) +
+  geom_bar(stat = "identity", 
+           fill = "grey75", colour = "black") +
+  ylab("Harvest (1,000,000 lbs)") + 
+  xlab("Fishery Year") +
   theme(plot.title = element_text(hjust =0.5)) + 
-  scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-  scale_y_continuous(labels = comma, limits = c(0,max(biomass_graph$pounds, 
-                                                      na.rm = TRUE) + 25000),
-                     breaks= seq(min(0), max(max(biomass_graph$pounds, 
-                                                 na.rm = TRUE)+25000), by = 100000)) +
-  theme(legend.position = c(0.55,0.8), 
-        axis.text = element_text(size = 12), 
-        axis.title=element_text(size=14,face="bold")) + 
-  geom_hline(data = baseline_means, aes(yintercept = legal_mean), color = "grey1", 
-             linetype = "dashed")
+  scale_x_continuous(breaks = seq(min(1991),max(cur_yr), by =2)) +
+  scale_y_continuous(labels = comma, limits = c(0,max(figure2$pounds/1000000, 
+                                                      na.rm = TRUE) + 0.5), 
+                     breaks= seq(min(0), max(max(figure2$pounds/1000000, 
+                                                 na.rm = TRUE)+ 0.5), by = 0.5)) +
+  theme(legend.position = c(0.65,0.80), 
+        axis.text = element_text(size = 12),
+        #axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title=element_text(size=14,face="bold"))
+
+# Figure 2b --------------
+ggplot(figure2, aes(x = Year, y = avg.cpue)) +
+  geom_line(aes(x = Year, y = avg.cpue)) +
+  geom_point(aes(x = Year, y = avg.cpue), size =3) +
+  geom_errorbar(aes(x = Year, ymin = avg.cpue - se, ymax = avg.cpue + se), 
+              width = 0, na.rm = TRUE) +
+  expand_limits(y = 0) +
+  ylab("CPUE (crab per pot))") + 
+  xlab("Fishery Year") +
+  scale_x_continuous(breaks = seq(min(1991),max(cur_yr), by =2)) +
+  scale_y_continuous(labels = comma, limits = c(0, 40), 
+                     breaks= seq(min(0), max(40), by = 10)) +
+  theme(legend.position = c(0.65,0.80), 
+        axis.text = element_text(size = 12),
+        #axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title=element_text(size=14,face="bold")) #+
+  #geom_hline(yintercept = mean(figure2$avg.cpue, na.rm = TRUE))
+
+
+  
