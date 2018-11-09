@@ -288,7 +288,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey65")+
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
-    theme(legend.position = c(0.15,0.85), 
+    theme(legend.position = c(0.25,0.85), 
           axis.text = element_text(size = 12), 
           axis.title=element_text(size=14,face="bold"), 
           plot.title = element_text(size = 24))
