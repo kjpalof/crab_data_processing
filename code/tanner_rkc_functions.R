@@ -258,8 +258,8 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   
   biomass %>% 
     left_join(harvest_a) %>% 
-    select(Year, Area, harvest = pounds, Legal, Mature) %>% 
-    gather(type, pounds, harvest:Mature, factor_key = TRUE) %>% 
+    select(Year, Area, Harvest = pounds, Legal, Mature) %>% 
+    gather(type, pounds, Harvest:Mature, factor_key = TRUE) %>% 
     filter(Area == area) -> biomass_graph
   
   biomass_graph %>% 
