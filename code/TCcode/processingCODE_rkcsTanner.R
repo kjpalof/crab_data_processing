@@ -282,6 +282,8 @@ panel_figure("GB", 2018, "Gambier Bay", 3)
 panel_figure("PS", 2018, "Peril Strait", 2)
 panel_figure("PS", 2018, "Peril Strait", 3)
 
+panel_figure("LS", 2018, "Lynn Sisters", 2)
+panel_figure("LS", 2018, "Lynn Sisters", 3)
 
 
 ####
