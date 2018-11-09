@@ -269,7 +269,8 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   biomass_graph %>% 
     filter(Year < 2007) %>% 
     spread(type, pounds) %>% 
-    summarise(legal_mean = mean(Legal), mature_mean = mean(Mature)) -> baseline_means
+    summarise(legal_mean = mean(Legal, na.rm = TRUE), 
+              mature_mean = mean(Mature, na.rm = TRUE)) -> baseline_means
   
   # Figure panel -----
   #### F1a mature male plot -----------
