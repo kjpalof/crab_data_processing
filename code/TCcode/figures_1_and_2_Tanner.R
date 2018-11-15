@@ -114,3 +114,30 @@ ggplot(figure2, aes(x = Year, y = avg.cpue)) +
 plot_grid(fig2a, fig2b, ncol = 1, align = 'v')
 ggsave(paste0('./figures/tanner/', cur_yr,'_figure2.png'), dpi = 800,
        width = 8, height = 9.0)
+
+
+# Old with point estimates Figure 1 ------------
+survey_biomass %>% 
+  gather(type, pounds, Legal:Mature, factor_key = TRUE) %>% 
+  ggplot(aes(Year, y = pounds/1000000, group = type)) +
+  geom_line(aes(color = type, linetype = type))+
+  geom_point(aes(fill = type, shape = type), size =3) +
+  scale_fill_manual(name = "", values = c("black", "gray100")) + 
+  scale_colour_manual(name = "", values = c("gray1", "grey48"))+
+  scale_shape_manual(name = "", values = c(21, 21))+
+  scale_linetype_manual(name = "", values = c("solid", "dashed")) +
+  ylab("Biomass (1,000,000 lbs)") + 
+  xlab("Survey Year") +
+  theme(plot.title = element_text(hjust =0.5)) + 
+  scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
+  scale_y_continuous(labels = comma, limits = c(0,max(survey_biomass$Mature/1000000, 
+                                                      na.rm = TRUE) + 1.5), 
+                     breaks= seq(min(0), max(max(survey_biomass$Mature/1000000, 
+                                                 na.rm = TRUE)+ 1.5), by = 1.0)) +
+  theme(legend.position = c(0.65,0.80), 
+        axis.text = element_text(size = 12),
+        axis.text.x = element_text(angle = 45, vjust = 0.5),
+        axis.title=element_text(size=14,face="bold"))
+
+ggsave(paste0('./figures/tanner/', cur_yr,'_figure1.png'), dpi = 800,
+       width = 8, height = 5.75)
