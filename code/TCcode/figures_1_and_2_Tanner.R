@@ -19,13 +19,14 @@ source('./code/tanner_functions.R')
 # data -----
 cur_yr <- 2018
 survey_biomass <- read.csv("./data/TCS/survey_areas_biomass.csv") #add to each year
-                
+biomass <- read.csv(paste0('./data/rkc_tanner/tanner_', cur_yr, '_biomassmodel.csv'))          
 harvest <- read.csv("./data/Tanner_Detailed Fish Tickets_85_18.csv") 
 # add current years catch to this file or repull all years
 std_cpue <- read.csv("C:/Users/kjpalof/Documents/R projects/tanner-crab/results/std_commericial_cpue.csv")
 #calculated in a seperate project "tanner-crab"
 
 # Figure 1 ------------
+# Now is calculated base on the 2018 model output.
 survey_biomass %>% 
   gather(type, pounds, Legal:Mature, factor_key = TRUE) %>% 
   ggplot(aes(Year, y = pounds/1000000, group = type)) +
