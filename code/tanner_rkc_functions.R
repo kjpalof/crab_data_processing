@@ -350,7 +350,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     scale_colour_manual(name = "", values = c("grey1", "grey1", "grey48", "grey62"))+
     scale_shape_manual(name = "", values = c(1, 18, 32, 18))+
     scale_linetype_manual(name = "", values = c("blank", "solid", "solid", "dashed")) +
-    ylab("Biomass (lbs)") + 
+    ylab("Pounds (lbs)") + 
     xlab("Survey Year") +
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
