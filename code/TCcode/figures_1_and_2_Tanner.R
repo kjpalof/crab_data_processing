@@ -25,9 +25,57 @@ harvest <- read.csv("./data/Tanner_Detailed Fish Tickets_85_18.csv")
 std_cpue <- read.csv("C:/Users/kjpalof/Documents/R projects/tanner-crab/results/std_commericial_cpue.csv")
 #calculated in a seperate project "tanner-crab"
 
+# data prep for Figure 1 ---------------
+biomass %>% 
+  group_by(Year) %>% 
+  summarise(Total_L = sum(Legal), Total_M = sum(Mature)) -> year_totals
+
+
+## adjustments using all years ---
+# first survey year until 2018 
+biomass %>% 
+  select(-Prerecruit) %>% 
+  filter(Year <= 2001)
+# Thomas Bay - no estimates for 1997, 1998, 1999, 2000
+# Holkham Bay - no 1997
+# Glacier Bay - no 1997, 1998
+
+ biomass %>% 
+  left_join(year_totals) %>% 
+  filter(Area == "Thomas Bay"| Area == "Glacier Bay"| Area == "Holkham Bay") %>% 
+  mutate(prop_L = Legal/Total_L, prop_M = Mature/Total_M) %>% 
+  group_by(Area) %>% 
+  summarise(avg.ctb.L = mean(prop_L), avg.ctb.M = mean(prop_M)) -> data_adjust1
+
+ adj.97 <- c("Thomas Bay", "Holkham Bay", "Glacier Bay")
+ adj.98 <- c("Thomas Bay", "Glacier Bay")
+ adj.99 <- ("Thomas Bay")
+ 
+data_adjust1 %>% 
+  mutate(adj.97L = sum(avg.ctb.L), 
+         adj.97M = sum(avg.ctb.M), 
+         adj.98L = sum(avg.ctb.L[Area %in% adj.98]), 
+         adj.98M = sum(avg.ctb.M[Area %in% adj.98]), 
+         adj.99L = sum(avg.ctb.L[Area %in% adj.99]), 
+         adj.99M = sum(avg.ctb.M[Area %in% adj.99])) -> data_adjust1
+ 
+# adjustments for missing data 
+Year <- c(1997:2000)
+adj_L <- c(data_adjust1$adj.97L[1], data_adjust1$adj.98L[1], data_adjust1$adj.99L[1], data_adjust1$adj.99L[1])
+adj_M <- c(data_adjust1$adj.97M[1], data_adjust1$adj.98M[1], data_adjust1$adj.99M[1], data_adjust1$adj.99M[1])
+
+adjust <- data.frame(Year, adj_L, adj_M) 
+
+# add adjustments to the totals in years neccesary
+year_totals %>% 
+  left_join(adjust) %>% 
+  mutate(Legal = ifelse(!is.na(adj_L), Total_L*(1+adj_L), Total_L), 
+         Mature = ifelse(!is.na(adj_M), Total_M*(1+adj_M), Total_M)) %>% 
+  select(Year, Legal, Mature) -> cur_yr_biomass
+
 # Figure 1 ------------
 # Now is calculated base on the 2018 model output.
-survey_biomass %>% 
+cur_yr_biomass %>% 
   gather(type, pounds, Legal:Mature, factor_key = TRUE) %>% 
   ggplot(aes(Year, y = pounds/1000000, group = type)) +
   geom_line(aes(color = type, linetype = type))+
@@ -40,9 +88,9 @@ survey_biomass %>%
   xlab("Survey Year") +
   theme(plot.title = element_text(hjust =0.5)) + 
   scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-  scale_y_continuous(labels = comma, limits = c(0,max(survey_biomass$Mature/1000000, 
+  scale_y_continuous(labels = comma, limits = c(0,max(cur_yr_biomass$Mature/1000000, 
                                                       na.rm = TRUE) + 1.5), 
-                     breaks= seq(min(0), max(max(survey_biomass$Mature/1000000, 
+                     breaks= seq(min(0), max(max(cur_yr_biomass$Mature/1000000, 
                                                  na.rm = TRUE)+ 1.5), by = 1.0)) +
   theme(legend.position = c(0.65,0.80), 
         axis.text = element_text(size = 12),
