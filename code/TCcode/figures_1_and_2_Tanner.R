@@ -17,7 +17,9 @@ source('./code/tanner_functions.R')
 
 # data -----
 cur_yr <- 2018
-survey_biomass <- read.csv("./data/TCS/survey_areas_biomass.csv") #add to each year
+#survey_biomass <- read.csv("./data/TCS/survey_areas_biomass.csv") #add to each year
+# above file had point estimates from each year and was kept historically in SigmaPlot. Now this is tracked in 
+# an appendix table in the stock health document. 
 biomass <- read.csv(paste0('./data/rkc_tanner/tanner_', cur_yr, '_biomassmodel.csv'))          
 harvest <- read.csv("./data/Tanner_Detailed Fish Tickets_85_18.csv") 
 # add current years catch to this file or repull all years
@@ -69,7 +71,7 @@ year_totals %>%
          Mature = ifelse(!is.na(adj_M), Total_M*(1+adj_M), Total_M)) %>% 
   select(Year, Legal, Mature) -> cur_yr_biomass
 
-## adjustments using data pre-2007 ---
+## adjustments using data pre-2007 -------
 # first survey year up to 2007 - uses 2007 data
 biomass %>% 
   left_join(year_totals) %>% 
@@ -79,29 +81,30 @@ biomass %>%
   group_by(Area) %>% 
   summarise(avg.ctb.L = mean(prop_L), avg.ctb.M = mean(prop_M)) -> data_adjust2
 
-data_adjust1 %>% 
+data_adjust2 %>% 
   mutate(adj.97L = sum(avg.ctb.L), 
          adj.97M = sum(avg.ctb.M), 
          adj.98L = sum(avg.ctb.L[Area %in% adj.98]), 
          adj.98M = sum(avg.ctb.M[Area %in% adj.98]), 
          adj.99L = sum(avg.ctb.L[Area %in% adj.99]), 
-         adj.99M = sum(avg.ctb.M[Area %in% adj.99])) -> data_adjust1
+         adj.99M = sum(avg.ctb.M[Area %in% adj.99])) -> data_adjust2
 
 Year <- c(1997:2000)
-adj_L <- c(data_adjust1$adj.97L[1], data_adjust1$adj.98L[1], data_adjust1$adj.99L[1], data_adjust1$adj.99L[1])
-adj_M <- c(data_adjust1$adj.97M[1], data_adjust1$adj.98M[1], data_adjust1$adj.99M[1], data_adjust1$adj.99M[1])
+adj_L <- c(data_adjust2$adj.97L[1], data_adjust2$adj.98L[1], data_adjust2$adj.99L[1], data_adjust2$adj.99L[1])
+adj_M <- c(data_adjust2$adj.97M[1], data_adjust2$adj.98M[1], data_adjust2$adj.99M[1], data_adjust2$adj.99M[1])
 
-adjust <- data.frame(Year, adj_L, adj_M) 
+adjust2 <- data.frame(Year, adj_L, adj_M) 
 
 # add adjustments to the totals in years neccesary
 year_totals %>% 
-  left_join(adjust) %>% 
+  left_join(adjust2) %>% 
   mutate(Legal = ifelse(!is.na(adj_L), Total_L*(1+adj_L), Total_L), 
          Mature = ifelse(!is.na(adj_M), Total_M*(1+adj_M), Total_M)) %>% 
-  select(Year, Legal, Mature) -> cur_yr_biomass
+  select(Year, Legal, Mature) -> cur_yr_biomass2
 
 # Figure 1 ------------
 # Now is calculated base on the 2018 model output.
+# use average contribution in early years with all years data 
 cur_yr_biomass %>% 
   gather(type, pounds, Legal:Mature, factor_key = TRUE) %>% 
   ggplot(aes(Year, y = pounds/1000000, group = type)) +
@@ -124,7 +127,7 @@ cur_yr_biomass %>%
         axis.text.x = element_text(angle = 45, vjust = 0.5),
         axis.title=element_text(size=14,face="bold"))
 
-  ggsave(paste0('./figures/tanner/', cur_yr,'_figure1.png'), dpi = 800,
+  ggsave(paste0('./figures/tanner/', cur_yr,'_figure1_curyr_data.png'), dpi = 800,
          width = 8, height = 5.75)
 
 
