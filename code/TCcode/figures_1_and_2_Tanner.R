@@ -30,16 +30,18 @@ biomass %>%
   group_by(Year) %>% 
   summarise(Total_L = sum(Legal), Total_M = sum(Mature)) -> year_totals
 
-
-## adjustments using all years ---
-# first survey year until 2018 
+# adjustments for missing data --------
 biomass %>% 
   select(-Prerecruit) %>% 
   filter(Year <= 2001)
 # Thomas Bay - no estimates for 1997, 1998, 1999, 2000
 # Holkham Bay - no 1997
 # Glacier Bay - no 1997, 1998
-
+adj.97 <- c("Thomas Bay", "Holkham Bay", "Glacier Bay")
+adj.98 <- c("Thomas Bay", "Glacier Bay")
+adj.99 <- ("Thomas Bay")
+## adjustments using all years ---
+# first survey year until 2018 
  biomass %>% 
   left_join(year_totals) %>% 
   filter(Area == "Thomas Bay"| Area == "Glacier Bay"| Area == "Holkham Bay") %>% 
@@ -47,10 +49,6 @@ biomass %>%
   group_by(Area) %>% 
   summarise(avg.ctb.L = mean(prop_L), avg.ctb.M = mean(prop_M)) -> data_adjust1
 
- adj.97 <- c("Thomas Bay", "Holkham Bay", "Glacier Bay")
- adj.98 <- c("Thomas Bay", "Glacier Bay")
- adj.99 <- ("Thomas Bay")
- 
 data_adjust1 %>% 
   mutate(adj.97L = sum(avg.ctb.L), 
          adj.97M = sum(avg.ctb.M), 
@@ -58,8 +56,38 @@ data_adjust1 %>%
          adj.98M = sum(avg.ctb.M[Area %in% adj.98]), 
          adj.99L = sum(avg.ctb.L[Area %in% adj.99]), 
          adj.99M = sum(avg.ctb.M[Area %in% adj.99])) -> data_adjust1
- 
-# adjustments for missing data 
+
+Year <- c(1997:2000)
+adj_L <- c(data_adjust1$adj.97L[1], data_adjust1$adj.98L[1], data_adjust1$adj.99L[1], data_adjust1$adj.99L[1])
+adj_M <- c(data_adjust1$adj.97M[1], data_adjust1$adj.98M[1], data_adjust1$adj.99M[1], data_adjust1$adj.99M[1])
+
+adjust <- data.frame(Year, adj_L, adj_M) 
+
+# add adjustments to the totals in years neccesary
+year_totals %>% 
+  left_join(adjust) %>% 
+  mutate(Legal = ifelse(!is.na(adj_L), Total_L*(1+adj_L), Total_L), 
+         Mature = ifelse(!is.na(adj_M), Total_M*(1+adj_M), Total_M)) %>% 
+  select(Year, Legal, Mature) -> cur_yr_biomass
+
+## adjustments using data pre-2007 ---
+# first survey year up to 2007 - uses 2007 data
+biomass %>% 
+  left_join(year_totals) %>% 
+  filter(Area == "Thomas Bay"| Area == "Glacier Bay"| Area == "Holkham Bay") %>% 
+  mutate(prop_L = Legal/Total_L, prop_M = Mature/Total_M) %>% 
+  filter(Year <= 2007) %>% 
+  group_by(Area) %>% 
+  summarise(avg.ctb.L = mean(prop_L), avg.ctb.M = mean(prop_M)) -> data_adjust2
+
+data_adjust1 %>% 
+  mutate(adj.97L = sum(avg.ctb.L), 
+         adj.97M = sum(avg.ctb.M), 
+         adj.98L = sum(avg.ctb.L[Area %in% adj.98]), 
+         adj.98M = sum(avg.ctb.M[Area %in% adj.98]), 
+         adj.99L = sum(avg.ctb.L[Area %in% adj.99]), 
+         adj.99M = sum(avg.ctb.M[Area %in% adj.99])) -> data_adjust1
+
 Year <- c(1997:2000)
 adj_L <- c(data_adjust1$adj.97L[1], data_adjust1$adj.98L[1], data_adjust1$adj.99L[1], data_adjust1$adj.99L[1])
 adj_M <- c(data_adjust1$adj.97M[1], data_adjust1$adj.98M[1], data_adjust1$adj.99M[1], data_adjust1$adj.99M[1])
