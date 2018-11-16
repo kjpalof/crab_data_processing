@@ -70,6 +70,8 @@ year_totals %>%
   mutate(Legal = ifelse(!is.na(adj_L), Total_L*(1+adj_L), Total_L), 
          Mature = ifelse(!is.na(adj_M), Total_M*(1+adj_M), Total_M)) %>% 
   select(Year, Legal, Mature) -> cur_yr_biomass
+write.csv(cur_yr_biomass, paste0('./results/TCS/', cur_yr, '/surveyed_areas_total_', cur_yr, '_model.csv'))
+# these are listed in Table A1 - Appendix in Tanner crab stock health document
 
 ## adjustments using data pre-2007 -------
 # first survey year up to 2007 - uses 2007 data
