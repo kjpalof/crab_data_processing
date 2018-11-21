@@ -279,14 +279,20 @@ historic_clutch %>%
   write.csv(paste0('./results/TCS/', cur_yr, '/all_years_percent_clutch.csv'))
 
 ## panel figures -----
-panel_figure("Icy Strait", 2018, "Icy Strait", 2)
+panel_figure("Icy Strait", 2018, "Icy Strait", 2, "include")
 panel_figure("Icy Strait", 2018, "Icy Strait", 3)
 
-panel_figure("Glacier Bay", 2018, "Glacier Bay", 2)
+panel_figure("Glacier Bay", 2018, "Glacier Bay", 2, "include")
 panel_figure("Glacier Bay", 2018, "Glacier Bay", 3)
 
-panel_figure("Thomas Bay", 2018, "Thomas Bay", 2)
+panel_figure("Thomas Bay", 2018, "Thomas Bay", 2, "include")
 panel_figure("Thomas Bay", 2018, "Thomas Bay", 3)
 
-panel_figure("Holkham Bay", 2018, "Holkham Bay", 2)
+panel_figure("Holkham Bay", 2018, "Holkham Bay", 2, "include")
 panel_figure("Holkham Bay", 2018, "Holkham Bay", 3)
+
+
+# non-confidential areas 2018 ------------
+panel_figure("Icy Strait", 2018, "Icy Strait", 2, "exclude")
+panel_figure("Holkham Bay", 2018, "Holkham Bay", 2, "exclude")
+panel_figure("Thomas Bay", 2018, "Thomas Bay", 2, "exclude")
