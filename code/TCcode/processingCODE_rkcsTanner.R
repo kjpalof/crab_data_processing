@@ -273,19 +273,24 @@ panel_figure("EI", 2018, "Excursion Inlet", 3)
 panel_figure("SC", 2018, "Seymour Canal", 2)
 panel_figure("SC", 2018, "Seymour Canal", 3)
 
-panel_figure("PB", 2018, "Pybus Bay", 2)
+panel_figure("PB", 2018, "Pybus Bay", 2, "include")
 panel_figure("PB", 2018, "Pybus Bay", 3)
 
-panel_figure("GB", 2018, "Gambier Bay", 2)
+panel_figure("GB", 2018, "Gambier Bay", 2, "include")
 panel_figure("GB", 2018, "Gambier Bay", 3)
 
-panel_figure("PS", 2018, "Peril Strait", 2)
+panel_figure("PS", 2018, "Peril Strait", 2, "include")
 panel_figure("PS", 2018, "Peril Strait", 3)
 
-panel_figure("LS", 2018, "Lynn Sisters", 2)
+panel_figure("LS", 2018, "Lynn Sisters", 2, "include")
 panel_figure("LS", 2018, "Lynn Sisters", 3)
 
 
+# non-confidential areas 2018 ------------
+panel_figure("GB", 2018, "Gambier Bay", 2, "exclude")
+panel_figure("LS", 2018, "Lynn Sisters", 2, "exclude")
+panel_figure("PS", 2018, "Peril Strait", 2, "exclude")
+panel_figure("PB", 2018, "Pybus Bay", 2, "exclude")
 ####
 ##### input for CSA in R ---------------------------
 ####
