@@ -171,8 +171,8 @@ poor_clutch_short <- function(females_all, year){
   write_csv(short_term_results, paste0('results/TCS/', year, '/female_shortterm.csv'))
 }
 
-## CONF panel figure ---------------
-panel_figure <- function(survey.location, cur_yr, area, option){
+## CONF / non-conf panel figure ---------------
+panel_figure <- function(survey.location, cur_yr, area, option, conf){
   # survey.location here are codes: Thomas Bay, Icy Strait, Holkham Bay, and Glacier Bay
   # area is used in biomass /harvest file:  Icy Strait, Glacier Bay, 
   # Holkham Bay, Thomas Bay, Stephens Passage, North Juneau, Lynn Sisters, Pybus Bay, 
@@ -181,6 +181,8 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   # option refers to output from this function. 
   # Option 1 - all 4 on one file, Option 2 - just p1, p4 (males), 
   # Option 3 - p2,p3 (females)
+  # confidential - whether to include confidential data, if "include" then include all data, 
+  #               if "exclude" then remove confidential data (i.e. Non-conf graphs)
   CPUE_wt_graph <- read.csv(paste0('./results/TCS/', cur_yr,
                                    '/2018_CPUE_historic.csv'))
   poorclutch_summary <- read.csv(paste0('./results/TCS/', cur_yr, '/all_years_percent_low_clutch.csv'))
@@ -189,7 +191,7 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   # file with year and mean percent poor clutch and se poor clutch 
   baseline <- read.csv("./data/TCS/longterm_means_TC.csv")
   biomass <- read.csv("./data/rkc_tanner/tanner_2018_biomassmodel.csv") 
-  harvest <- read.csv("./results/tanner/tanner_comm_catch_98_2018.csv") # needs to be updated with
+  harvest <- read.csv("./results/tanner/tanner_comm_catch_97_2018_confid.csv") # needs to be updated with
   # recent year - both biomass and harvest files.
   # file for all locations.  Has legal and mature biomass from current year CSA & harvest
   
@@ -257,7 +259,13 @@ panel_figure <- function(survey.location, cur_yr, area, option){
   
   ## biomass manipulations -------------
   # file for all locations.  Has preR, legal, and mature biomass from CSAs
+  if(conf == "exclude"){
+    harvest %>% 
+      filter(confidential == "n") -> harvest
+  }
+  
   harvest %>% 
+    filter(Year >= 1997) %>% 
     select(Year, Area = survey.area, pounds) ->harvest_a
   
   biomass %>% 
@@ -389,9 +397,15 @@ panel_figure <- function(survey.location, cur_yr, area, option){
                 panel <- plot_grid(p1, p4, ncol = 1, align = 'v'), 
                 ifelse(option == 3, 
                        panel <- plot_grid(p2, p3, ncol = 1, align = 'v'), 0)))
-  ggsave(paste0('./figures/tanner/', survey.location, '_', cur_yr, '_', 
-                option, '.png'), panel,  
-         dpi = 800, width = 8, height = 9.5)
+  
+  if(conf == "exclude"){  
+    ggsave(paste0('./figures/tanner/', survey.location, '_', cur_yr, '_', 
+                  option, '_nonconf.png'), panel,  
+           dpi = 800, width = 8, height = 9.5)}
+  if(conf == "include"){
+    ggsave(paste0('./figures/tanner/', survey.location, '_', cur_yr, '_', 
+                  option, 'confidential.png'), panel,  
+           dpi = 800, width = 8, height = 9.5)}
 }
 
 ## CONF SP panel figure ---------------
