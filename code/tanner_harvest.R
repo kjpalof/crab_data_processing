@@ -14,7 +14,8 @@ cur_yr = 2018
 harvest <- read.csv("./data/Tanner_Detailed Fish Tickets.csv")
 glimpse(harvest)
 
-harvest_all <- read.csv("./data/Tanner_Detailed Fish Tickets_98_18.csv")
+#harvest_all <- read.csv("./data/Tanner_Detailed Fish Tickets_98_18.csv")
+harvest_all <- read.csv("./data/Tanner_Detailed Fish Tickets_97_18.csv")
 logb11510 <- read.csv("./results/tanner/logbook_11510_98_18.csv") # from tanner_logbook.R calculations
 
 ### current year ----------------------
@@ -123,11 +124,14 @@ harvest_all %>%
 
 harvest_all %>%
   group_by(Season, Stat.Area, survey.area) %>%
-  summarise(permits = length(unique(CFEC)), 
+  summarise(vessels = length(unique(ADFG.Number)), 
+            people = length(unique(CFEC.ID)),
+            permits = length(unique(Permit.Serial.Number)), 
+            processor = length(unique(Processor.Code)),
             numbers = sum(Number.Of.Animals, na.rm = TRUE), 
             pounds = sum(Whole.Weight..sum., na.rm = TRUE)) -> harvest2_all
 
-write.csv(harvest2_all, paste0('./results/tanner/comm_catch_by_statarea_98_', cur_yr,'.csv'))
+write.csv(harvest2_all, paste0('./results/tanner/comm_catch_by_statarea_97_', cur_yr,'.csv'))
 
 ### all years by survey area --------------------------
 # add year ----
@@ -153,15 +157,15 @@ harvest2_all %>%
          no_LS = numbers*(1-percentNJ), 
          lb_NJ = pounds*percentNJ,
          lb_LS = pounds*(1-percentNJ)) %>% 
-  select(Year, permits, no_NJ, no_LS, lb_NJ, lb_LS) %>% 
-  gather("label", "value", 5:8) %>% 
+  select(Year, vessels, people, permits, processor, no_NJ, no_LS, lb_NJ, lb_LS) %>% 
+  gather("label", "value", 8:11) %>% 
   mutate(survey.area = case_when(grepl("NJ", label, ignore.case = TRUE) ~ "North Juneau",
                                  grepl("LS", label, ignore.case = TRUE) ~ "Lynn Sisters"), 
          units = case_when(grepl("no", label, ignore.case = TRUE) ~ "numbers", 
                            grepl("lb", label, ignore.case = TRUE) ~ "pounds")) %>% 
-  select(Season, Stat.Area, survey.area, permits, Year, units, value) %>% 
+  select(Season, Stat.Area, survey.area, vessels, people, permits, processor, Year, units, value) %>% 
   spread(units, value) %>% 
-  select(Season, Stat.Area, survey.area, permits, numbers, pounds, Year) -> stat_11510
+  select(Season, Stat.Area, survey.area, vessels, people, permits, processor, numbers, pounds, Year) -> stat_11510
 
 
 ### Deal with 11510 -----------
@@ -170,11 +174,13 @@ harvest2_all %>%
   filter(Stat.Area != 11510) %>% 
   bind_rows(stat_11510) %>% 
   group_by(survey.area, Season, Year) %>%
-  summarise(permits = sum(permits), numbers = sum(numbers), 
+  summarise(vessels = sum(vessels), people = sum(people),
+            permits = sum(permits), processors = sum(processor), 
+            numbers = sum(numbers), 
             pounds = sum(pounds)) -> comm.catch.sum_all
 
 # lynn sister and north juneau need to be manually split up in area 115-10
-write.csv(comm.catch.sum_all, paste0('./results/tanner/tanner_comm_catch_98_', cur_yr,'.csv'))
+write.csv(comm.catch.sum_all, paste0('./results/tanner/tanner_comm_catch_97_', cur_yr,'.csv'))
 ### !!!!!!  These may not be correct for North Juneau, Stephens Passage and Lynn Sisters due to shared stat areas
 ##                    CHECK these with old excel files before going forward.
 # checked harvest with sigma plot file:
@@ -198,3 +204,14 @@ comm.catch.sum_all %>%
   mutate(percent_total = lb_18/pounds*100) %>% 
   as.data.frame() %>% 
   write_csv(paste0('./results/tanner/proportion_total_harvest_', cur_yr,'.csv'))
+
+
+## confidential catch -------------
+comm.catch.sum_all %>% 
+  filter(survey.area != "Camden", survey.area != "PFred") %>% 
+  filter(permits < 3 | vessels < 3 | people < 3) %>% 
+  as.data.frame()
+
+comm.catch.sum_all %>% 
+  mutate(confidential = ifelse(permits < 3 | vessels < 3 | people < 3, "y", "n")) -> comm.catch.sum_all_C
+write.csv(comm.catch.sum_all, paste0('./results/tanner/tanner_comm_catch_97_', cur_yr,'_confid.csv'))
