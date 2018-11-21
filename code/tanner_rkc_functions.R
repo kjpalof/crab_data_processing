@@ -187,7 +187,7 @@ panel_figure <- function(survey.location, cur_yr, area, option, conf){
   # file with year and mean percent poor clutch and se poor clutch 
   baseline <- read.csv("./data/rkc_tanner/longterm_means_TC.csv")
   biomass <- read.csv("./data/rkc_tanner/tanner_2018_biomassmodel.csv") 
-  harvest <- read.csv("./results/tanner/tanner_comm_catch_98_2018.csv") # needs to be updated with
+  harvest <- read.csv("./results/tanner/tanner_comm_catch_97_2018_confid.csv") # needs to be updated with
                                     # recent year - both biomass and harvest files.
   # file for all locations.  Has legal and mature biomass from current year CSA & harvest
 
@@ -261,6 +261,7 @@ panel_figure <- function(survey.location, cur_yr, area, option, conf){
   }
   
   harvest %>% 
+    filter(Year >= 1997) %>% 
     select(Year, Area = survey.area, pounds) ->harvest_a
   
   biomass %>% 
@@ -392,13 +393,15 @@ panel_figure <- function(survey.location, cur_yr, area, option, conf){
                 panel <- plot_grid(p1, p4, ncol = 1, align = 'v'), 
                 ifelse(option == 3, 
                        panel <- plot_grid(p2, p3, ncol = 1, align = 'v'), 0)))
-if(conf = "exclude"){  
+  
+if(conf == "exclude"){  
   ggsave(paste0('./figures/rkcs_tanner/', survey.location, '_', cur_yr, '_', 
                 option, '_nonconf.png'), panel,  
          dpi = 800, width = 8, height = 9.5)}
+if(conf == "include"){
   ggsave(paste0('./figures/rkcs_tanner/', survey.location, '_', cur_yr, '_', 
                 option, 'confidential.png'), panel,  
-         dpi = 800, width = 8, height = 9.5)
+         dpi = 800, width = 8, height = 9.5)}
 }
 
 
