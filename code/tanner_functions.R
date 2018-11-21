@@ -255,22 +255,22 @@ panel_figure <- function(survey.location, cur_yr, area, option){
     select (-vname) %>% 
     spread(type, value1) -> female_egg_graph
   
-  ## biomass manipulations 
+  ## biomass manipulations -------------
   # file for all locations.  Has preR, legal, and mature biomass from CSAs
   harvest %>% 
     select(Year, Area = survey.area, pounds) ->harvest_a
   
   biomass %>% 
     merge(harvest_a, by = c("Year", "Area"), all = TRUE) %>% 
-    select(Year, Area, Harvest = pounds, Legal, Mature) %>% 
-    gather(type, pounds, Harvest:Mature, factor_key = TRUE) %>% 
+    select(Year, Area, Harvest = pounds, Legal.Biomass = Legal, Mature.Biomass = Mature) %>% 
+    gather(type, pounds, Harvest:Mature.Biomass, factor_key = TRUE) %>% 
     filter(Area == survey.location) -> biomass_graph
   
   biomass_graph %>% 
     filter(Year < 2007) %>% 
     spread(type, pounds) %>% 
-    summarise(legal_mean = mean(Legal, na.rm = TRUE), 
-              mature_mean = mean(Mature, na.rm = TRUE)) -> baseline_means
+    summarise(legal_mean = mean(Legal.Biomass, na.rm = TRUE), 
+              mature_mean = mean(Mature.Biomass, na.rm = TRUE)) -> baseline_means
   
   # Figure panel -----
   #### F1a mature male plot -----------
