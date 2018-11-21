@@ -214,4 +214,4 @@ comm.catch.sum_all %>%
 
 comm.catch.sum_all %>% 
   mutate(confidential = ifelse(permits < 3 | vessels < 3 | people < 3, "y", "n")) -> comm.catch.sum_all_C
-write.csv(comm.catch.sum_all, paste0('./results/tanner/tanner_comm_catch_97_', cur_yr,'_confid.csv'))
+write.csv(comm.catch.sum_all_C, paste0('./results/tanner/tanner_comm_catch_97_', cur_yr,'_confid.csv'))
