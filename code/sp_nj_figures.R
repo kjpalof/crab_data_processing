@@ -687,8 +687,8 @@ panel_figure_jnu_pres <- function(survey.location, cur_yr, area, abrv, option){
          dpi = 800, width = 8, height = 9.5)
 }
 
-## CONF NJ panel figure ---------------
-panel_figure_nj <- function(survey.location, cur_yr, area, abrv, option){
+## PRESENTATION CONF NJ panel figure ---------------
+panel_figure_nj_pres <- function(survey.location, cur_yr, area, abrv, option){
   # survey.location here are codes: North Juneau
   # area is used in biomass /harvest file:  Icy Strait, Glacier Bay, 
   # Holkham Bay, Thomas Bay, Stephens Passage, North Juneau, Lynn Sisters, Pybus Bay, 
@@ -779,15 +779,15 @@ panel_figure_nj <- function(survey.location, cur_yr, area, abrv, option){
   
   biomass %>% 
     merge(harvest_a, by = c("Year", "Area"), all = TRUE) %>% 
-    select(Year, Area, Harvest = pounds, Legal.Biomass = Legal, Mature.Biomass = Mature) %>% 
-    gather(type, pounds, Harvest:Mature.Biomass, factor_key = TRUE) %>% 
+    select(Year, Area, harvest = pounds, legal.biomass = Legal, mature.biomass = Mature) %>% 
+    gather(type, pounds, harvest:mature.biomass, factor_key = TRUE) %>% 
     filter(Area == area) -> biomass_graph
   
   biomass_graph %>% 
     filter(Year < 2007) %>% 
     spread(type, pounds) %>% 
-    summarise(legal_mean = mean(Legal.Biomass), 
-              mature_mean = mean(Mature.Biomass)) -> baseline_means
+    summarise(legal_mean = mean(legal.biomass), 
+              mature_mean = mean(mature.biomass)) -> baseline_means
   
   # Figure panel -----
   #### F1a mature male plot -----------
@@ -807,8 +807,10 @@ panel_figure_nj <- function(survey.location, cur_yr, area, abrv, option){
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
     theme(legend.position = c(0.25,0.85), 
-          axis.text = element_text(size = 12), 
-          axis.title=element_text(size=14,face="bold"), 
+          legend.text = element_text(size = 20),
+          legend.key.size = unit(1.5, 'lines'),
+          axis.text = element_text(size = 16), 
+          axis.title=element_text(size=18,face="bold"), 
           plot.title = element_text(size = 24))
   
   
@@ -828,8 +830,10 @@ panel_figure_nj <- function(survey.location, cur_yr, area, abrv, option){
                   width =.4) +
     geom_hline(yintercept = baseline2$Large.Female, color = "black")+
     theme(legend.position = c(0.15,0.9), 
-          axis.text = element_text(size = 12), 
-          axis.title=element_text(size=14,face="bold"))
+          legend.text = element_text(size = 20),
+          legend.key.size = unit(1.5, 'lines'),
+          axis.text = element_text(size = 16), 
+          axis.title=element_text(size=18,face="bold"))
   
   if(option == 3){
     p2 = p2 + ggtitle(paste0(area, ' - Females')) +
@@ -855,8 +859,10 @@ panel_figure_nj <- function(survey.location, cur_yr, area, abrv, option){
     theme(plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(limits = c(1997, cur_yr), breaks = seq(min(1993),max(cur_yr), by =2)) +
     theme(legend.position = c(0.2,0.5), 
-          axis.text = element_text(size = 12), 
-          axis.title=element_text(size=14,face="bold")) 
+          legend.text = element_text(size = 20),
+          legend.key.size = unit(1.5, 'lines'),
+          axis.text = element_text(size = 16), 
+          axis.title=element_text(size=18,face="bold")) 
   
   if(option ==1){
     p3 = p3 + theme(axis.text.x = element_blank())
@@ -881,8 +887,10 @@ panel_figure_nj <- function(survey.location, cur_yr, area, abrv, option){
                        breaks= seq(min(0), max(max(biomass_graph$pounds/100000, 
                                                    na.rm = TRUE)+0.25000), by = 1.0)) +
     theme(legend.position = c(0.55,0.8), 
-          axis.text = element_text(size = 12), 
-          axis.title=element_text(size=14,face="bold")) + 
+          legend.text = element_text(size = 20),
+          legend.key.size = unit(1.5, 'lines'),
+          axis.text = element_text(size = 16), 
+          axis.title=element_text(size=18,face="bold"))  + 
     geom_hline(data = baseline_means, aes(yintercept = legal_mean/100000), color = "grey1", 
                linetype = "dashed")
   #geom_hline(data = baseline_means, aes(yintercept = legal_adj_mean), color = "grey62", linetype = "dashed")
@@ -907,6 +915,6 @@ panel_figure_nj <- function(survey.location, cur_yr, area, abrv, option){
                 ifelse(option == 3, 
                        panel <- plot_grid(p2, p3, ncol = 1, align = 'v'), 0)))
   ggsave(paste0('./figures/tanner/', survey.location, '_', cur_yr, '_', 
-                option, '.png'), panel,  
+                option, 'presentation.png'), panel,  
          dpi = 800, width = 8, height = 9.5)
 }
