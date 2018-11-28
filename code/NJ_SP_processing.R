@@ -10,7 +10,8 @@
 # This was done in excel then JMP, prior to 2016  
 
 #####Load -------------
-source('./code/tanner_functions.R')
+#source('./code/tanner_functions.R')
+source('./code/sp_nj_figures.R')
 cur_yr <- 2018
 
 #####Data ---------------------------------------------------
@@ -586,6 +587,10 @@ area = "Stephens Passage"
 abrv = "SP"
 panel_figure_jnu("Juneau", 2018, "Stephens Passage", "SP", 2)
 panel_figure_jnu("Juneau", 2018, "Stephens Passage", "SP", 3)
+
+# presentation figures----------------
+panel_figure_jnu_pres("Icy Strait", 2018, "Icy Strait", 2, "exclude")
+panel_figure_jnu_pres("Icy Strait", 2018, "Icy Strait", 3, "exclude")
 
 
 # panel figure NJ ----
