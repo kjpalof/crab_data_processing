@@ -1063,7 +1063,7 @@ panel_figure_pres <- function(survey.location, cur_yr, area, option, conf){
                                                         na.rm = TRUE) + 0.25000),
                        breaks= seq(min(0), max(max(biomass_graph$pounds/100000, 
                                                    na.rm = TRUE)+0.25000), by = 1.0)) +
-    theme(legend.position = c(0.55,0.8), 
+    theme(legend.position = c(0.35,0.8), 
           legend.text = element_text(size = 20),
           legend.key.size = unit(1.5, 'lines'),
           axis.text = element_text(size = 16), 
