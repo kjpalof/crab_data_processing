@@ -806,7 +806,7 @@ panel_figure_nj_pres <- function(survey.location, cur_yr, area, abrv, option){
     geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey65")+
     geom_hline(yintercept = baseline2$Recruit, color = "grey34")+
     geom_hline(yintercept = baseline2$Post_Recruit, color = "black")+
-    theme(legend.position = c(0.25,0.85), 
+    theme(legend.position = c(0.35,0.85), 
           legend.text = element_text(size = 20),
           legend.key.size = unit(1.5, 'lines'),
           axis.text = element_text(size = 16), 
@@ -829,7 +829,7 @@ panel_figure_nj_pres <- function(survey.location, cur_yr, area, abrv, option){
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                   width =.4) +
     geom_hline(yintercept = baseline2$Large.Female, color = "black")+
-    theme(legend.position = c(0.15,0.9), 
+    theme(legend.position = c(0.25,0.9), 
           legend.text = element_text(size = 20),
           legend.key.size = unit(1.5, 'lines'),
           axis.text = element_text(size = 16), 
