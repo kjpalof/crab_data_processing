@@ -312,9 +312,6 @@ panel_figure_pres("LS", 2018, "Lynn Sisters", 2, "exclude")
 panel_figure_pres("LS", 2018, "Lynn Sisters", 3, "exclude")
 
 
-
-
-
 ####
 ##### input for CSA in R ---------------------------
 ####
