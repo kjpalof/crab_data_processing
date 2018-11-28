@@ -296,3 +296,19 @@ panel_figure("Holkham Bay", 2018, "Holkham Bay", 3)
 panel_figure("Icy Strait", 2018, "Icy Strait", 2, "exclude")
 panel_figure("Holkham Bay", 2018, "Holkham Bay", 2, "exclude")
 panel_figure("Thomas Bay", 2018, "Thomas Bay", 2, "exclude")
+
+
+# presentation figures----------------
+panel_figure_pres("Icy Strait", 2018, "Icy Strait", 2, "exclude")
+panel_figure_pres("Icy Strait", 2018, "Icy Strait", 3, "exclude")
+
+panel_figure_pres("Glacier Bay", 2018, "Glacier Bay", 2, "exclude")
+panel_figure_pres("Glacier Bay", 2018, "Glacier Bay", 3, "exclude")
+
+panel_figure_pres("Holkham Bay", 2018, "Holkham Bay", 2, "exclude")
+panel_figure_pres("Holkham Bay", 2018, "Holkham Bay", 3, "exclude")
+
+panel_figure_pres("Thomas Bay", 2018, "Thomas Bay", 2, "exclude")
+panel_figure_pres("Thomas Bay", 2018, "Thomas Bay", 3, "exclude")
+
+
