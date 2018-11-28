@@ -589,8 +589,8 @@ panel_figure_jnu("Juneau", 2018, "Stephens Passage", "SP", 2)
 panel_figure_jnu("Juneau", 2018, "Stephens Passage", "SP", 3)
 
 # presentation figures----------------
-panel_figure_jnu_pres("Icy Strait", 2018, "Icy Strait", 2, "exclude")
-panel_figure_jnu_pres("Icy Strait", 2018, "Icy Strait", 3, "exclude")
+panel_figure_jnu_pres("Juneau", 2018, "Stephens Passage", "SP", 2)
+panel_figure_jnu_pres("Juneau", 2018, "Stephens Passage", "SP", 3)
 
 
 # panel figure NJ ----
@@ -602,3 +602,6 @@ abrv = "NJ"
 panel_figure_nj("North Juneau", 2018, "North Juneau", "NJ", 2)
 panel_figure_nj("North Juneau", 2018, "North Juneau", "NJ", 3)
 
+# presentation figures----------------
+panel_figure_nj_pres("North Juneau", 2018, "North Juneau", "NJ", 2)
+panel_figure_nj_pres("North Juneau", 2018, "North Juneau", "NJ", 3)
