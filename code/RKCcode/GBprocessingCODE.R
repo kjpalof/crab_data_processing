@@ -315,6 +315,10 @@ panel_figure('Gambier', 2018, 'Gambier', 3) # female panel
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
 
+### presentation figure -----
+panel_figure_NC_PRES('Gambier', 2018, 'Gambier', 2, 0)
+panel_figure_NC_PRES('Gambier', 2018, 'Gambier', 3, 0)
+
 ### female file all years -----
 # create females file for all years
 # raw_data has OceanAK output until 2016. 

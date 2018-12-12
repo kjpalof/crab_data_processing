@@ -303,3 +303,6 @@ panel_figure('Excursion', 2018, 'Excursion', 3) # female panel
 panel_figure_NC('Excursion', 2018, 'Excursion', 1, 0) # panel with all 3 figures
 panel_figure_NC('Excursion', 2018, 'Excursion', 2, 0)
 
+### presentation figure -----
+panel_figure_NC_PRES('Excursion', 2018, 'Excursion', 2, 0)
+panel_figure_NC_PRES('Excursion', 2018, 'Excursion', 3, 0)

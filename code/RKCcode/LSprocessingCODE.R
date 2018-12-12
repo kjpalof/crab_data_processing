@@ -309,6 +309,10 @@ panel_figure('LynnSisters', 2018, 'LynnSisters', 3, 0) # female panel
 panel_figure_NC('LynnSisters', 2018, 'LynnSisters', 1, 0) # panel with all 3 figures
 panel_figure_NC('LynnSisters', 2018, 'LynnSisters', 2, 0)
 
+### presentation figure -----
+panel_figure_NC_PRES('LynnSisters', 2018, 'LynnSisters', 2, 0)
+panel_figure_NC_PRES('LynnSisters', 2018, 'LynnSisters', 3, 0)
+
 ### female file all years -----
 # create females file for all years
 # raw_data has OceanAK output until 2016. 
