@@ -1,15 +1,15 @@
 # K.Palof 
 # katie.palof@alaska.gov
-# ADF&G 7-9-18/ updated for JUNEAU area
-# code to process data from Ocean AK to use in crab CSA models.  Currently this is done in excel then JMP.  
-# This code is for -2018, refer to code for processing after this year.
+# ADF&G 7-3-19/ updated for JUNEAU area
+# code to process data from Ocean AK to use in crab CSA models.    
+# This code is for -2019, refer to code for processing after this year.
 
-rm(list = ls())# clear workspace from previous area 
+
 ##Load Packages/functions ---------------------------------
 source('./code/functions.R')
 
 ## setup year --------
-cur_yr <- 2018
+cur_yr <- 2019
 pr_yr <- cur_yr -1
 survey.location <- 'Juneau'
 
@@ -18,19 +18,19 @@ dat <- read.csv("./data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
           # this is input from OceanAK - set up as red crab survey data for CSA
           #   survey area should match that in the name of this script file
           #   Juneau area includes Juneau and Barlow
-area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv") 
-          # same every year
+area <- read.csv("./data/redcrab/Juneau/Juneau_Barlow_strata_area.csv") # same every year
+
 # use JNU_79_XX_bypot.csv created from previous year ** need to change year **
           # set up to read from annual folder.  If all files from last year
           #     are in one folder this should work with just a change in final year
 histdat <- read.csv(paste0('./results/redcrab/', survey.location, 
-                    '/', pr_yr, '/JNU_79_17_bypot.csv'))
-## !!!!  this file will be 'EI_perpot_all_16' and just get updated with current years data.
+                    '/', pr_yr, '/JNU_perpot_all_', pr_yr,'.csv'))
+## !!!!  this file will be 'JNU_perpot_all_pr_yr' and just get updated with current years data.
 females <- read.csv(paste0('./results/redcrab/', survey.location, 
                  '/', pr_yr, '/largef_all.csv'))
 
-baseline <- read.csv("./data/redcrab/longterm_means.csv")
-biomass <- read.csv("./data/redcrab/biomass.csv")
+baseline <- read.csv("./data/redcrab/longterm_means.csv") # same every year
+biomass <- read.csv("./data/redcrab/biomass.csv") # ** update ** from CSA model
           # file for all locations. Has biomass estimates from CSA,
           #   must be updated after CSA model is run for current year
 
