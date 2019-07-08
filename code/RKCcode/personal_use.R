@@ -8,17 +8,19 @@
 #####Load Packages ---------------------------------
 library(tidyverse)
 library(xlsx)
-cur_yr = 2018 # fishery year NOT survey year
+cur_yr = 2019 # fsurvey year
+prv_yr = 2018 # fishery year NOT survey year
 
 #####Load Data ---------------------------------------------------
-personal_use <- read.csv("./data/redcrab/personal_use_RKC_juneau_allyear.csv")
+personal_use <- read.csv("./data/redcrab/personal_use_RKC_juneau_allyear_19.csv")
 
 ## reported number ----
 personal_use %>% 
-  group_by(Year, Permit.Returned.Status) %>% 
+  filter(Year == cur_yr | Year == prv_yr) %>%  # remove this to do all years, currently just want current 18/19 season
+  group_by(Area, Year, Permit.Returned.Status) %>% 
   summarise(n = length(unique(Permit.Number)), 
-            number = sum(Number.Of.Crab, na.rm = TRUE), 
-            pots = sum(Number.Of.Pots, na.rm = TRUE)) -> by_status
+            number = sum(Number.of.Crab, na.rm = TRUE), 
+            pots = sum(Number.of.Pots.or.Tows, na.rm = TRUE)) -> by_status
 
 by_status %>% 
   filter(Year == cur_yr) %>% 
