@@ -17,11 +17,19 @@ windowsFonts(Times=windowsFont("TT Times New Roman"))
 theme_set(theme_bw(base_size=12,base_family='Times New Roman')+ 
             theme(panel.grid.major = element_blank(),
                   panel.grid.minor = element_blank()))
+
+# global --------
+# update each year
+cur_yr = 2019
+
 #Load data ----------------
 #biomass <- read.csv("./data/redcrab/biomass.csv") no record of historic mature biomass point estimates
 # in each year so using 2017 model output
 
-hindcast <- read.csv("./data/redcrab/Juneau/hind_fore_cast_2018.csv")
+hindcast <- read.csv("./data/redcrab/Juneau/hind_fore_cast_JNU_current.csv") 
+    # these are historic estimates while "forecast" columns are the current years model estimates
+    # needs to be updated with current years CSA model ouput for all years in "forecast columns" and current year in other columns
+
 
 hindcast_long <- gather(hindcast, type, pounds, legal_2018:mature_forecast, factor_key = TRUE)
 
@@ -37,8 +45,8 @@ baseline_mean_18 <- as.data.frame(baseline_mean[1:2,])
 baseline_mean_forecast <- as.data.frame(baseline_mean[3:4,])  
 
 # Figure 1 redo ---------
-    # should have 2018 model with longterm baselines (1993-2007) and closure status. 
-    #   also show 2018 forecast as distinct from model output
+    # should have current year's model with longterm baselines (1993-2007) and closure status. 
+    #   also show current year's forecast as distinct from model output 
 jnu_rkc_fig1 <- hindcast %>% 
   dplyr::rename(legal_lb = legal_2018, mature_lb = mature_2018) %>% 
   select(-legal_forecast, -mature_forecast) %>% 
@@ -52,7 +60,7 @@ jnu_rkc_fig1 <- hindcast %>%
   scale_y_continuous(labels = comma, limits = c(0,700000),
                      breaks= seq(min(0), max(700000), by = 100000)) +
 
-  ggtitle("Juneau 2018 model") + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
+  ggtitle(paste0("Juneau ", cur_yr," model")) + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) +
   scale_x_continuous(breaks = seq(min(1975),max(2019), by = 5)) +
   geom_hline(yintercept = 298838, color = "grey1")+
@@ -62,7 +70,7 @@ jnu_rkc_fig1 <- hindcast %>%
   geom_text(data = baseline_mean_18, aes(x = start_yr, y = baseline, label = label), 
             hjust = -0.45, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
   guides(shape = guide_legend(ncol=2), group = guide_legend((ncol =2))) +
-  ggsave('./figures/juneau_fig1_2018.png', dpi = 800, width = 7.5, height = 5.5)
+  ggsave(paste0('./figures/juneau_fig1_', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
 
 
 # Figure A1 ---old Figure 1 - move to Appendix --------
