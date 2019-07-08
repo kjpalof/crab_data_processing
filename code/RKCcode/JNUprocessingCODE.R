@@ -112,7 +112,8 @@ dat5 %>%
 
 
 # raw CPUE of legals 6.09
-#### survey mid date -----
+#### survey mid date -----  
+#  ** fix **  make this calculated from data not just visual
 head(dat)
 unique(dat$Time.Hauled)
 # need to seperate time hauled to just have data hauled look for mid-date 
