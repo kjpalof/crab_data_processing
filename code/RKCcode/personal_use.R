@@ -1,12 +1,14 @@
 # K.Palof  ADF&G
-# 7-11-18
+# 7-11-18, updated 7-8-19
+
 # personal use summary for 11-A
 # all years that have permit data available
 
-rm(list = ls()) # clear workspace since data frames have same names
+
 #####Load Packages ---------------------------------
 library(tidyverse)
 library(xlsx)
+cur_yr = 2018 # fishery year NOT survey year
 
 #####Load Data ---------------------------------------------------
 personal_use <- read.csv("./data/redcrab/personal_use_RKC_juneau_allyear.csv")
@@ -19,14 +21,14 @@ personal_use %>%
             pots = sum(Number.Of.Pots, na.rm = TRUE)) -> by_status
 
 by_status %>% 
-  filter(Year == 2017) %>% 
+  filter(Year == cur_yr) %>% 
   mutate(status = ifelse(Permit.Returned.Status == "Permit entered online", 1, 
                          ifelse(Permit.Returned.Status == "Permit phoned in", 1, 
                                 ifelse(Permit.Returned.Status == "Permit returned", 1, 
                                        ifelse(Permit.Returned.Status == "Permit returned - did not fish", 2, 
                                               0))))) %>% 
-  mutate(cpue = number/pots, cpue_permits = number/n) -> by_status_2017
-write.csv(by_status_2017, './results/redcrab/Juneau/personal_use_raw_summary.csv', row.names = FALSE)
+  mutate(cpue = number/pots, cpue_permits = number/n) -> by_status_current
+write.csv(by_status_current, paste0('./results/redcrab/Juneau/personal_use_raw_summary_', cur_yr,'.csv'), row.names = FALSE)
 
 by_status_2017 %>% 
   summarise(sum(number)) -> total_c
