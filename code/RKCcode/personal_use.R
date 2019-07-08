@@ -15,7 +15,7 @@ prv_yr = 2018 # fishery year NOT survey year
 personal_use <- read.csv("./data/redcrab/personal_use_RKC_juneau_allyear_19.csv")
 
 ## reported number ----
-personal_use %>% 
+personal_use %>% # **fix** not all permits are being displaye in output - no permits not fished, also crab in permits not returend.
   filter(Year == cur_yr | Year == prv_yr) %>%  # remove this to do all years, currently just want current 18/19 season
   group_by(Area, Year, Permit.Returned.Status) %>% 
   summarise(n = length(unique(Permit.Number)), 
