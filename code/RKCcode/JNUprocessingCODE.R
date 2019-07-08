@@ -331,6 +331,8 @@ panel_figure('Juneau', 2018, 'Juneau', 3, 0) # female panel
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
 
+### see 'juneau_hindcast_figure.R' file for other figures for the Juneau document
+
 ### presentation figure -----
 panel_figure_NC_PRES('Juneau', 2018, 'Juneau', 2, 0)
 panel_figure_NC_PRES('Juneau', 2018, 'Juneau', 3, 0)
