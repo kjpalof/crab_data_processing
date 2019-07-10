@@ -13,25 +13,27 @@ cur_yr = 2019 # fsurvey year
 prv_yr = cur_yr-1 # fishery year NOT survey year
 
 #####Load Data ---------------------------------------------------
-personal_use <- read.csv("./data/redcrab/11-A rkc pu_2019_all.csv")
-permit_type <- read.csv("./data/redcrab/11-A rkc pu_permit_status_only.csv")
+personal_use <- read.csv("./data/redcrab/11-A rkc pu_catch.csv")
+permit_type <- read.csv("./data/redcrab/PU RKC Juneau 2018 permit status summary.csv")
 
 ## reported number ----
 # ** in order to get permits not returned that do NOT have catch need to click on "xyz" and select "include rows with only null values"
 # this does NOT translate to .csv output..... **FIX**
 personal_use %>% # *
   filter(Year == cur_yr | Year == prv_yr) %>%  # remove this to do all years, currently just want current 18/19 season
-  group_by(Area, Permit.Returned.Status) %>% 
+  group_by(Area, Year, Permit.Returned.Status) %>% 
   summarise(n = length(unique(Permit.Number)), 
-            number = sum(Number.of.Crab, na.rm = TRUE)) -> by_status
+            number = sum(Number.of.Crab, na.rm = TRUE), 
+            pots = sum(Number.of.Pots.or.Tows)) -> by_status
 
 permit_type %>%  # need this data set to get all the permit status...not returned and did not fish are not accounted above due to lack of crab.
-  group_by(Area, Permit.Returned.Status) %>% 
+  group_by(Area, Year, Permit.Returned.Status) %>% 
   summarise(n = length(unique(Permit.Number))) ->permit_status
 
 by_status %>% 
-  select(Area, Permit.Returned.Status, number) %>% 
-  right_join(permit_status) -> number_crab_by_status
+  select(Area, Year, Permit.Returned.Status, number, pots) %>% 
+  right_join(permit_status) %>% 
+  as.data.frame()-> number_crab_by_status
 
 ### summary and calcs ---------
 
@@ -44,8 +46,8 @@ number_crab_by_status %>%
   mutate(cpue = number/pots, cpue_permits = number/n) -> by_status_current
 write.csv(by_status_current, paste0('./results/redcrab/Juneau/personal_use_raw_summary_', cur_yr,'.csv'), row.names = FALSE)
 
-by_status_2017 %>% 
-  summarise(sum(number)) -> total_c
+by_status_current %>% 
+  summarise(sum(number, na.rm = TRUE)) -> total_c
 # 0 = permit not returned
 # 1 = permit returned and fished
 # 2 = permit returned but NOT fished
@@ -55,8 +57,8 @@ by_status_2017 %>%
 #   that were not returned
 #     
 # percent not returned 
-by_status_2017 %>% 
-  group_by(Year, status) %>% 
+by_status_current %>% 
+  group_by(status) %>% # only looking at one season here 2018/2019...or current
   summarise(n = sum(n), 
             number = sum(number), 
             pots = sum(pots)) %>% 
@@ -64,9 +66,9 @@ by_status_2017 %>%
   spread(status, n) %>% 
   mutate(pct.r.that.fished = (`1`) / (`1` + `2`), 
          pnr = (`0`) / (`1` + `2` +`0`), 
-         total_permits = sum(`1` + `2` +`0`), 
+         total_permits = sum(`1` + `2` +`0`), # **FIX ** this is not matching....
          adjustment = (total_permits / (total_permits - 0.762*(`0`))), 
-         est.total.catch.numbers = adjustment*as.numeric(total_c[2])) -> summary_17
+         est.total.catch.numbers = adjustment*as.numeric(total_c[1])) -> summary_17
 write.csv(summary_17, './results/redcrab/Juneau/personal_use_estimate_total.csv', row.names = FALSE)
 
 
