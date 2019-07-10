@@ -1,5 +1,6 @@
 # K.Palof
-# 7-13-18
+# 7-10-19n updated
+
 # Juneau area RKC forecast / hindcast figures
 # Current figures used for stock health memo 
 
@@ -27,28 +28,29 @@ cur_yr = 2019
 # in each year so using 2017 model output
 
 hindcast <- read.csv("./data/redcrab/Juneau/hind_fore_cast_JNU_current.csv") 
+    # **FIX** currently needs manual updating...fix this.
     # these are historic estimates while "forecast" columns are the current years model estimates
     # needs to be updated with current years CSA model ouput for all years in "forecast columns" and current year in other columns
 
 
-hindcast_long <- gather(hindcast, type, pounds, legal_2018:mature_forecast, factor_key = TRUE)
+hindcast_long <- gather(hindcast, type, pounds, legal_curyr:mature_forecast, factor_key = TRUE)
 
 # Baseline ----
 hindcast %>%
   filter(year > 1992 & year < 2008) %>% 
-  gather(type, pounds, legal_2018:mature_forecast, factor_key = TRUE) %>%
+  gather(type, pounds, legal_curyr:mature_forecast, factor_key = TRUE) %>%
   group_by(type) %>% 
   summarise(baseline = mean(pounds)) %>% 
   mutate(label = c("Legal (1993-2007)", "Mature (1993-2007)", "Legal (1993-2007)", "Mature (1993-2007)"), 
          start_yr = c(1979, 1979, 1979, 1979)) -> baseline_mean
-baseline_mean_18 <- as.data.frame(baseline_mean[1:2,])
+baseline_mean_curyr <- as.data.frame(baseline_mean[1:2,])
 baseline_mean_forecast <- as.data.frame(baseline_mean[3:4,])  
 
 # Figure 1 redo ---------
     # should have current year's model with longterm baselines (1993-2007) and closure status. 
     #   also show current year's forecast as distinct from model output 
 jnu_rkc_fig1 <- hindcast %>% 
-  dplyr::rename(legal_lb = legal_2018, mature_lb = mature_2018) %>% 
+  dplyr::rename(legal_lb = legal_curyr, mature_lb = mature_curyr) %>% 
   select(-legal_forecast, -mature_forecast) %>% 
   gather(type, pounds, legal_lb:mature_lb, factor_key = TRUE) %>% 
   ggplot(aes(year, pounds, group = type)) +
