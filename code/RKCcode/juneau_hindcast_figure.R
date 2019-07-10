@@ -97,7 +97,7 @@ jnu_rkc_annual_fore <- hindcast %>%
   geom_text(data = baseline_mean_forecast, aes(x = start_yr, y = baseline, label = label), 
             hjust = -0.85, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
   guides(shape = guide_legend(ncol=2), group = guide_legend((ncol =2))) +
-  ggsave('./figures/juneau_figA1_2018.png', dpi = 800, width = 7.5, height = 5.5)
+  ggsave(paste0('./figures/juneau_figA1_', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
 
 
 #  select(year, legal_2018)figure of 2018 model with forecast in each year -----
