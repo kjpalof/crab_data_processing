@@ -268,6 +268,9 @@ total_health('Juneau', cur_yr)
 #### STOP HERE AND run .Rmd file for this area for summary and to confirm things look ok
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+## see 'personal_use.R' and 'rkc_harvest_XX.R' to get all data for CSA model
+
+
 ### raw sample size -----------
 head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
