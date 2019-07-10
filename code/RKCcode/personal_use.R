@@ -9,12 +9,14 @@
 library(tidyverse)
 library(xlsx)
 cur_yr = 2019 # fsurvey year
+
 prv_yr = 2018 # fishery year NOT survey year
 
 #####Load Data ---------------------------------------------------
 personal_use <- read.csv("./data/redcrab/personal_use_RKC_juneau_allyear_19.csv")
 
 ## reported number ----
+# ** in order to get permits not returned that do NOT have catch need to click on "xyz" and select "include rows with only null values"
 personal_use %>% # **fix** not all permits are being displaye in output - no permits not fished, also crab in permits not returend.
   filter(Year == cur_yr | Year == prv_yr) %>%  # remove this to do all years, currently just want current 18/19 season
   group_by(Area, Year, Permit.Returned.Status) %>% 
@@ -57,6 +59,8 @@ by_status_2017 %>%
          est.total.catch.numbers = adjustment*as.numeric(total_c[2])) -> summary_17
 write.csv(summary_17, './results/redcrab/Juneau/personal_use_estimate_total.csv', row.names = FALSE)
 
+
+### ** fix ** to use current year's data 
 ## can use legal weight from 2017 to extrapolate this into pounds
 ## only works IF the male_weights is loaded from the processing code - if not need to bring it in from
 ###     results folder
