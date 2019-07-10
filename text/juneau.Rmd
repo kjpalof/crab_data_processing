@@ -1,7 +1,7 @@
 ---
 title: "Juneau area survey results"
 author: "Katie Palof"
-date: "August 1, 2018"
+date: "July 10, 2018"
 output: html_document
 ---
 
@@ -9,7 +9,7 @@ output: html_document
 library(knitr)
 library(tidyverse)
 #dat <- read.csv("../data/redcrab/Juneau/jnu_16_17_oceanAK_out_RAW.csv")
-cur_yr = 2018
+cur_yr = 2019
 survey.location = 'Juneau'
 ```
 
