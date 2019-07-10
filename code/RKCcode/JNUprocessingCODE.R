@@ -202,18 +202,22 @@ LgF_dat1 %>%
 
 ## ** left off here *********************
 # develop file for historic data ----
+##
+##raw_data <- read.csv("./results/redcrab/Juneau/2017/JNU_raw_pots_79_17.csv")
+##levels(raw_data$Pot.Condition)
+##raw_data %>%
+##  filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> raw_dat1
+##raw_dat1 %>%
+##  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> all_LgF_dat1
+##all_LgF_dat1[is.na(all_LgF_dat1$Egg.Percent),]
+##all_LgF_dat1 %>% 
+##  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
+##         Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
+##         Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_all
+
 # In future years just load the largef_all.csv file and add current year
-raw_data <- read.csv("./results/redcrab/Juneau/2017/JNU_raw_pots_79_17.csv")
-levels(raw_data$Pot.Condition)
-raw_data %>%
-  filter(Pot.Condition == "Normal"|Pot.Condition == "Not observed") -> raw_dat1
-raw_dat1 %>%
-  filter(Sex.Code == 2, Recruit.Status == 'Large Females') -> all_LgF_dat1
-all_LgF_dat1[is.na(all_LgF_dat1$Egg.Percent),]
-all_LgF_dat1 %>% 
-  select(Year, Project.Code, Trip.No, Location, Pot.No, Number.Of.Specimens, 
-         Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
-         Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_all
+head(females)
+
 
 # want to add 0's for egg percent if egg development code is 3 or 4
 #LgF_dat1_all %>% 
@@ -222,7 +226,7 @@ all_LgF_dat1 %>%
 #                              0, Egg.Percent)) -> LgF_dat1_all
 
 
-largef_all <- rbind(LgF_dat1_all, LgF_dat1_curyr) # raw female data for all years.
+largef_all <- rbind(females, LgF_dat1_curyr) # raw female data for all years.
 write.csv(largef_all, (paste0('./results/redcrab/', survey.location, '/', cur_yr, '/', 
                        'largef_all.csv')))
 ##### % poor (<10 %) clutch -----------------------------------
