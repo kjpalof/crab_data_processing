@@ -10,22 +10,32 @@ library(tidyverse)
 library(xlsx)
 cur_yr = 2019 # fsurvey year
 
-prv_yr = 2018 # fishery year NOT survey year
+prv_yr = cur_yr-1 # fishery year NOT survey year
 
 #####Load Data ---------------------------------------------------
-personal_use <- read.csv("./data/redcrab/personal_use_RKC_juneau_allyear_19.csv")
+personal_use <- read.csv("./data/redcrab/11-A rkc pu_2019_all.csv")
+permit_type <- read.csv("./data/redcrab/11-A rkc pu_permit_status_only.csv")
 
 ## reported number ----
 # ** in order to get permits not returned that do NOT have catch need to click on "xyz" and select "include rows with only null values"
-personal_use %>% # **fix** not all permits are being displaye in output - no permits not fished, also crab in permits not returend.
+# this does NOT translate to .csv output..... **FIX**
+personal_use %>% # *
   filter(Year == cur_yr | Year == prv_yr) %>%  # remove this to do all years, currently just want current 18/19 season
-  group_by(Area, Year, Permit.Returned.Status) %>% 
+  group_by(Area, Permit.Returned.Status) %>% 
   summarise(n = length(unique(Permit.Number)), 
-            number = sum(Number.of.Crab, na.rm = TRUE), 
-            pots = sum(Number.of.Pots.or.Tows, na.rm = TRUE)) -> by_status
+            number = sum(Number.of.Crab, na.rm = TRUE)) -> by_status
+
+permit_type %>%  # need this data set to get all the permit status...not returned and did not fish are not accounted above due to lack of crab.
+  group_by(Area, Permit.Returned.Status) %>% 
+  summarise(n = length(unique(Permit.Number))) ->permit_status
 
 by_status %>% 
-  filter(Year == cur_yr) %>% 
+  select(Area, Permit.Returned.Status, number) %>% 
+  right_join(permit_status) -> number_crab_by_status
+
+### summary and calcs ---------
+
+number_crab_by_status %>% 
   mutate(status = ifelse(Permit.Returned.Status == "Permit entered online", 1, 
                          ifelse(Permit.Returned.Status == "Permit phoned in", 1, 
                                 ifelse(Permit.Returned.Status == "Permit returned", 1, 
