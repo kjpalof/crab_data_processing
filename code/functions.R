@@ -58,7 +58,7 @@ short_t <- function(bypot_st, year, area) {
     spread(term, estimate) %>% 
     right_join(short_term_out2)->short_term_results # estimate here is slope from regression
   short_term_results %>% 
-    rename(slope = Year) -> short_term_results
+    dplyr::rename(slope = Year) -> short_term_results
   #Now need to add column for significance and score
   short_term_results %>%
     mutate(significant = ifelse(p.value < 0.05 & slope > 0, 1,
