@@ -59,8 +59,8 @@ jnu_rkc_fig1 <- hindcast %>%
   scale_colour_manual(name = "", values = c("black", "grey44"))+
   scale_shape_manual(name = "Fishery Status", values = c(0, 16, 2, 8))+
   scale_linetype_manual(name = "", values = c("solid", "dashed")) +
-  scale_y_continuous(labels = comma, limits = c(0,700000),
-                     breaks= seq(min(0), max(700000), by = 100000)) +
+  scale_y_continuous(labels = comma, limits = c(0,750000),
+                     breaks= seq(min(0), max(750000), by = 100000)) +
 
   ggtitle(paste0("Juneau ", cur_yr," model")) + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) +
@@ -71,14 +71,14 @@ jnu_rkc_fig1 <- hindcast %>%
         legend.text = element_text(size = 8)) +
   geom_text(data = baseline_mean_18, aes(x = start_yr, y = baseline, label = label), 
             hjust = -0.45, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
-  guides(shape = guide_legend(ncol=2), group = guide_legend((ncol =2))) +
-  ggsave(paste0('./figures/juneau_fig1_', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
+  guides(shape = guide_legend(ncol = 2), group = guide_legend((ncol =2))) +
+  ggsave(paste0('./figures/redcrab/juneau_fig1_', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
 
 
 # Figure A1 ---old Figure 1 - move to Appendix --------
 # forecast for each year 
 jnu_rkc_annual_fore <- hindcast %>% 
-  select(-legal_2018, -mature_2018) %>% 
+  select(-legal_curyr, -mature_curyr) %>% 
   gather(type, pounds, legal_forecast:mature_forecast, factor_key = TRUE) %>% 
   ggplot(aes(year, pounds, group = type)) +
   geom_point(aes(color = type, shape = status), size =3) +
@@ -86,8 +86,8 @@ jnu_rkc_annual_fore <- hindcast %>%
   scale_colour_manual(name = "", values = c("black", "grey44"))+
   scale_shape_manual(name = "Fishery Status", values = c(0, 8, 2, 4))+
   scale_linetype_manual(name = "", values = c("solid", "dashed")) +
-  scale_y_continuous(labels = comma, limits = c(0,700000),
-                     breaks= seq(min(0), max(700000), by = 100000)) +
+  scale_y_continuous(labels = comma, limits = c(0,750000),
+                     breaks= seq(min(0), max(750000), by = 100000)) +
   
   ggtitle("Juneau annual forecast reported") + ylab("Estimated Biomass (lbs)")+ xlab("Year")+
   theme(plot.title = element_text(hjust =0.5)) +
@@ -95,11 +95,12 @@ jnu_rkc_annual_fore <- hindcast %>%
   geom_hline(yintercept = baseline_mean_forecast$baseline[1], color = "grey1")+
   geom_hline(yintercept = baseline_mean_forecast$baseline[2], color = "grey44", linetype = "dashed") +
   theme(legend.position = c(0.125,0.798), legend.title = element_text(size = 9), 
-        legend.text = element_text(size = 8)) +
+        legend.text = element_text(size = 8), 
+        legend.spacing = unit(0.00005, "cm")) +
   geom_text(data = baseline_mean_forecast, aes(x = start_yr, y = baseline, label = label), 
-            hjust = -0.85, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
-  guides(shape = guide_legend(ncol=2), group = guide_legend((ncol =2))) +
-  ggsave(paste0('./figures/juneau_figA1_', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
+            hjust = -0.55, vjust = 1.5, nudge_y = 0.05, size = 3.5) +
+  guides(shape = guide_legend(ncol = 2), group = guide_legend((ncol =2))) +
+  ggsave(paste0('./figures/redcrab/juneau_figA1_', cur_yr, '.png'), dpi = 800, width = 7.5, height = 5.5)
 
 
 #  select(year, legal_2018)figure of 2018 model with forecast in each year -----
