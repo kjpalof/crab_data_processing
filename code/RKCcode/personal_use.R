@@ -83,6 +83,6 @@ male_weights <- read.csv(paste0('./results/redcrab/Juneau',
 summary_current %>% 
   mutate(est.catch.lbs = est.total.catch.numbers*male_weights$legal_lbs[1]) -> summary_current
 
-
+write.csv(summary_current, paste0('./results/redcrab/Juneau/personal_use_estimate_total_', cur_yr, '.csv'), row.names = FALSE)
 
 
