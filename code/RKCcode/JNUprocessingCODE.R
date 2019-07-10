@@ -161,36 +161,6 @@ bypot_st_long <- gather(bypot_st, recruit.status, crab, Missing:Small.Females,
                         factor_key = TRUE) 
 ggplot(bypot_st_long, aes(Year,crab)) +geom_point() +facet_wrap(~recruit.status)
 
-### short term plots----------------
-plot(BYPOT_ST$Year, BYPOT_ST$Juvenile)
-Juv_fit <-lm(Juvenile ~ Year, data = BYPOT_ST, weights = weighting)
-abline(Juv_fit, col= 'red')
-summary(Juv_fit)
-
-plot(BYPOT_ST$Year, BYPOT_ST$Large.Females)
-Lfem_fit <-lm(Large.Females ~ Year, data = BYPOT_ST, weights = weighting)
-abline(Lfem_fit, col= 'red')
-summary(Lfem_fit)
-
-plot(BYPOT_ST$Year, BYPOT_ST$Post_Recruit)
-PR_fit <-lm(Post_Recruit ~ Year, data = BYPOT_ST, weights = weighting)
-abline(PR_fit, col= 'red')
-summary(PR_fit)
-
-plot(BYPOT_ST$Year, BYPOT_ST$Pre_Recruit)
-PreR_fit <-lm(Pre_Recruit ~ Year, data = BYPOT_ST, weights = weighting)
-abline(PreR_fit, col= 'red')
-summary(PreR_fit)
-
-plot(BYPOT_ST$Year, BYPOT_ST$Recruit)
-R_fit <-lm(Recruit ~ Year, data = BYPOT_ST, weights = weighting)
-abline(R_fit, col= 'red')
-summary(R_fit)
-
-plot(BYPOT_ST$Year, BYPOT_ST$Small.Females)
-smF_fit <-lm(Small.Females ~ Year, data = BYPOT_ST, weights = weighting)
-abline(smF_fit, col= 'red')
-summary(smF_fit)
 
 ##### Long term trends ---------------------
 #compare current year CPUE distribution to the long term mean
