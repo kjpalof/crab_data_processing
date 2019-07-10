@@ -59,17 +59,17 @@ by_status_current %>%
 # percent not returned 
 by_status_current %>% 
   group_by(status) %>% # only looking at one season here 2018/2019...or current
-  summarise(n = sum(n), 
-            number = sum(number), 
-            pots = sum(pots)) %>% 
+  summarise(n = sum(n, na.rm = TRUE), 
+            number = sum(number, na.rm = TRUE), 
+            pots = sum(pots, na.rm = TRUE)) %>% 
   select(status, n) %>% 
   spread(status, n) %>% 
   mutate(pct.r.that.fished = (`1`) / (`1` + `2`), 
          pnr = (`0`) / (`1` + `2` +`0`), 
          total_permits = sum(`1` + `2` +`0`), # **FIX ** this is not matching....
          adjustment = (total_permits / (total_permits - 0.762*(`0`))), 
-         est.total.catch.numbers = adjustment*as.numeric(total_c[1])) -> summary_17
-write.csv(summary_17, './results/redcrab/Juneau/personal_use_estimate_total.csv', row.names = FALSE)
+         est.total.catch.numbers = adjustment*as.numeric(total_c[1])) -> summary_current
+write.csv(summary_current, paste0('./results/redcrab/Juneau/personal_use_estimate_total_', cur_yr, '.csv'), row.names = FALSE)
 
 
 ### ** fix ** to use current year's data 
