@@ -72,22 +72,17 @@ by_status_current %>%
 write.csv(summary_current, paste0('./results/redcrab/Juneau/personal_use_estimate_total_', cur_yr, '.csv'), row.names = FALSE)
 
 
-### ** fix ** to use current year's data 
-## can use legal weight from 2017 to extrapolate this into pounds
+
+## can use legal weight from last years to extrapolate this into pounds ***need to have run current survey year data
+          #   in JNUprocessingCODE.R 
+          # use weight that matches fishery timing i.e. 2018 for 2018 summer
 ## only works IF the male_weights is loaded from the processing code - if not need to bring it in from
 ###     results folder
-summary_17 %>% 
-  mutate(est.catch.lbs = est.total.catch.numbers*male_weights$legal_lbs[1]) -> summary_17
+male_weights <- read.csv(paste0('./results/redcrab/Juneau', 
+                                '/', cur_yr, '/maleweights.csv'))
+summary_current %>% 
+  mutate(est.catch.lbs = est.total.catch.numbers*male_weights$legal_lbs[1]) -> summary_current
 
-by_status_2017 %>% 
-  group_by(Year, status) %>% 
-  summarise(n = sum(n), 
-            number = sum(number), 
-            pots = sum(pots)) %>% 
-  mutate(total_permits = sum(n), 
-         total_returned = sum(n[status !=0]), 
-         cpue.pots = number/pots, 
-         cpue.permits = number/n) 
 
 
 
