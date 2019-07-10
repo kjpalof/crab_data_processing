@@ -271,7 +271,7 @@ total_health('Juneau', cur_yr)
 head(dat5)
 dat5 %>% group_by(Year, Location) %>%  select(Year, Location, Juvenile, Small.Females, 
                                               Large.Females, Pre_Recruit, Recruit,Post_Recruit) %>% 
-  summarise_all(funs(sum)) -> raw_samp
+  summarise_all(sum) -> raw_samp
 
 dat5 %>% 
   group_by(Year) %>% 
