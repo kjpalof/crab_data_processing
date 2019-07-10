@@ -32,7 +32,8 @@ females <- read.csv(paste0('./results/redcrab/', survey.location,
 baseline <- read.csv("./data/redcrab/longterm_means.csv") # same every year
 biomass <- read.csv("./data/redcrab/biomass.csv") # ** update ** from CSA model
           # file for all locations. Has biomass estimates from CSA,
-          #   must be updated after CSA model is run for current year
+          #   must be updated after CSA model is run for current year USING current year's model
+          # NOT historic forecast!
 
 ##### Initial review -------------------------------------
 head(dat)
@@ -298,11 +299,11 @@ write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/',
                                  cur_yr, '/cpue_wt_all_yrs.csv'), row.names = FALSE)
 
 
-panel_figure('Juneau', 2018, 'Juneau')
+panel_figure('Juneau', 2019, 'Juneau')
 
-panel_figure('Juneau', 2018, 'Juneau', 1, 0) # panel with all 3 figures
-panel_figure('Juneau', 2018, 'Juneau', 2, 0) # male panel
-panel_figure('Juneau', 2018, 'Juneau', 3, 0) # female panel
+panel_figure('Juneau', 2019, 'Juneau', 1, 0) # panel with all 3 figures
+panel_figure('Juneau', 2019, 'Juneau', 2, 0) # male panel
+panel_figure('Juneau', 2019, 'Juneau', 3, 0) # female panel
 
 # panel_figure <- function(survey.location, cur_yr, base.location)
 # base.location is the location name in the baseline file, can be different
