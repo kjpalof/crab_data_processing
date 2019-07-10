@@ -14,7 +14,7 @@ pr_yr <- cur_yr -1
 survey.location <- 'Juneau'
 
 #####Load Data --------------------------------------
-dat <- read.csv("./data/redcrab/Juneau/jnu_17_18_oceanAK_out_RAW.csv")
+dat <- read.csv("./data/redcrab/Juneau/jnu_18_19_oceanAK_out_RAW.csv")
           # this is input from OceanAK - set up as red crab survey data for CSA
           #   survey area should match that in the name of this script file
           #   Juneau area includes Juneau and Barlow
@@ -134,7 +134,8 @@ histdat %>% select(Year, Location, Trip.No, Pot.No, Strata.Code, Missing,
                    Juvenile, Large.Females, Post_Recruit, Pre_Recruit, 
                    Recruit, Small.Females, Area, npots, inverse_n, 
                    weighting) -> historicdata
-dat5 %>% rename(Strata.Code = Density.Strata.Code) -> dat6
+dat5 %>% 
+  dplyr::rename(Strata.Code = Density.Strata.Code) -> dat6 # masking???
 
 # need to add current year to historicdata file
 # only current years
@@ -229,6 +230,7 @@ LgF_dat1 %>%
          Recruit.Status, Sex.Code, Length.Millimeters, Egg.Percent, 
          Egg.Development.Code, Egg.Condition.Code)-> LgF_dat1_curyr
 
+## ** left off here *********************
 # develop file for historic data ----
 # In future years just load the largef_all.csv file and add current year
 raw_data <- read.csv("./results/redcrab/Juneau/2017/JNU_raw_pots_79_17.csv")
