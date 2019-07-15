@@ -299,9 +299,10 @@ CPUE_wt_all
 CPUE_wt_all %>% filter(Year >= 1993) -> CPUE_wt_from93
 
 write.csv(CPUE_wt_from93, paste0('results/redcrab/', survey.location, '/', 
+                                 cur_yr, '/cpue_wt_since_93.csv'), row.names = FALSE)
+
+write.csv(CPUE_wt_all, paste0('results/redcrab/', survey.location, '/', 
                                  cur_yr, '/cpue_wt_all_yrs.csv'), row.names = FALSE)
-
-
 panel_figure('Juneau', 2019, 'Juneau')
 
 panel_figure('Juneau', 2019, 'Juneau', 1, 0) # panel with all 3 figures
