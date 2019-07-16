@@ -286,7 +286,7 @@ panel_figure <- function(survey.location, cur_yr, base.location, option, scale){
   # Option 1 - all 4 on one file, Option 2 - just p1, p4 (males), 
   # Option 3 - p2,p3 (females), Option 4 - created for Seymour Canal scaling issues
   CPUE_wt_graph <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
-                                   '/cpue_wt_all_yrs.csv'))
+                                   '/cpue_wt_since_93.csv')) # changed this to one since 93 - make this change to all processing codes.
   poorclutch_summary <- read.csv(paste0('./results/redcrab/', survey.location, 
                                         '/', cur_yr, '/poorclutch_summary_all.csv'))
   egg_mean_all <- read.csv(paste0('./results/redcrab/', survey.location, '/', cur_yr,
