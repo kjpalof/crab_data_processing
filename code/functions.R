@@ -400,13 +400,13 @@ panel_figure <- function(survey.location, cur_yr, base.location, option, scale){
     scale_colour_manual(name = "", values = c("grey1", "grey65", "grey34"))+
     scale_fill_manual(name = "", values = c("grey1", "grey65", "grey34")) +
     scale_shape_manual(name = "", values = c(15, 16, 17))+
-    scale_y_continuous(limits = c(0,(max(males_graph$mean) + max(males_graph$se))),
-                       oob = rescale_none) +
+    scale_y_continuous(breaks = seq(min(0),max((max(males_graph$mean) + max(males_graph$se))), by = 1)) + # change to have more tick marks
+    #scale_y_continuous(limits = c(0,(max(males_graph$mean) + max(males_graph$se))),
+    #                   oob = rescale_none) +
     #ylim(0,(max(males_graph$mean) + max(males_graph$se))) + 
     ggtitle(survey.location) + ylab("CPUE (number/pot)")+ xlab(NULL)+
     theme(axis.text.x = element_blank(), plot.title = element_text(hjust =0.5)) + 
     scale_x_continuous(breaks = seq(min(1993),max(cur_yr), by =2)) +
-    scale_y_continuous(breaks = seq(min(0),max(8), by =2)) + # added this line to get more tick marks for JNU - may need to remove
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se, color = recruit.class), 
                   width =.4) +
     geom_hline(yintercept = baseline2$Pre_Recruit, color = "grey65")+
